@@ -12,6 +12,9 @@ export const patterns = Object.freeze({
  petals:{mode:'gapped',count:10,speed:90,interval:2.7,warning:0.85,spread:6.283185307,gap:0.6},
  sweep:{mode:'sweep',count:4,speed:105,interval:2.2,warning:0.85,spread:0.65},
  weave:{mode:'sine',count:5,speed:80,interval:2.8,warning:0.9,spread:1.2},
+ lantern:{mode:'fan',count:4,speed:80,interval:2.6,warning:0.9,spread:1.0,radius:5},
+ roots:{mode:'curve',count:8,speed:80,interval:2.9,warning:0.9,spread:6.283185307,turn:0.3},
+ scales:{mode:'cross',count:8,speed:100,interval:2.7,warning:0.9,spread:6.283185307},
  spiral:{count:6, speed:95, interval:1.1, warning:0.55, spread:Math.PI*2},
 });
 export const enemyTypes = Object.freeze({

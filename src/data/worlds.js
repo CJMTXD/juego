@@ -12,4 +12,8 @@ export const worlds=[
  lore:['Cada nombre es un hilo. El río entregó los nudos a estos talleres.','La Hilandera cose rutas para quienes no pueden pagar la balanza.','La corte de las cimas ordenó cortar los lazos que unían a los caídos.'],
  enemies:[{id:'knot',name:'Nudo peregrino',health:8,radius:11,pattern:'petals',speed:20,behavior:'orbit'}, {id:'spool',name:'Carrete hueco',health:7,radius:10,pattern:'sweep',speed:24,behavior:'blink'}, {id:'needleling',name:'Aguja errante',health:6,radius:10,pattern:'weave',speed:25,behavior:'flee'}],
  boss:{name:'La Hilandera del intervalo',health:360,mechanic:'teleport',patterns:['petals','sweep','weave'],quote:'Puedo coser un camino. No puedo elegir por ti.'}},
+ {id:'roots',name:'Jardín del peso',region:'Purgatorio · terrazas de la deuda',floor:'#5B5668',detail:'#716976',accent:'#66705A',tile:3,health:2.2,speed:1.12,density:1,hazard:'roots',music:[164.81,196,246.94,220],tempo:0.36,
+ lore:['Las raíces crecen con el peso que el río negó a los vivos.','El Medidor protege un jardín que solo florece cuando alguien recuerda.','La primera cosecha fue enviada arriba. El hambre se quedó en las raíces.'],
+ enemies:[{id:'gardener',name:'Jardinero de hueso',health:9,radius:12,pattern:'lantern',speed:16,behavior:'seek'}, {id:'rootling',name:'Raíz penitente',health:8,radius:10,pattern:'roots',speed:18,behavior:'orbit'}, {id:'scalebird',name:'Ave de las pesas',health:7,radius:11,pattern:'scales',speed:30,behavior:'strafe'}],
+ boss:{name:'El Medidor de estaciones',health:480,mechanic:'charge',patterns:['lantern','roots','scales'],quote:'No arranques las raíces. Reparte el peso.'}},
 ];

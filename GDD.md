@@ -142,3 +142,7 @@ Fase 5 / personaje añadido: witness. Estadísticas, arma, pasiva y desbloqueo d
 Fase 5 / mundo completo añadido: **Terrazas del hilo**. Tres enemigos propios, jefe con tres
 fases, peligro anunciado, piso y motivo musical definidos en worlds.js. Prueba de
 combate de principio a fin con supervivencia aislada, antes de pasar al siguiente mundo.
+
+Fase 5 / mundo completo añadido: **Jardín del peso**. Tres enemigos propios, jefe con tres
+fases, peligro anunciado, piso y motivo musical definidos en worlds.js. Prueba de
+combate de principio a fin con supervivencia aislada, antes de pasar al siguiente mundo.

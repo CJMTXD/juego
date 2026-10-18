@@ -95,3 +95,7 @@ Personaje implementado: **witness**. Su motivo de ascenso aparece en la selecci�
 ## Implementado: Terrazas del hilo
 Inspiración libre nórdica y japonesa: vínculos tejidos, nunca personajes tomados de mitos. Viento ascendente anunciado y teletransporte del jefe con destino visible.
 Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y aparecen durante la partida.
+
+## Implementado: Jardín del peso
+Inspiración libre egipcia y mesoamericana: la medida y el crecimiento. Raíces lentificadoras señalizadas; embestida del jefe con trayectoria fijada durante el aviso.
+Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y aparecen durante la partida.
