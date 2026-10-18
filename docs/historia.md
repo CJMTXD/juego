@@ -56,3 +56,7 @@ El epílogo termina esta primera zona; no promete que los mundos superiores ya s
   los juramentos en ley y envía al fondo los recuerdos que contradicen su autoridad.
 - Paraíso: jardines que parecen perfectos porque han eliminado su memoria del daño.
 Todos son refugios del mismo mundo roto. La marca del depósito conecta sus decisiones.
+
+## Registro de ampliación — fase 1
+Confirmado: se conserva el depósito y su jefe. La arquitectura de balance está preparada;
+los nuevos mundos y habitantes continúan propuestos hasta su implementación.

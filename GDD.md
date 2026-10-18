@@ -99,3 +99,8 @@ Pruebas: `node --test tests/game.test.mjs` (Node 22+ recomendado).
 ## Próxima tarea
 Jugar la primera zona para ajustar dificultad y duración antes de crear mundos superiores.
 Arte final, música, narrativa definitiva y el resto del ascenso siguen pendientes.
+
+## Ampliación — fase 1 completada
+Respaldo previo e167276. Balance existente extraído a src/data/balance.js sin alterar
+los valores ni el flujo jugable. Las 10 pruebas previas siguen pasando.
+Siguiente fase: cuatro armas configurables; todavía sin mundos ni personajes adicionales.
