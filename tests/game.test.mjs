@@ -87,7 +87,7 @@ test('la recompensa de reserva no supera los límites de acumulación',()=>{
 
 test('cuatro armas configurables: ráfaga, dispersión, rebote y alternancia',async()=>{
  const {weapons}=await import('../src/data/weapons.js');const {equipWeapon,swapWeapon}=await import('../src/weapons.js');
- for(const gun of Object.values(weapons)){
+ for(const gun of Object.values(weapons).slice(0,4)){
   const w=createWorld();equipWeapon(w,gun.id);const i=input();steps(w,0.6,i);assert(w.events.includes('shoot'),gun.id);assert(w.allies.some(b=>b.mode===gun.mode),gun.id);
  }
  const w=createWorld();equipWeapon(w,'ricochet');let b=emit(w.allies,614,100,0,300,3,1);b.mode='bounce';b.bounces=2;steps(w,0.05);assert(b.vx<0);assert.equal(b.bounces,1);swapWeapon(w);assert.equal(w.weaponIndex,0);
@@ -118,4 +118,13 @@ test('dos mundos: transición, equipo retenido, jefe final y corriente ambiental
  const w=createWorld(7,2);finishZone(w);assert.equal(w.status,'transition');const inventory={...w.inventory},time=w.time;assert(advanceWorld(w));assert.equal(w.worldIndex,1);assert.deepEqual(w.inventory,inventory);assert.equal(w.time,time);
  finishZone(w);assert.equal(w.status,worlds.length===2?'won':'transition');assert.equal(w.pendingWorld,2);
  const tide=createWorld(7,0,'remender',1);travel(tide,1);tide.player.y=180;tide.hazardClock=4.6;const x=tide.player.x;updateWorld(tide,input(),1/120,preferences());assert.notEqual(tide.player.x,x);assert.equal(tide.enemies.length,16);
+});
+
+test('cada arma nueva emite su comportamiento y respeta el pool',async()=>{
+ const {weapons}=await import('../src/data/weapons.js');const {equipWeapon}=await import('../src/weapons.js');
+ for(const gun of Object.values(weapons).slice(4)){
+  const w=createWorld(),i=input();equipWeapon(w,gun.id);let saw=false;
+  for(let n=0;n<300;n++){updateWorld(w,i,1/120,preferences());if(w.allies.some(b=>b.active&&b.mode===gun.mode))saw=true;}
+  assert(saw,gun.id);assert.equal(w.allies.length,128);assert(w.allies.every(b=>Number.isFinite(b.x)&&Number.isFinite(b.y)));
+ }
 });

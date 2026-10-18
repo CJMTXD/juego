@@ -122,3 +122,5 @@ corrientes y Tasadora móvil de tres fases). Transición conserva equipo, cura 2
 el desbloqueo. Selector de mundo inicial disponible solo para tramos desbloqueados.
 Pool fijo de 16 enemigos; balas siguen en pools. Paleta +#35444A (20 colores).
 13 pruebas pasan, incluido recorrido de ambos mundos, y navegador sin errores.
+
+Fase 5 / arma añadida y comprobada: Hilo del destino (homing). Datos en weapons.js.

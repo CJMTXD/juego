@@ -75,3 +75,5 @@ La Dársena de sal pesa los nombres en un río común del más allá. Remero sin
 Pesador de sal y Junco de vidrio sirven a la Tasadora. Sus pesas se reparan en las
 terrazas superiores: esta pista enlaza ambas regiones. Inspiración libre egipcia y
 mesopotámica, con seres originales. La transición y los textos breves ya aparecen.
+
+Objeto implementado: **Hilo del destino**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.

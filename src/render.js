@@ -38,7 +38,11 @@ export function createRenderer(canvas){
   if(e.type==='boss'){ctx.fillStyle=c.orange;ctx.fillRect(e.x-24,e.y-32,8,8);ctx.fillRect(e.x+16,e.y-32,8,8);}
   else {ctx.fillStyle=c.outline;ctx.fillRect(e.x-14,e.y-23,28,3);ctx.fillStyle=c.bone;ctx.fillRect(e.x-14,e.y-23,28*Math.max(0,e.hp/e.maxHp),3);}
  }
- for(const b of world.allies){if(!b.active)continue;const x=Math.round(b.x),y=Math.round(b.y);ctx.fillStyle=c.cyanDark;ctx.fillRect(x-4,y-4,8,8);ctx.fillStyle=c.cyan;ctx.fillRect(x-2,y-2,4,4);}
+ for(const b of world.allies){if(!b.active)continue;const x=Math.round(b.x),y=Math.round(b.y);
+ if(b.mode==='beam'){ctx.strokeStyle=c.cyan;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(b.px,b.py);ctx.lineTo(b.x,b.y);ctx.stroke();continue;}
+ if(b.mode==='area'){ctx.strokeStyle=c.cyanDark;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,b.radius,0,Math.PI*2);ctx.stroke();if(b.delay<=0){ctx.strokeStyle=c.cyan;ctx.beginPath();ctx.arc(x,y,b.radius-4,0,Math.PI*2);ctx.stroke();}continue;}
+ if(b.shape%2===1){ctx.strokeStyle=c.cyan;ctx.strokeRect(x-5,y-5,10,10);}
+ ctx.fillStyle=c.cyanDark;ctx.fillRect(x-4,y-4,8,8);ctx.fillStyle=c.cyan;ctx.fillRect(x-2,y-2,4,4);}
  for(const b of world.hostiles){if(!b.active)continue;const x=Math.round(b.x),y=Math.round(b.y);diamond(x,y,6,c.outline);diamond(x,y,5,b.shape?c.orange:c.red);diamond(x-1,y-1,2,c.yellow);}
  const p=world.player,x=Math.round(p.x),y=Math.round(p.y);
  if(p.invulnerable<=0||Math.floor(world.time*18)%2===0){ctx.drawImage(sprites.player,x-16,y-16);ctx.fillStyle=c[world.character.color];ctx.fillRect(x-11,y+5,22,7);if(world.character.look===1){ctx.fillStyle=c.outline;ctx.fillRect(x-5,y-10,10,8);}if(world.character.look===2){ctx.fillStyle=c.cyan;ctx.fillRect(x-10,y-15,20,3);}}
