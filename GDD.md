@@ -136,3 +136,5 @@ Fase 5 / arma añadida y comprobada: Sol en una vasija (charge). Datos en weapon
 Fase 5 / arma añadida y comprobada: Media luna del retorno (boomerang). Datos en weapons.js.
 
 Fase 5 / personaje añadido: weaver. Estadísticas, arma, pasiva y desbloqueo definidos en characters.js; probado sin alterar controles.
+
+Fase 5 / personaje añadido: witness. Estadísticas, arma, pasiva y desbloqueo definidos en characters.js; probado sin alterar controles.

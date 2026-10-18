@@ -3,6 +3,7 @@ export const characters={
  hollow:{id:'hollow',name:'Portador del hueco',health:6,speed:150,radius:5,damage:1.05,weapon:'ricochet',passive:'El primer impacto de cada sala queda bloqueado.',kind:'shield',color:'earthLight',look:1,unlock:'Termina 3 partidas o vence al primer jefe',requirement:3,story:'Una vasija sin nombre exige conocer a su creador.'},
  courier:{id:'courier',name:'Mensajera velada',health:4,speed:190,radius:3,damage:0.95,weapon:'burst',passive:'El impulso recarga en 1,1 s en lugar de 1,5 s.',kind:'dash',color:'cyanDark',look:2,unlock:'Reúne 8 ecos en total o vence al primer jefe',requirement:8,story:'Su carta cambia de destinatario con cada ascenso.'},
  weaver:{id:'weaver',name:'Tejedora de bruma',health:5,speed:165,radius:4,damage:0.92,weapon:'orbit',passive:'Las balas a menos de 72 px se mueven un 25% más despacio.',kind:'aura',color:'green',look:3,bossUnlock:2,unlock:'Vence a la Hilandera (mundo 3)',story:'Busca el hilo que une los nombres que el río separó.'},
+ witness:{id:'witness',name:'Testigo del alba',health:4,speed:175,radius:4,damage:1,weapon:'beam',passive:'+15% de daño mientras conserve toda su vida.',kind:'light',color:'bone',look:4,bossUnlock:4,unlock:'Vence a las Dos Voces (mundo 5)',story:'Abandona la corte para devolver al fondo sus recuerdos.'},
 };
 export function canSelect(progress,character){
  if(character.id==='remender'||progress.characters?.includes(character.id))return true;
