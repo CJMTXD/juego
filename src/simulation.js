@@ -11,8 +11,8 @@ import { seededRandom, generateMap } from './map.js';
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 export function createWorld(seed=Date.now()>>>0, unlocks=0, characterId='remender',startWorld=0) {
  const zone=worlds[Math.max(0,Math.min(worlds.length-1,startWorld))];
- const rooms=generateMap(seed);
- const character=characters[characterId]||characters.remender;
+ const rooms=generateMap(seed);for(const r of rooms)if(zone.rooms?.[r.id])r.name=zone.rooms[r.id];
+ const character=Object.hasOwn(characters,characterId)?characters[characterId]:characters.remender;
  return {checkpointBoost:startWorld>0,zone,worldIndex:Math.max(0,Math.min(worlds.length-1,startWorld)),pendingWorld:0,zoneCleared:0,roomTime:0,hazardClock:0,hazardPhase:0,environmentSlow:1,mirrorPositions:[200,440],hazardPositions:[[210,120],[430,240]],mark:{active:false,x:0,y:0,radius:38,timer:0},character,shield:character.kind==='shield',seed,random:seededRandom(seed^0x12345678),unlocks,rooms,roomId:0,player:{x:320,y:180,radius:character.radius,angle:0,hp:character.health,maxHp:character.health,invulnerable:0,dashTime:0,dashCooldown:0,dx:1,dy:0},
   allies:createBulletPool(s.bulletCapacity),hostiles:createBulletPool(s.enemyCapacity),enemies:Array.from({length:B.campaign.enemyPool},(_,id)=>({id,active:false,type:'keeper',x:0,y:0,radius:12,hp:0,maxHp:0,timer:0,warning:false,destX:0,destY:0,pattern:'ring',angle:0,offset:0,phase:0,flash:0,behavior:'stay',speed:0,charge:0,targetX:0,targetY:0})),inventory:{},weaponSlots:[character.weapon],weaponIndex:0,cooldowns:Object.fromEntries(Object.keys(weapons).map(id=>[id,0])),weaponOffer:null,burstLeft:0,burstTimer:0,charge:0,stats:{speed:character.speed,damage:character.damage*(1+startWorld*B.campaign.checkpointDamage),interval:B.projectiles.interval,bulletSpeed:B.projectiles.speed,pierce:0,side:0},
   hitStop:0,effectsEnabled:true,particles:Array.from({length:B.campaign.particlePool},()=>({active:false,x:0,y:0,vx:0,vy:0,life:0})),damageBuckets:new Float64Array(B.campaign.metricsWindow),damageSecond:0,damageDealt:0,status:'playing',time:0,kills:0,cleared:0,wave:0,spawnTimer:0,fireTimer:0,enemyId:0,options:[],events:[],shake:0,settled:false,exitLock:0.5,bossPhase:0};
@@ -76,13 +76,13 @@ function spawnWave(world){
   const pos=choices[Math.floor(world.random()*choices.length)],data=world.zone.enemies[Math.floor(world.random()*world.zone.enemies.length)],boss=room.kind==='boss';
   const e=world.enemies.find(e=>!e.active);if(!e)break;
   const hp=boss?world.zone.boss.health:(data.health+Math.floor(room.depth/B.encounters.healthDepth))*world.zone.health;
-  e.active=true;e.id=world.enemies.indexOf(e);for(const b of world.allies)b.hits&=~(1<<e.id);e.type=boss?'boss':data.id;e.x=pos[0];e.y=pos[1];e.radius=boss?24:data.radius;e.hp=hp;e.maxHp=hp;e.timer=B.encounters.initialAttack+i*B.encounters.attackStagger;e.warning=false;e.pattern=boss?world.zone.boss.patterns[0]:data.pattern;e.angle=0;e.offset=world.random()*Math.PI*2;e.phase=0;e.flash=0;e.behavior=data.behavior;e.speed=data.speed;e.charge=0;e.targetX=p.x;e.targetY=p.y;e.destX=0;e.destY=0;
+  e.active=true;e.id=world.enemies.indexOf(e);for(const b of world.allies)b.hits&=~(1<<e.id);e.type=boss?'boss':data.id;e.x=pos[0];e.y=pos[1];e.radius=boss?24:data.radius;e.hp=hp;e.maxHp=hp;e.timer=B.encounters.initialAttack+i*B.encounters.attackStagger;e.warning=false;e.pattern=boss?world.zone.boss.patterns[0]:data.pattern;e.angle=0;e.offset=world.random()*Math.PI*2;e.phase=0;e.flash=0;e.behavior=boss?(world.zone.boss.behavior||'stay'):data.behavior;e.speed=boss?(world.zone.boss.speed||0):data.speed;e.charge=0;e.targetX=p.x;e.targetY=p.y;e.destX=0;e.destY=0;
  }
  world.events.push('spawn');
 }
 export function advanceWorld(world){
  if(world.status!=='transition'||world.worldIndex+1>=worlds.length)return false;
- world.worldIndex++;world.zone=worlds[world.worldIndex];world.rooms=generateMap((world.seed+world.worldIndex*7919)>>>0);world.roomId=0;world.zoneCleared=0;world.wave=0;world.spawnTimer=1.4;world.bossPhase=0;world.exitLock=0.7;world.roomTime=0;
+ world.worldIndex++;world.zone=worlds[world.worldIndex];world.rooms=generateMap((world.seed+world.worldIndex*7919)>>>0);for(const r of world.rooms)if(world.zone.rooms?.[r.id])r.name=world.zone.rooms[r.id];world.roomId=0;world.zoneCleared=0;world.wave=0;world.spawnTimer=1.4;world.bossPhase=0;world.exitLock=0.7;world.roomTime=0;
  clearBullets(world);for(const e of world.enemies)e.active=false;
  world.player.x=320;world.player.y=180;world.player.hp=Math.min(world.player.maxHp,world.player.hp+2);world.player.invulnerable=1.5;
  resetHazard(world);world.status='playing';world.events.push('reward');return true;
@@ -126,7 +126,7 @@ function updateEnemy(world,e,dt){
  }
  const pattern=patterns[e.pattern];
  e.timer-=dt;
- if(!e.warning&&e.timer<=pattern.warning){e.warning=true;e.angle=Math.atan2(p.y-e.y,p.x-e.x);e.targetX=p.x;e.targetY=p.y;
+ if(!e.warning&&e.timer<=pattern.warning){e.warning=true;world.events.push('warning');e.angle=Math.atan2(p.y-e.y,p.x-e.x);e.targetX=p.x;e.targetY=p.y;
   if(pattern.mode==='sweep')e.angle+=Math.sin(e.offset)*0.25;
   if(world.zone.boss.mechanic==='teleport'||e.behavior==='blink'){e.destX=e.x<320?512:128;e.destY=e.y<180?270:90;}}
  if(e.timer<=0){attack(world,e);e.warning=false;e.timer=pattern.interval;}

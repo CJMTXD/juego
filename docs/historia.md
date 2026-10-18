@@ -13,6 +13,7 @@ de guardianes. No se copian personajes, nombres propios ni textos de las mitolog
 
 ### 1. Depósito de ceniza — Infierno · círculo del olvido
 Descenso infernal: archivo de promesas abandonadas.
+Lugares: Atrio de las promesas, Archivo hundido, Patio de ceniza, Galería de ecos, Foso de los nombres, Almacén de juramentos, Cripta de las cartas, Escalera rota, Compuerta del olvido.
 
 Habitantes: Custodio de ceniza, Lamentador, Recolector de brasas.
 Guardián: **El Sellador**. «Si abro el sello, recordarán lo que hicieron.»
@@ -23,6 +24,7 @@ Guardián: **El Sellador**. «Si abro el sello, recordarán lo que hicieron.»
 
 ### 2. Dársena de sal — Infierno · río de los nombres
 Inspiración egipcia y mesopotámica: pesas, nombres y cruce del río.
+Lugares: Muelle sin orilla, Archivo de mareas, Balanzas del junco, Canal de las cartas, Esclusa del nombre, Patio de sal, Dique de los ecos, Escala del río, Tribunal de la Tasadora.
 
 Habitantes: Remero sin orilla, Pesador de sal, Junco de vidrio.
 Guardián: **La Tasadora de nombres**. «Todo nombre pesa. El tuyo todavía cambia.»
@@ -33,6 +35,7 @@ Guardián: **La Tasadora de nombres**. «Todo nombre pesa. El tuyo todavía camb
 
 ### 3. Terrazas del hilo — Purgatorio · terrazas de los vínculos
 Inspiración nórdica y japonesa: hilos, vínculos y talleres de reparación.
+Lugares: Telar de llegada, Nudo del peregrino, Terraza del viento, Carretes del silencio, Aguja del intervalo, Puente de hebras, Archivo de lazos, Costura del paso, Telar de la Hilandera.
 
 Habitantes: Nudo peregrino, Carrete hueco, Aguja errante.
 Guardián: **La Hilandera del intervalo**. «Puedo coser un camino. No puedo elegir por ti.»
@@ -43,6 +46,7 @@ Guardián: **La Hilandera del intervalo**. «Puedo coser un camino. No puedo ele
 
 ### 4. Jardín del peso — Purgatorio · terrazas de la deuda
 Inspiración mesoamericana y egipcia: cosecha, deuda y medida.
+Lugares: Semillero del peso, Jardín de las deudas, Raíces del hambre, Patio de la cosecha, Estanque de las pesas, Ramas del recuerdo, Archivo de semillas, Escala de estaciones, Sombra del Medidor.
 
 Habitantes: Jardinero de hueso, Raíz penitente, Ave de las pesas.
 Guardián: **El Medidor de estaciones**. «No arranques las raíces. Reparte el peso.»
@@ -53,6 +57,7 @@ Guardián: **El Medidor de estaciones**. «No arranques las raíces. Reparte el 
 
 ### 5. Corte de los juramentos — Paraíso · esfera de la autoridad
 Inspiración del Olimpo y los sellos mesopotámicos: autoridad y juramentos.
+Lugares: Pórtico del juramento, Sala del notario, Patio de reflejos, Galería del decreto, Archivo de la autoridad, Espejos de mármol, Escalera del testigo, Balcón del silencio, Trono de las Dos Voces.
 
 Habitantes: Notario del reflejo, Heraldo sin boca, Juramento de mármol.
 Guardián: **Las Dos Voces**. «La otra voz lo ordenó. Yo solo lo repetí.»
@@ -63,6 +68,7 @@ Guardián: **Las Dos Voces**. «La otra voz lo ordenó. Yo solo lo repetí.»
 
 ### 6. Esfera del alba vacía — Paraíso · esfera del recuerdo
 Esfera celestial original: luz, memoria y responsabilidad compartida.
+Lugares: Umbral de luz, Jardín sin memoria, Esfera del párpado, Patio de nombres, Archivo del alba, Constelación vacía, Escalera del eclipse, Borde del recuerdo, Centro del ciclo.
 
 Habitantes: Ángel del párpado, Lluvia de nombres, Testigo del vacío.
 Guardián: **El Jardín que Olvida**. «Si todos recuerdan, ¿quién podrá descansar?»

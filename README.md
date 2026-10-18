@@ -1,42 +1,58 @@
-# El umbral (título provisional)
+# El umbral — ascenso de seis mundos
 
-Bullet hell roguelike de navegador, sin motor ni paquetes. Primera zona completa:
-mapa por semilla, oleadas, mejoras, jefe de tres fases, muerte/reinicio y desbloqueos locales.
+Bullet hell roguelike cenital original en Canvas, JavaScript y CSS, sin motor ni paquetes
+para jugar. Seis mundos del infierno al cielo, 18 enemigos, seis jefes, cinco personajes,
+diez armas, mejoras, sinergias y desbloqueos guardados en el navegador.
 
 ## Jugar en Windows
 
-1. Instala Python 3 desde python.org (marca **Add Python to PATH**) o Node.js LTS.
-2. Abre esta carpeta en VS Code y ejecuta en PowerShell:
+Descarga **Code → Download ZIP** en GitHub, extrae todo y ejecuta `iniciar.bat`.
+Desde PowerShell en esta carpeta:
 
-   ```powershell
-   .\iniciar.bat
-   ```
+```powershell
+.\iniciar.bat
+```
 
-Se abre el navegador. Mantén abierta la terminal del servidor. Si el puerto 8000
-está ocupado, cierra el servidor anterior. Si el navegador no se abre, entra en
-http://127.0.0.1:8000. Para terminar el servidor, pulsa Ctrl+C.
+Necesitas **Python 3** (activa Add Python to PATH al instalar) o **Node.js LTS**.
+El lanzador detecta cualquiera y abre el navegador cuando el servidor está enlazado.
+Mantén abierta su terminal. Para terminar, pulsa Ctrl+C. Si el puerto 8000 está ocupado,
+cierra el servidor anterior. Si no abre navegador, entra en http://127.0.0.1:8000.
+No abras index.html directamente: los módulos necesitan HTTP.
 
-También puedes ejecutar `node server.cjs` o `python server.py` y abrir esa dirección.
-No abras index.html directamente: los módulos necesitan un servidor HTTP.
+Alternativas: `node server.cjs` o `python server.py` y abrir la dirección anterior.
 
-WASD mueve, ratón apunta, Espacio da impulso y Esc pausa. El disparo es automático;
-puedes desactivarlo en Opciones y mantener clic izquierdo para disparar.
-El punto claro es tu hitbox. Los rombos cálidos son enemigos; los cuadrados azules, tuyos.
-Tras limpiar una sala elige una mejora y usa una puerta o el mapa para continuar.
-Los refugios curan una vez. Al morir se pierden las mejoras; conserva ecos para desbloquear
-nuevas opciones desde Inicio. El jefe cierra la primera zona y muestra su final.
+## Controles y partida
 
-El guardado pertenece al navegador y a la dirección usada. Borrar datos del navegador
-elimina el progreso. Las partidas en curso no se guardan; las opciones sí.
+- WASD: moverse; ratón: apuntar; Espacio: impulso; Q: cambiar de arma; Esc: pausa.
+- Disparo automático por defecto; en Opciones puedes desactivarlo y mantener clic.
+- F3 muestra FPS, DPS, balas y tiempo de sala. También se activa con `?debug=1`.
+- El punto claro es tu hitbox. Rombos cálidos hacen daño; cuadrados azules son aliados.
+- Limpia la sala, elige mejora o arma y usa una puerta o el mapa para avanzar.
+- Los jefes desbloquean mundos; puedes comenzar en cualquier mundo ya abierto.
+- Dos ranuras de arma. La armería muestra estadísticas, comportamiento y obtención.
+- Al morir pierdes mejoras temporales. Los ecos permiten desbloquear nuevas opciones.
+- Los nuevos personajes se abren por partidas, ecos o jefes: su selección explica cada condición.
 
-## Comprobar el código
+Progreso, mundos y opciones son locales al navegador y dirección usada. Borrar sus datos
+borra el guardado. Cambiar de navegador/dirección no comparte progreso. Cerrar una partida
+la descarta: no hay guardado a mitad del combate. Se migra el guardado de la primera versión.
 
-Con Node 22+ (no necesario si juegas usando Python):
+## Desarrollo y validación
+
+Con Node 22+:
 
 ```powershell
 node --test tests/game.test.mjs
 ```
 
-La ruta completa de combate se prueba con invulnerabilidad de prueba; no mide dificultad.
-El lanzador Windows debe comprobarse en Windows. El resto de las comprobaciones y
-los valores de balance están en GDD.md. Los mundos superiores aún no están construidos.
+Prueba opcional de interfaz con Playwright y Chromium ya instalados:
+
+```powershell
+node tests/browser.cjs
+```
+
+El juego no necesita esas herramientas. El servidor debe estar activo para la prueba de interfaz.
+GDD.md resume el estado; docs/balance.md contiene valores y curva; docs/historia.md separa
+lo implementado de las propuestas. El objetivo de 15–25 minutos necesita medición humana;
+las pruebas automáticas completas usan invulnerabilidad y apuntado perfecto para aislar el flujo.
+El .bat está revisado, pero no se ejecutó nativamente en Windows desde el entorno Linux.

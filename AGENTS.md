@@ -1,15 +1,21 @@
 # Instrucciones de trabajo
-Lee GDD.md e inspecciona el estado de Git antes de empezar. Responde en español.
-Realiza una sola tarea por vez y conserva trabajo existente; avisa antes de sobrescribirlo.
-HTML5 Canvas, módulos ES y CSS, sin frameworks. Separa entrada, simulación, render y datos.
-Usa comandos PowerShell en instrucciones al usuario de Windows.
-Valida sintaxis y respuesta del servidor. Actualiza GDD.md y haz un commit local por tarea
-con mensaje claro en español. No publiques ni hagas push sin autorización.
-Cierra indicando qué cambió, cómo ejecutar y comprobar, y "Siguiente paso recomendado"
-con una sola acción. Sigue el orden de fases documentado en GDD.md.
+Lee GDD.md, docs/balance.md, docs/historia.md y el estado de Git antes de empezar.
+Responde en español para un principiante en Windows. Crea archivos directamente,
+conserva trabajo existente y evita reescribir sistemas ajenos al cambio.
+Canvas, módulos ES y CSS, sin motor ni frameworks. No instales paquetes para jugar:
+los servidores Python y Node usan sus bibliotecas estándar.
 
-La última autorización permite trabajar de forma autónoma en el ciclo completo de la
-primera zona, conservando apuntado con ratón. Consulta GDD.md para saber lo implementado.
-No describas los mundos superiores ni la duración de 15–25 minutos como completados.
-Ejecuta `node --test tests/game.test.mjs` cuando cambies combate, mapas o persistencia.
-No instales paquetes para ejecutar el juego; ambos servidores usan bibliotecas estándar.
+La campaña actual tiene seis mundos, cinco personajes y diez armas. La autorización
+más reciente completó las siete fases de la ampliación: no vuelvas al alcance de una
+sola zona. Respeta datos configurables, pools, arte en matrices y paleta de 24 colores.
+Mantén apuntado al ratón, opciones, progresión y migración de guardado.
+No presentes duración humana ni rendimiento de otros equipos como comprobados.
+
+Para cambios de combate/mapa/armas/guardado: node --test tests/game.test.mjs.
+Comprueba sintaxis y respuesta HTTP; para interfaz: node tests/browser.cjs si están
+Playwright y Chromium disponibles. Actualiza GDD e historia después de cada fase;
+haz commit local por tarea con mensaje en español. Usa comandos PowerShell al usuario.
+No publiques ni hagas push salvo autorización explícita; el usuario autorizó subir
+la ampliación actual a CJMTXD/juego al terminar las comprobaciones.
+Cierra brevemente con qué cambió, ejecución y comprobación, y "Siguiente paso recomendado"
+con una sola acción concreta.

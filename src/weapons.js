@@ -2,7 +2,7 @@ import {weapons} from './data/weapons.js';
 import {emit} from './projectiles.js';
 import {balance as B} from './data/balance.js';
 export function equipWeapon(world,id){
- if(!weapons[id])return false;
+ if(!Object.hasOwn(weapons,id))return false;
  const existing=world.weaponSlots.indexOf(id);
  if(existing>=0)world.weaponIndex=existing;
  else if(world.weaponSlots.length<2){world.weaponSlots.push(id);world.weaponIndex=world.weaponSlots.length-1;}
@@ -23,7 +23,7 @@ function projectile(world,gun,angle,damage){
  if(world.weaponSlots.includes('beam')&&world.weaponSlots.includes('needle'))bullet.pierce=Math.min(15,bullet.pierce+1);}
  return bullet;
 }
-function discharge(world,gun,damageScale=1){
+function discharge(world,gun,damageScale=1,withSides=true){
  if(gun.mode==='orbit'||gun.mode==='area')damageScale*=1+world.stats.side*B.weapons.sideUtility;
  if(['orbit','area','beam'].includes(gun.mode))damageScale*=1+world.stats.pierce*B.weapons.pierceUtility;
  const p=world.player;
@@ -34,7 +34,7 @@ function discharge(world,gun,damageScale=1){
   projectile(world,gun,angle,gun.damage*world.stats.damage*damageScale*(world.weaponSlots.includes('area')&&world.weaponSlots.includes('charge')?1.1:1));
  }
  // Ecos laterales limitados: no multiplican toda la escopeta o cada bala de la ráfaga.
- if(world.burstLeft===0&&gun.mode!=='orbit'&&gun.mode!=='area')for(let i=1;i<=world.stats.side;i++)for(const sign of [-1,1])projectile(world,gun,p.angle+sign*B.upgrades.sideAngle*i,gun.damage*world.stats.damage*Math.min(B.upgrades.sideDamage,gun.mode==='beam'?0.2:0.55)/Math.max(1,gun.count));
+ if(withSides&&gun.mode!=='orbit'&&gun.mode!=='area')for(let i=1;i<=world.stats.side;i++)for(const sign of [-1,1])projectile(world,gun,p.angle+sign*B.upgrades.sideAngle*i,gun.damage*world.stats.damage*Math.min(B.upgrades.sideDamage,gun.mode==='beam'?0.2:0.55)/Math.max(1,gun.count));
  world.events.push('shoot');
 }
 export function updateWeapon(world,input,dt,preferences){
@@ -45,7 +45,7 @@ export function updateWeapon(world,input,dt,preferences){
   if(preferences.autoFire||input.shoot)world.charge=Math.min(gun.interval,world.charge+dt/(world.stats.interval/B.projectiles.interval));
   if(world.charge>=gun.interval-1e-9||(!preferences.autoFire&&!input.shoot&&world.charge>0.15)){discharge(world,gun,world.charge/gun.interval);world.charge=0;}return;
  }world.burstTimer-=dt;
- if(world.burstLeft>0&&world.burstTimer<=0){discharge(world,gun);world.burstLeft--;world.burstTimer=gun.burstGap;return;}
+ if(world.burstLeft>0&&world.burstTimer<=0){discharge(world,gun,1,false);world.burstLeft--;world.burstTimer=gun.burstGap;return;}
  if(gun.mode==='orbit'){let count=0;for(const b of world.allies)if(b.active&&b.mode==='orbit')count++;if(count>=B.weapons.maxOrbitals)return;}
  if(!(preferences.autoFire||input.shoot)||world.fireTimer>1e-9)return;
  world.burstLeft=gun.mode==='burst'?gun.count-1:0;
@@ -56,7 +56,7 @@ export function updateWeapon(world,input,dt,preferences){
 export function weaponSynergy(world){const ids=world.weaponSlots;if(ids.includes('scatter')&&ids.includes('burst'))return 'Voz + Sal: dispersión -20%';if(ids.includes('ricochet')&&ids.includes('orbit'))return 'Regreso + Astrolabio: un rebote extra (máx. 3)';if(ids.includes('beam')&&ids.includes('needle'))return 'Luz + Aguja: una penetración extra';if(ids.includes('area')&&ids.includes('charge'))return 'Tinta + Sol: +10% de daño';return '';}
 
 export function rollWeapon(world,boss=false){
- const available=Object.values(weapons).filter(g=>!world.weaponSlots.includes(g.id)&&(!boss||g.rarity!=='common'));
+ const available=Object.values(weapons).filter(g=>!world.weaponSlots.includes(g.id)&&(!boss||g.source.includes('jefe')));
  const groups=['common','rare','epic'].filter(r=>available.some(g=>g.rarity===r));if(!groups.length)return null;
  const weights=boss?B.progression.bossWeights:B.progression.weights;
  let roll=world.random()*groups.reduce((n,r)=>n+weights[r],0),rarity=groups[groups.length-1];

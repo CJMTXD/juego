@@ -175,3 +175,8 @@ test('campaña completa conserva mejoras, termina en victoria y visita seis mund
  for(let zone=0;zone<worlds.length;zone++){visits.push(w.worldIndex);finishZone(w);if(zone<worlds.length-1){assert.equal(w.status,'transition');assert(advanceWorld(w));}}
  assert.deepEqual(visits,[0,1,2,3,4,5]);assert.equal(w.status,'won');assert.equal(w.cleared,48);assert.equal(w.pendingWorld,6);assert(w.time>0);assert(w.kills>200);
 });
+
+test('los ecos laterales benefician a la ráfaga una sola vez y el guardado rechaza IDs heredados',async()=>{
+ const {equipWeapon}=await import('../src/weapons.js');const w=createWorld();equipWeapon(w,'burst');w.inventory.fork=1;recalculate(w);steps(w,0.18);assert.equal(w.allies.filter(b=>b.active).length,5);
+ const bad=freshSave();bad.preferences.character='__proto__';bad.progress.characters=['constructor','__proto__'];const safe=validateSave(bad);assert.equal(safe.preferences.character,'remender');assert.deepEqual(safe.progress.characters,['remender']);assert.equal(createWorld(1,0,'constructor').character.id,'remender');assert(!equipWeapon(w,'constructor'));
+});

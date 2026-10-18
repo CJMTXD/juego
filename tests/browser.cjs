@@ -14,7 +14,7 @@ const fs=require('node:fs');
   const characters=['remender','hollow','courier','weaver','witness'];
   for(let zone=0;zone<6;zone++){
    await page.reload();await page.locator('[data-action="characters"]').click();await page.locator(`[data-character="${characters[zone%5]}"]`).click();await page.locator('#start-world').selectOption(String(zone));await page.locator('#seed-input').fill('42');await page.locator('[data-action="start"]').click();await page.waitForTimeout(200);
-   const snapshot=await page.evaluate(()=>window.gameDiagnostics());assert.equal(snapshot.world,zone);assert.equal(snapshot.character,characters[zone%5]);assert.equal(snapshot.status,'playing');
+   const snapshot=await page.evaluate(()=>window.gameDiagnostics());assert.equal(snapshot.world,zone);assert.equal(snapshot.character,characters[zone%5]);assert.equal(snapshot.status,'playing');assert(snapshot.audio.available);assert.equal(snapshot.audio.state,'running');assert(snapshot.audio.beat>0);
    await page.locator('#map button:not([disabled])').first().click();await page.waitForTimeout(1700);assert.match(await page.locator('#wave').textContent(),/Oleada 1/);assert.equal(await page.locator('#panel').isHidden(),true);
    await page.screenshot({path:`/tmp/ascenso-world-${zone+1}.png`});
    await page.keyboard.press('Escape');assert(await page.getByRole('heading',{name:'En pausa'}).isVisible());const time=(await page.evaluate(()=>window.gameDiagnostics())).time;await page.waitForTimeout(100);assert.equal((await page.evaluate(()=>window.gameDiagnostics())).time,time);
@@ -32,6 +32,7 @@ const fs=require('node:fs');
    samples.sort((a,b)=>a-b);return {frames:240,medianMs:samples[120],p95Ms:samples[228],pool:[w.allies.length,w.hostiles.length,w.enemies.length,w.particles.length]};
   });
   assert.deepEqual(benchmark.pool,[128,512,16,64]);assert(benchmark.p95Ms<50,'La carga de estrés supera el presupuesto de 50 ms');
-  assert.deepEqual(errors,[]);console.log(JSON.stringify({result:'6 mundos, 5 personajes, 10 armas, selección, combate, pausa y consola correctos',benchmark}));
+  const art=await page.evaluate(async()=>{const{makeEnemySprite,drawPortrait,makeWeaponSprite}=await import('/src/render.js');const{characters}=await import('/src/data/characters.js');const{weapons}=await import('/src/data/weapons.js');const images=[];for(let w=0;w<6;w++){for(let k=0;k<3;k++)images.push(makeEnemySprite(w,k));const boss=makeEnemySprite(w,3,true);if(boss.width!==64||boss.height!==64)throw Error('Tamaño de jefe');images.push(boss);}for(const c of Object.values(characters)){const canvas=document.createElement('canvas');drawPortrait(canvas,c);images.push(canvas);}for(const g of Object.values(weapons))images.push(makeWeaponSprite(g));for(const canvas of images){const data=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;for(let i=3;i<data.length;i+=4)if(data[i]!==0&&data[i]!==255)throw Error('Sprite con semitransparencia');}if(new Set(images.map(c=>c.toDataURL())).size!==images.length)throw Error('Sprites duplicados');return {sprites:images.length,alpha:'binaria',unique:true};});
+  assert.deepEqual(errors,[]);console.log(JSON.stringify({result:'6 mundos, 5 personajes, 10 armas, selección, combate, pausa y consola correctos',benchmark,art}));
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1);});
