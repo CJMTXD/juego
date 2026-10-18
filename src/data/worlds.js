@@ -20,4 +20,8 @@ export const worlds=[
  lore:['La corte llama ley a los recuerdos que decidió conservar.','Dos voces dictan una verdad. Solo una admite haber visto el depósito.','Tras los espejos hay un jardín sin memoria: el origen de todo lo que cae.'],
  enemies:[{id:'notary',name:'Notario del reflejo',health:9,radius:11,pattern:'mirrorFan',speed:0,behavior:'stay'}, {id:'herald',name:'Heraldo sin boca',health:8,radius:10,pattern:'vortex',speed:28,behavior:'orbit'}, {id:'oathstone',name:'Juramento de mármol',health:11,radius:12,pattern:'judgment',speed:12,behavior:'flee'}],
  boss:{name:'Las Dos Voces',health:620,mechanic:'echo',patterns:['mirrorFan','judgment','vortex'],quote:'La otra voz lo ordenó. Yo solo lo repetí.'}},
+ {id:'dawn',name:'Esfera del alba vacía',region:'Paraíso · esfera del recuerdo',floor:'#A69C84',detail:'#756F68',accent:'#D3C3A1',tile:5,health:3.2,speed:1.2,density:1,hazard:'eclipse',music:[220,277.18,329.63,293.66],tempo:0.29,
+ lore:['La luz parece limpia porque nadie recuerda lo que quemó.','El origen del dolor no es un monstruo: es el miedo a compartirlo.','Devuelves los recuerdos al ciclo. Las alturas ya no pueden olvidar a quienes sostienen su paz.'],
+ enemies:[{id:'unseeing',name:'Ángel del párpado',health:10,radius:11,pattern:'eclipse',speed:20,behavior:'blink'}, {id:'starfall',name:'Lluvia de nombres',health:8,radius:10,pattern:'falling',speed:24,behavior:'strafe'}, {id:'witnessOrb',name:'Testigo del vacío',health:12,radius:12,pattern:'constellation',speed:18,behavior:'seek'}],
+ boss:{name:'El Jardín que Olvida',health:800,mechanic:'eclipse',patterns:['falling','constellation','eclipse'],quote:'Si todos recuerdan, ¿quién podrá descansar?'}},
 ];

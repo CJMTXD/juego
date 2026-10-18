@@ -103,3 +103,7 @@ Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y 
 ## Implementado: Corte de los juramentos
 Inspiración libre del Olimpo y de los sellos mesopotámicos: un consejo original gobierna mediante juramentos. Espejos anunciados reflejan cada bala como máximo una vez; el jefe emite desde un eco visible.
 Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y aparecen durante la partida.
+
+## Implementado: Esfera del alba vacía
+Esfera original inspirada en jardines celestiales, sin copiar textos religiosos. Eclipse en dos bandas con 1,5 s de aviso, lluvia con corredor libre y sello central del jefe; cierre del ascenso.
+Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y aparecen durante la partida.

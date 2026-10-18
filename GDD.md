@@ -150,3 +150,7 @@ combate de principio a fin con supervivencia aislada, antes de pasar al siguient
 Fase 5 / mundo completo añadido: **Corte de los juramentos**. Tres enemigos propios, jefe con tres
 fases, peligro anunciado, piso y motivo musical definidos en worlds.js. Prueba de
 combate de principio a fin con supervivencia aislada, antes de pasar al siguiente mundo.
+
+Fase 5 / mundo completo añadido: **Esfera del alba vacía**. Tres enemigos propios, jefe con tres
+fases, peligro anunciado, piso y motivo musical definidos en worlds.js. Prueba de
+combate de principio a fin con supervivencia aislada, antes de pasar al siguiente mundo.
