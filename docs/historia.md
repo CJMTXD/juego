@@ -99,3 +99,7 @@ Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y 
 ## Implementado: Jardín del peso
 Inspiración libre egipcia y mesoamericana: la medida y el crecimiento. Raíces lentificadoras señalizadas; embestida del jefe con trayectoria fijada durante el aviso.
 Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y aparecen durante la partida.
+
+## Implementado: Corte de los juramentos
+Inspiración libre del Olimpo y de los sellos mesopotámicos: un consejo original gobierna mediante juramentos. Espejos anunciados reflejan cada bala como máximo una vez; el jefe emite desde un eco visible.
+Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y aparecen durante la partida.

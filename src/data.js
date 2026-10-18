@@ -15,6 +15,9 @@ export const patterns = Object.freeze({
  lantern:{mode:'fan',count:4,speed:80,interval:2.6,warning:0.9,spread:1.0,radius:5},
  roots:{mode:'curve',count:8,speed:80,interval:2.9,warning:0.9,spread:6.283185307,turn:0.3},
  scales:{mode:'cross',count:8,speed:100,interval:2.7,warning:0.9,spread:6.283185307},
+ mirrorFan:{mode:'fan',count:3,speed:90,interval:2.8,warning:1,spread:0.7,bounce:1},
+ vortex:{mode:'curve',count:6,speed:90,interval:2.4,warning:0.9,spread:6.283185307,turn:-0.35},
+ judgment:{mode:'gapped',count:14,speed:85,interval:3,warning:1,spread:6.283185307,gap:0.65},
  spiral:{count:6, speed:95, interval:1.1, warning:0.55, spread:Math.PI*2},
 });
 export const enemyTypes = Object.freeze({

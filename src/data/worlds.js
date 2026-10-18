@@ -16,4 +16,8 @@ export const worlds=[
  lore:['Las raíces crecen con el peso que el río negó a los vivos.','El Medidor protege un jardín que solo florece cuando alguien recuerda.','La primera cosecha fue enviada arriba. El hambre se quedó en las raíces.'],
  enemies:[{id:'gardener',name:'Jardinero de hueso',health:9,radius:12,pattern:'lantern',speed:16,behavior:'seek'}, {id:'rootling',name:'Raíz penitente',health:8,radius:10,pattern:'roots',speed:18,behavior:'orbit'}, {id:'scalebird',name:'Ave de las pesas',health:7,radius:11,pattern:'scales',speed:30,behavior:'strafe'}],
  boss:{name:'El Medidor de estaciones',health:480,mechanic:'charge',patterns:['lantern','roots','scales'],quote:'No arranques las raíces. Reparte el peso.'}},
+ {id:'oaths',name:'Corte de los juramentos',region:'Paraíso · esfera de la autoridad',floor:'#756F68',detail:'#948995',accent:'#D3C3A1',tile:4,health:2.7,speed:1.16,density:1,hazard:'mirrors',music:[196,246.94,293.66,261.63],tempo:0.32,
+ lore:['La corte llama ley a los recuerdos que decidió conservar.','Dos voces dictan una verdad. Solo una admite haber visto el depósito.','Tras los espejos hay un jardín sin memoria: el origen de todo lo que cae.'],
+ enemies:[{id:'notary',name:'Notario del reflejo',health:9,radius:11,pattern:'mirrorFan',speed:0,behavior:'stay'}, {id:'herald',name:'Heraldo sin boca',health:8,radius:10,pattern:'vortex',speed:28,behavior:'orbit'}, {id:'oathstone',name:'Juramento de mármol',health:11,radius:12,pattern:'judgment',speed:12,behavior:'flee'}],
+ boss:{name:'Las Dos Voces',health:620,mechanic:'echo',patterns:['mirrorFan','judgment','vortex'],quote:'La otra voz lo ordenó. Yo solo lo repetí.'}},
 ];
