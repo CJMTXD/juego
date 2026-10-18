@@ -3,5 +3,5 @@ export const characters={
  hollow:{id:'hollow',name:'Portador del hueco',health:6,speed:150,radius:5,damage:1.05,weapon:'ricochet',passive:'El primer impacto de cada sala queda bloqueado.',kind:'shield',color:'earthLight',look:1,unlock:'Termina 3 partidas o vence al primer jefe',requirement:3,story:'Una vasija sin nombre exige conocer a su creador.'},
  courier:{id:'courier',name:'Mensajera velada',health:4,speed:190,radius:3,damage:0.95,weapon:'burst',passive:'El impulso recarga en 1,1 s en lugar de 1,5 s.',kind:'dash',color:'cyanDark',look:2,unlock:'Reúne 8 ecos en total o vence al primer jefe',requirement:8,story:'Su carta cambia de destinatario con cada ascenso.'},
 };
-export function canSelect(progress,character){return character.id==='remender'||progress.characters?.includes(character.id)||progress.wins>0||(character.id==='hollow'?progress.runs>=3:(progress.totalEchoes||progress.echoes)>=8);}
+export function canSelect(progress,character){return character.id==='remender'||progress.characters?.includes(character.id)||(progress.wins>0||(progress.bossMask&1)>0)||(character.id==='hollow'?progress.runs>=3:(progress.totalEchoes||progress.echoes)>=8);}
 export function refreshCharacters(progress){for(const c of Object.values(characters))if(canSelect(progress,c)&&!progress.characters.includes(c.id))progress.characters.push(c.id);}

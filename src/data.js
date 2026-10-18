@@ -6,7 +6,10 @@ export const defaults = Object.freeze({ up:'KeyW', down:'KeyS', left:'KeyA', rig
 export const patterns = Object.freeze({
   ring:{count:12, speed:90, interval:2.6, warning:0.65, spread:Math.PI*2},
   fan:{count:5, speed:105, interval:2.1, warning:0.6, spread:Math.PI/3},
-  spiral:{count:6, speed:95, interval:1.1, warning:0.55, spread:Math.PI*2},
+  cross:{mode:'cross',count:8,speed:90,interval:2.5,warning:0.8,spread:Math.PI*2},
+ wave:{mode:'fan',count:7,speed:85,interval:2.8,warning:0.8,spread:1.5},
+ ribbon:{mode:'sine',count:3,speed:85,interval:2.4,warning:0.85,spread:0.6},
+ spiral:{count:6, speed:95, interval:1.1, warning:0.55, spread:Math.PI*2},
 });
 export const enemyTypes = Object.freeze({
   keeper:{name:'Custodio de ceniza', health:7, radius:12, pattern:'ring', speed:0},

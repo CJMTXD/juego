@@ -69,3 +69,9 @@ divide un mensaje; Moneda del regreso paga dos retornos contra los muros.
 Remendadora: busca su recuerdo y cura cada seis salas. Portador: protege el hueco de
 su nombre con un escudo por sala. Mensajera: asciende con una carta sin destino y un
 impulso más frecuente. Sus motivos aparecen en la selección de personaje.
+
+## Fase 4 — confirmado en el juego
+La Dársena de sal pesa los nombres en un río común del más allá. Remero sin orilla,
+Pesador de sal y Junco de vidrio sirven a la Tasadora. Sus pesas se reparan en las
+terrazas superiores: esta pista enlaza ambas regiones. Inspiración libre egipcia y
+mesopotámica, con seres originales. La transición y los textos breves ya aparecen.

@@ -68,7 +68,7 @@ test('zona completa: combate real, oleadas, mejoras, refugio y tres fases del je
   }
   if(id<8){assert.equal(w.status,'reward',`sala ${id}`);const choice=w.options.find(u=>u.id==='ember'||u.id==='pulse')||w.options[0];assert(chooseUpgrade(w,choice.id));}
  }
- assert.equal(w.status,'won');assert.equal(w.cleared,8);assert(w.kills>25);assert.deepEqual([...phases],[0,1,2]);assert(budget<180000);
+ assert.equal(w.status,'transition');assert.equal(w.cleared,8);assert(w.kills>25);assert.deepEqual([...phases],[0,1,2]);assert(budget<180000);
  console.log(`Zona completada por fixture en ${w.time.toFixed(1)} s de simulación, ${w.kills} enemigos.`);
  const rest=createWorld(42);rest.roomId=2;rest.rooms[2].cleared=true;rest.rooms[2].rewardTaken=true;rest.player.hp=1;const branch=rest.rooms[2].links.find(id=>rest.rooms[id].kind==='rest');if(branch!==undefined){assert(travel(rest,branch));assert.equal(rest.player.hp,3);assert(travel(rest,2));assert(travel(rest,branch));assert.equal(rest.player.hp,3);}
 });
@@ -98,4 +98,24 @@ test('personajes, habilidades y migración del guardado antiguo',async()=>{
  const tank=createWorld(1,0,'hollow');assert.equal(tank.player.hp,6);assert.equal(damagePlayer(tank),true);assert.equal(tank.player.hp,6);tank.player.invulnerable=0;damagePlayer(tank);assert.equal(tank.player.hp,5);
  const fast=createWorld(1,0,'courier'),i=input();i.dash=true;updateWorld(fast,i,1/120,preferences());assert.equal(fast.player.radius,3);assert.equal(fast.player.dashCooldown,1.1);
  const migrated=validateSave({version:1,preferences:{autoFire:false,bindings:{up:'KeyW',down:'KeyS',left:'KeyA',right:'KeyD',dash:'Space'}},progress:{echoes:12,wins:1}});assert.equal(migrated.version,2);assert.equal(migrated.progress.echoes,12);assert.equal(migrated.preferences.autoFire,false);assert.equal(migrated.preferences.bindings.swap,'KeyQ');
+});
+
+export function finishZone(w){
+ const i=input(),p=preferences();let budget=0;
+ for(let id=1;id<=8;id++){
+  assert(travel(w,id));
+  while(w.status==='playing'&&!w.rooms[id].cleared&&budget<300000){
+   w.player.invulnerable=1;const target=w.enemies.find(e=>e.active);if(target){i.mouseX=target.x;i.mouseY=target.y;}
+   updateWorld(w,i,1/120,p);w.events.length=0;budget++;
+  }
+  if(id<8){assert.equal(w.status,'reward',`sala ${id} mundo ${w.worldIndex}`);const choice=w.options.find(u=>u.id==='ember'||u.id==='pulse')||w.options[0];assert(chooseUpgrade(w,choice.id));}
+ }
+ assert(budget<300000);return budget/120;
+}
+
+test('dos mundos: transición, equipo retenido, jefe final y corriente ambiental',async()=>{
+ const {advanceWorld}=await import('../src/simulation.js');const {worlds}=await import('../src/data/worlds.js');
+ const w=createWorld(7,2);finishZone(w);assert.equal(w.status,'transition');const inventory={...w.inventory},time=w.time;assert(advanceWorld(w));assert.equal(w.worldIndex,1);assert.deepEqual(w.inventory,inventory);assert.equal(w.time,time);
+ finishZone(w);assert.equal(w.status,worlds.length===2?'won':'transition');assert.equal(w.pendingWorld,2);
+ const tide=createWorld(7,0,'remender',1);travel(tide,1);tide.player.y=180;tide.hazardClock=4.6;const x=tide.player.x;updateWorld(tide,input(),1/120,preferences());assert.notEqual(tide.player.x,x);assert.equal(tide.enemies.length,16);
 });

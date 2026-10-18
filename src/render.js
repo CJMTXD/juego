@@ -10,14 +10,19 @@ const palette={O:c.outline,B:c.bone,W:c.white,T:c.cloth,L:c.clothLight,S:c.light
 function sprite(rows,size=32){const image=document.createElement('canvas');image.width=size;image.height=size;const ctx=image.getContext('2d'),unit=size/16;for(let y=0;y<16;y++)for(let x=0;x<16;x++){const color=palette[rows[y][x]];if(color){ctx.fillStyle=color;ctx.fillRect(x*unit,y*unit,unit,unit);}}return image;}
 export function createRenderer(canvas){
  const ctx=canvas.getContext('2d'),sprites={player:sprite(hero),keeper:sprite(keeper),mourner:sprite(mourner),boss:sprite(keeper,64)};
+ let loadedZone=null;
  const floor=document.createElement('canvas');floor.width=640;floor.height=360;const f=floor.getContext('2d');f.fillStyle=c.shadow;f.fillRect(0,0,640,360);f.fillStyle=c.floor;f.fillRect(20,20,600,320);
  for(let y=20;y<340;y+=16)for(let x=20;x<620;x+=16){f.strokeStyle=c.shadow;f.strokeRect(x+0.5,y+0.5,16,16);if((x*7+y*3)%80===0){f.fillStyle=c.stone;f.fillRect(x+3,y+4,3,2);}}
  f.strokeStyle=c.lightStone;f.lineWidth=3;f.strokeRect(18.5,18.5,603,323);
  function diamond(x,y,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(x,y-r);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r);ctx.lineTo(x-r,y);ctx.closePath();ctx.fill();}
  return function render(world,input,preferences){
+ if(loadedZone!==world.zone.id){loadedZone=world.zone.id;f.fillStyle=world.zone.floor;f.fillRect(20,20,600,320);for(let y=20;y<340;y+=16)for(let x=20;x<620;x+=16){f.strokeStyle=world.zone.detail;f.strokeRect(x+0.5,y+0.5,16,16);if(world.zone.tile===1&&(x+y)%32===8){f.fillStyle=world.zone.accent;f.fillRect(x+3,y+7,8,2);}}f.strokeStyle=c.lightStone;f.lineWidth=3;f.strokeRect(18.5,18.5,603,323);for(let i=0;i<world.zone.enemies.length;i++){sprites[world.zone.enemies[i].id]=sprite(i===1?mourner:keeper);}}
  ctx.imageSmoothingEnabled=false;ctx.save();
  if(world.shake>0&&!preferences.reducedEffects)ctx.translate(Math.round(Math.sin(world.time*160)*2),Math.round(Math.cos(world.time*140)*2));
  ctx.drawImage(floor,0,0);
+ const type=world.zone.hazard,phase=world.hazardPhase;
+ if(phase>0){ctx.strokeStyle=phase===1?c.orange:c.red;ctx.fillStyle=phase===1?c.stone:c.earth;ctx.lineWidth=2;if(type==='embers'){for(const [x,y] of world.hazardPositions){ctx.beginPath();ctx.arc(x,y,34,0,Math.PI*2);ctx.stroke();if(phase===2){ctx.fillStyle=c.red;ctx.fillRect(x-8,y-8,16,16);}}}if(type==='tide'){ctx.strokeStyle=c.cyanDark;ctx.strokeRect(20,125,600,110);ctx.fillStyle=c.cyanDark;for(let x=70;x<600;x+=70)ctx.fillText(Math.floor(world.hazardClock/8)%2?'→':'←',x,182);}}
+ if(world.mark.active){ctx.strokeStyle=world.mark.timer>0?c.orange:c.red;ctx.lineWidth=2;ctx.beginPath();ctx.arc(world.mark.x,world.mark.y,world.mark.radius,0,Math.PI*2);ctx.stroke();}
  const room=world.rooms[world.roomId];
  for(const id of room.links){const other=world.rooms[id];const x=other.x<room.x?4:other.x>room.x?620:296,y=other.y<room.y?4:other.y>room.y?340:156,w=x===296?48:16,h=x===296?16:48;
   ctx.fillStyle=room.cleared?c.cyanDark:c.stone;ctx.fillRect(x,y,w,h);ctx.fillStyle=room.cleared?c.cyan:c.lightStone;ctx.fillRect(x+4,y+4,w-8,h-8);

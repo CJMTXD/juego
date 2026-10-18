@@ -115,3 +115,10 @@ recorrido de zona anterior correctos; menús y combate comprobados en Chromium.
 Selección de Remendadora (5 PV,170 px/s,radio4), Portador (6,150,5) y Mensajera
 (4,190,3), armas y pasivas propias. Guardado v2 migra v1 sin perder ecos ni opciones.
 Se desbloquean jugando/reuniendo ecos o venciendo al jefe. 12 pruebas pasan.
+
+## Ampliación — fase 4 completada
+Mundos por configuración: Depósito (3 enemigos, sellos de ceniza) y Dársena (3 enemigos,
+corrientes y Tasadora móvil de tres fases). Transición conserva equipo, cura 2 y guarda
+el desbloqueo. Selector de mundo inicial disponible solo para tramos desbloqueados.
+Pool fijo de 16 enemigos; balas siguen en pools. Paleta +#35444A (20 colores).
+13 pruebas pasan, incluido recorrido de ambos mundos, y navegador sin errores.
