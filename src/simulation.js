@@ -13,8 +13,8 @@ export function createWorld(seed=Date.now()>>>0, unlocks=0, characterId='remende
  const zone=worlds[Math.max(0,Math.min(worlds.length-1,startWorld))];
  const rooms=generateMap(seed);
  const character=characters[characterId]||characters.remender;
- return {zone,worldIndex:Math.max(0,Math.min(worlds.length-1,startWorld)),pendingWorld:0,zoneCleared:0,roomTime:0,hazardClock:0,hazardPhase:0,environmentSlow:1,hazardPositions:[[210,120],[430,240]],mark:{active:false,x:0,y:0,radius:38,timer:0},character,shield:character.kind==='shield',seed,random:seededRandom(seed^0x12345678),unlocks,rooms,roomId:0,player:{x:320,y:180,radius:character.radius,angle:0,hp:character.health,maxHp:character.health,invulnerable:0,dashTime:0,dashCooldown:0,dx:1,dy:0},
-  allies:createBulletPool(s.bulletCapacity),hostiles:createBulletPool(s.enemyCapacity),enemies:Array.from({length:16},(_,id)=>({id,active:false,type:'keeper',x:0,y:0,radius:12,hp:0,maxHp:0,timer:0,warning:false,pattern:'ring',angle:0,offset:0,phase:0,flash:0,behavior:'stay',speed:0,charge:0,targetX:0,targetY:0})),inventory:{},weaponSlots:[character.weapon],weaponIndex:0,cooldowns:Object.fromEntries(Object.keys(weapons).map(id=>[id,0])),weaponOffer:null,burstLeft:0,burstTimer:0,charge:0,stats:{speed:character.speed,damage:character.damage,interval:B.projectiles.interval,bulletSpeed:B.projectiles.speed,pierce:0,side:0},
+ return {zone,worldIndex:Math.max(0,Math.min(worlds.length-1,startWorld)),pendingWorld:0,zoneCleared:0,roomTime:0,hazardClock:0,hazardPhase:0,environmentSlow:1,mirrorPositions:[200,440],hazardPositions:[[210,120],[430,240]],mark:{active:false,x:0,y:0,radius:38,timer:0},character,shield:character.kind==='shield',seed,random:seededRandom(seed^0x12345678),unlocks,rooms,roomId:0,player:{x:320,y:180,radius:character.radius,angle:0,hp:character.health,maxHp:character.health,invulnerable:0,dashTime:0,dashCooldown:0,dx:1,dy:0},
+  allies:createBulletPool(s.bulletCapacity),hostiles:createBulletPool(s.enemyCapacity),enemies:Array.from({length:16},(_,id)=>({id,active:false,type:'keeper',x:0,y:0,radius:12,hp:0,maxHp:0,timer:0,warning:false,destX:0,destY:0,pattern:'ring',angle:0,offset:0,phase:0,flash:0,behavior:'stay',speed:0,charge:0,targetX:0,targetY:0})),inventory:{},weaponSlots:[character.weapon],weaponIndex:0,cooldowns:Object.fromEntries(Object.keys(weapons).map(id=>[id,0])),weaponOffer:null,burstLeft:0,burstTimer:0,charge:0,stats:{speed:character.speed,damage:character.damage,interval:B.projectiles.interval,bulletSpeed:B.projectiles.speed,pierce:0,side:0},
   damageDealt:0,status:'playing',time:0,kills:0,cleared:0,wave:0,spawnTimer:0,fireTimer:0,enemyId:0,options:[],events:[],shake:0,settled:false,exitLock:0.5,bossPhase:0};
 }
 export function recalculate(world) {
@@ -77,7 +77,7 @@ function spawnWave(world){
   const pos=choices[Math.floor(world.random()*choices.length)],data=world.zone.enemies[Math.floor(world.random()*world.zone.enemies.length)],boss=room.kind==='boss';
   const e=world.enemies.find(e=>!e.active);if(!e)break;
   const hp=boss?world.zone.boss.health:(data.health+Math.floor(room.depth/3))*world.zone.health;
-  e.active=true;e.id=world.enemies.indexOf(e);for(const b of world.allies)b.hits&=~(1<<e.id);e.type=boss?'boss':data.id;e.x=pos[0];e.y=pos[1];e.radius=boss?24:data.radius;e.hp=hp;e.maxHp=hp;e.timer=1+i*0.7;e.warning=false;e.pattern=boss?world.zone.boss.patterns[0]:data.pattern;e.angle=0;e.offset=world.random()*Math.PI*2;e.phase=0;e.flash=0;e.behavior=data.behavior;e.speed=data.speed;e.charge=0;e.targetX=p.x;e.targetY=p.y;
+  e.active=true;e.id=world.enemies.indexOf(e);for(const b of world.allies)b.hits&=~(1<<e.id);e.type=boss?'boss':data.id;e.x=pos[0];e.y=pos[1];e.radius=boss?24:data.radius;e.hp=hp;e.maxHp=hp;e.timer=1+i*0.7;e.warning=false;e.pattern=boss?world.zone.boss.patterns[0]:data.pattern;e.angle=0;e.offset=world.random()*Math.PI*2;e.phase=0;e.flash=0;e.behavior=data.behavior;e.speed=data.speed;e.charge=0;e.targetX=p.x;e.targetY=p.y;e.destX=0;e.destY=0;
  }
  world.events.push('spawn');
 }
@@ -95,14 +95,26 @@ export function damagePlayer(world,damage=1){
  if(!p.hp){world.status='dead';clearBullets(world);world.events.push('death');}return true;
 }
 function attack(world,e){
- const pattern=patterns[e.pattern];
+ const pattern=patterns[e.pattern],mode=pattern.mode||(e.pattern==='fan'?'fan':'ring'),p=world.player;
  for(let i=0;i<pattern.count;i++){
-  let angle=(e.pattern==='fan'||pattern.mode==='fan'||pattern.mode==='sine')?e.angle-pattern.spread/2+pattern.spread*i/(pattern.count-1):e.offset+2*Math.PI*i/pattern.count;
-  const boss=e.type==='boss';
-  if(pattern.mode==='cross')angle=e.offset+Math.floor(i/2)*Math.PI/2+(i%2?0.1:-0.1);
-  const bullet=emit(world.hostiles,e.x+Math.cos(angle)*(e.radius+8),e.y+Math.sin(angle)*(e.radius+8),angle,(pattern.speed+(boss?5*e.phase:0))*world.zone.speed,4,1,0,e.pattern==='fan'?1:0);if(bullet&&pattern.mode==='sine'){bullet.mode='sine';bullet.turn=angle;}
+  let angle=e.offset+2*Math.PI*i/pattern.count,x=e.x,y=e.y;
+  if(['fan','sine','sweep'].includes(mode))angle=e.angle-pattern.spread/2+pattern.spread*i/Math.max(1,pattern.count-1);
+  if(mode==='cross')angle=e.offset+Math.floor(i/2)*Math.PI/2+(i%2?0.1:-0.1);
+  if(mode==='paired')angle=e.angle+(Math.floor(i/3)-(Math.ceil(pattern.count/3)-1)/2)*0.65+(i%3-1)*0.14;
+  if(mode==='gapped'&&Math.abs(Math.atan2(Math.sin(angle-e.angle),Math.cos(angle-e.angle)))<(pattern.gap||0.5))continue;
+  if(mode==='ceiling'){x=50+i*540/Math.max(1,pattern.count-1);y=24;angle=Math.PI/2;if(Math.abs(x-e.targetX)<65)continue;}
+  else {x+=Math.cos(angle)*(e.radius+8);y+=Math.sin(angle)*(e.radius+8);}
+  if(Math.hypot(x-p.x,y-p.y)<45)continue;
+  const bullet=emit(world.hostiles,x,y,angle,(pattern.speed+(e.type==='boss'?5*e.phase:0))*world.zone.speed,pattern.radius||4,1,0,mode==='fan'?1:0);
+  if(bullet){if(mode==='sine'){bullet.mode='sine';bullet.turn=angle;}if(mode==='curve'){bullet.mode='curve';bullet.turn=pattern.turn||0.25;}if(pattern.bounce){bullet.mode='bounce';bullet.bounces=pattern.bounce;}}
  }
- if(e.type==='boss'&&world.zone.boss.mechanic==='marks'){world.mark.active=true;world.mark.x=world.player.x;world.mark.y=world.player.y;world.mark.timer=1.1;}
+ if(e.type==='boss'){
+  const mechanic=world.zone.boss.mechanic;
+  if(mechanic==='marks'||mechanic==='eclipse'){world.mark.active=true;world.mark.x=mechanic==='marks'?p.x:320;world.mark.y=mechanic==='marks'?p.y:180;world.mark.radius=mechanic==='marks'?38:60;world.mark.timer=1.2;}
+  if(mechanic==='teleport'&&Math.hypot(e.destX-p.x,e.destY-p.y)>125){e.x=e.destX;e.y=e.destY;}
+  if(mechanic==='charge')e.charge=0.6;
+  if(mechanic==='echo'){const x=640-e.x,y=360-e.y,a=Math.atan2(e.targetY-y,e.targetX-x);if(Math.hypot(x-p.x,y-p.y)>100)for(let i=-1;i<=1;i++)emit(world.hostiles,x,y,a+i*0.24,95*world.zone.speed,4,1);}
+ }
  e.offset+=e.pattern==='spiral'?0.38:0.19;world.events.push('attack');
 }
 function updateEnemy(world,e,dt){
@@ -115,11 +127,16 @@ function updateEnemy(world,e,dt){
  }
  const pattern=patterns[e.pattern];
  e.timer-=dt;
- if(!e.warning&&e.timer<=pattern.warning){e.warning=true;e.angle=Math.atan2(p.y-e.y,p.x-e.x);}
+ if(!e.warning&&e.timer<=pattern.warning){e.warning=true;e.angle=Math.atan2(p.y-e.y,p.x-e.x);e.targetX=p.x;e.targetY=p.y;
+  if(pattern.mode==='sweep')e.angle+=Math.sin(e.offset)*0.25;
+  if(world.zone.boss.mechanic==='teleport'||e.behavior==='blink'){e.destX=e.x<320?512:128;e.destY=e.y<180?270:90;}}
  if(e.timer<=0){attack(world,e);e.warning=false;e.timer=pattern.interval;}
  if(e.behavior==='seek'&&!e.warning){const angle=Math.atan2(p.y-e.y,p.x-e.x);const distance=Math.hypot(p.x-e.x,p.y-e.y);if(distance>165){e.x+=Math.cos(angle)*e.speed*dt;e.y+=Math.sin(angle)*e.speed*dt;}}
  if(!e.warning&&e.behavior==='strafe'){e.x=clamp(e.x+Math.cos(world.time+e.id)*e.speed*dt,60,580);}
  if(!e.warning&&e.behavior==='flee'&&Math.hypot(p.x-e.x,p.y-e.y)<180){const a=Math.atan2(e.y-p.y,e.x-p.x);e.x=clamp(e.x+Math.cos(a)*e.speed*dt,60,580);e.y=clamp(e.y+Math.sin(a)*e.speed*dt,60,300);}
+ if(!e.warning&&e.behavior==='orbit'){const a=Math.atan2(e.y-p.y,e.x-p.x)+Math.PI/2;e.x=clamp(e.x+Math.cos(a)*e.speed*dt,60,580);e.y=clamp(e.y+Math.sin(a)*e.speed*dt,60,300);}
+ if(!e.warning&&e.behavior==='blink'&&e.timer>patterns[e.pattern].interval-0.1&&Math.hypot(e.destX-p.x,e.destY-p.y)>140){e.x=e.destX;e.y=e.destY;e.destX=e.x;e.destY=e.y;}
+ if(e.type==='boss'&&e.charge>0){e.charge-=dt;e.x=clamp(e.x+Math.cos(e.angle)*210*dt,55,585);e.y=clamp(e.y+Math.sin(e.angle)*210*dt,55,305);}
  if(e.type==='boss'&&world.zone.boss.mechanic==='tide'&&!e.warning){e.x=clamp(e.x+Math.cos(world.time*0.8)*25*dt,100,540);}
  if(Math.hypot(p.x-e.x,p.y-e.y)<p.radius+e.radius)damagePlayer(world);
 }
@@ -133,11 +150,13 @@ function moveBullets(world,bullets,dt,allied){
   if(!b.active)continue;b.age+=dt;b.delay=Math.max(0,b.delay-dt);
   if(allied&&b.mode==='homing'){let target=null,distance=Infinity;for(const e of world.enemies)if(e.active){const d=(e.x-b.x)**2+(e.y-b.y)**2;if(d<distance){distance=d;target=e;}}if(target){const aim=Math.atan2(target.y-b.y,target.x-b.x),angle=Math.atan2(b.vy,b.vx),difference=Math.atan2(Math.sin(aim-angle),Math.cos(aim-angle)),next=angle+clamp(difference,-b.turn*dt,b.turn*dt),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(next)*speed;b.vy=Math.sin(next)*speed;}}
   if(allied&&b.mode==='boomerang'&&b.age>0.65){if(!b.returned){b.hits=0;b.returned=true;}const angle=Math.atan2(world.player.y-b.y,world.player.x-b.x),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(angle)*speed;b.vy=Math.sin(angle)*speed;if(Math.hypot(b.x-world.player.x,b.y-world.player.y)<12)b.active=false;}
+  if(b.mode==='curve'){const a=Math.atan2(b.vy,b.vx)+b.turn*dt,speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;}
   b.px=b.x;b.py=b.y;b.x+=b.vx*dt*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<72?0.75:1);b.y+=b.vy*dt*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<72?0.75:1);b.life-=dt;if(allied&&b.mode==='orbit'){b.orbit+=3.2*dt;b.x=world.player.x+Math.cos(b.orbit)*b.orbitRadius;b.y=world.player.y+Math.sin(b.orbit)*b.orbitRadius;}
   if(b.mode==='sine'){b.x+=Math.cos(b.turn+Math.PI/2)*Math.sin((8-b.life)*5)*32*dt;b.y+=Math.sin(b.turn+Math.PI/2)*Math.sin((8-b.life)*5)*32*dt;}
   b.distance+=Math.hypot(b.vx,b.vy)*dt;
-  if(allied&&b.mode==='bounce'&&b.bounces>0&&(b.x<24||b.x>616||b.y<24||b.y>336)){if(b.x<24||b.x>616){b.vx=-b.vx;b.x=clamp(b.x,24,616);}if(b.y<24||b.y>336){b.vy=-b.vy;b.y=clamp(b.y,24,336);}b.bounces--;}
+  if(b.mode==='bounce'&&b.bounces>0&&(b.x<24||b.x>616||b.y<24||b.y>336)){if(b.x<24||b.x>616){b.vx=-b.vx;b.x=clamp(b.x,24,616);}if(b.y<24||b.y>336){b.vy=-b.vy;b.y=clamp(b.y,24,336);}b.bounces--;}
   if(b.distance>b.range){const length=Math.hypot(b.x-b.px,b.y-b.py),ratio=length?Math.max(0,(b.range-(b.distance-length))/length):0;b.x=b.px+(b.x-b.px)*ratio;b.y=b.py+(b.y-b.py)*ratio;b.life=0;}if(!b.active||b.delay>0)continue;
+  if(!allied&&world.zone.hazard==='mirrors'&&world.hazardPhase===2&&!b.reflected&&b.y>70&&b.y<290){for(const x of world.mirrorPositions)if((b.px-x)*(b.x-x)<0){b.vx=-b.vx;b.x=b.px;b.reflected=true;break;}}
   if(allied){
    for(const e of world.enemies){
     // Cada enemigo ocupa un bit: nunca se repite daño al atravesarlo.

@@ -128,3 +128,14 @@ test('cada arma nueva emite su comportamiento y respeta el pool',async()=>{
   assert(saw,gun.id);assert.equal(w.allies.length,128);assert(w.allies.every(b=>Number.isFinite(b.x)&&Number.isFinite(b.y)));
  }
 });
+
+test('cada mundo configurado es completable, con tres enemigos y patrones válidos',async()=>{
+ const {worlds}=await import('../src/data/worlds.js');const {patterns}=await import('../src/data.js');
+ const ids=new Set();
+ for(let index=0;index<worlds.length;index++){
+  const zone=worlds[index];assert.equal(zone.enemies.length,3);assert.equal(new Set(zone.enemies.map(e=>e.id)).size,3);
+  for(const e of zone.enemies){assert(!ids.has(e.id));ids.add(e.id);assert(patterns[e.pattern]);assert(patterns[e.pattern].warning>=0.55);}
+  for(const pat of zone.boss.patterns)assert(patterns[pat]);
+  const w=createWorld(31,2,'remender',index);finishZone(w);assert.equal(w.status,index===worlds.length-1?'won':'transition');assert.equal(w.pendingWorld,index+1);
+ }
+});

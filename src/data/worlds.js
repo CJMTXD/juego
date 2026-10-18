@@ -8,4 +8,8 @@ export const worlds=[
   lore:['El río pesa cada nombre antes de dejarlo pasar.','Las balanzas no miden pecados: miden quién puede pagar.','Los talleres del ascenso reparan las pesas a cambio de silencio.'],
   enemies:[{id:'oarsman',name:'Remero sin orilla',health:7,radius:11,pattern:'cross',speed:22,behavior:'strafe'}, {id:'weigher',name:'Pesador de sal',health:9,radius:12,pattern:'wave',speed:0,behavior:'stay'}, {id:'reed',name:'Junco de vidrio',health:5,radius:10,pattern:'ribbon',speed:18,behavior:'flee'}],
   boss:{name:'La Tasadora de nombres',health:250,mechanic:'tide',patterns:['cross','wave','ribbon'],quote:'Todo nombre pesa. El tuyo todavía cambia.'}},
+ {id:'threads',name:'Terrazas del hilo',region:'Purgatorio · terrazas de los vínculos',floor:'#465044',detail:'#66705A',accent:'#948995',tile:2,health:1.7,speed:1.08,density:1,hazard:'wind',music:[146.83,174.61,220,196],tempo:0.39,
+ lore:['Cada nombre es un hilo. El río entregó los nudos a estos talleres.','La Hilandera cose rutas para quienes no pueden pagar la balanza.','La corte de las cimas ordenó cortar los lazos que unían a los caídos.'],
+ enemies:[{id:'knot',name:'Nudo peregrino',health:8,radius:11,pattern:'petals',speed:20,behavior:'orbit'}, {id:'spool',name:'Carrete hueco',health:7,radius:10,pattern:'sweep',speed:24,behavior:'blink'}, {id:'needleling',name:'Aguja errante',health:6,radius:10,pattern:'weave',speed:25,behavior:'flee'}],
+ boss:{name:'La Hilandera del intervalo',health:360,mechanic:'teleport',patterns:['petals','sweep','weave'],quote:'Puedo coser un camino. No puedo elegir por ti.'}},
 ];

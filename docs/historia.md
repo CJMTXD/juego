@@ -91,3 +91,7 @@ Objeto implementado: **Media luna del retorno**, un recuerdo material del ascens
 Personaje implementado: **weaver**. Su motivo de ascenso aparece en la selección; los detalles y condiciones están en characters.js.
 
 Personaje implementado: **witness**. Su motivo de ascenso aparece en la selección; los detalles y condiciones están en characters.js.
+
+## Implementado: Terrazas del hilo
+Inspiración libre nórdica y japonesa: vínculos tejidos, nunca personajes tomados de mitos. Viento ascendente anunciado y teletransporte del jefe con destino visible.
+Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y aparecen durante la partida.

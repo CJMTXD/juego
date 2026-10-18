@@ -2,7 +2,7 @@
 export function resetHazard(world){world.hazardClock=0;world.hazardPhase=0;world.mark.active=false;}
 export function updateHazard(world,dt,damage){
  const room=world.rooms[world.roomId],p=world.player;
- if(room.cleared)return;
+ world.environmentSlow=1;if(room.cleared){world.hazardPhase=0;return;}
  world.hazardClock+=dt;
  const clock=world.hazardClock%8;
  world.hazardPhase=clock<3?0:clock<4.5?1:clock<6?2:0;
