@@ -126,3 +126,5 @@ Pool fijo de 16 enemigos; balas siguen en pools. Paleta +#35444A (20 colores).
 Fase 5 / arma añadida y comprobada: Hilo del destino (homing). Datos en weapons.js.
 
 Fase 5 / arma añadida y comprobada: Luz del testimonio (beam). Datos en weapons.js.
+
+Fase 5 / arma añadida y comprobada: Astrolabio roto (orbit). Datos en weapons.js.

@@ -79,3 +79,5 @@ mesopotámica, con seres originales. La transición y los textos breves ya apare
 Objeto implementado: **Hilo del destino**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
 
 Objeto implementado: **Luz del testimonio**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
+
+Objeto implementado: **Astrolabio roto**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
