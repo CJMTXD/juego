@@ -37,14 +37,16 @@ function discharge(world,gun,damageScale=1){
 }
 export function updateWeapon(world,input,dt,preferences){
  if(input.swap){swapWeapon(world);input.swap=false;}
- const gun=currentWeapon(world);world.aimX=input.mouseX;world.aimY=input.mouseY;world.fireTimer-=dt;
+ for(const id in world.cooldowns)world.cooldowns[id]=Math.max(0,world.cooldowns[id]-dt);
+ const gun=currentWeapon(world);world.fireTimer=world.cooldowns[gun.id]||0;world.aimX=input.mouseX;world.aimY=input.mouseY;
  if(gun.mode==='charge'){
   if(preferences.autoFire||input.shoot)world.charge=Math.min(gun.interval,world.charge+dt/(world.stats.interval/B.projectiles.interval));
   if(world.charge>=gun.interval-1e-9||(!preferences.autoFire&&!input.shoot&&world.charge>0.15)){discharge(world,gun,world.charge/gun.interval);world.charge=0;}return;
  }world.burstTimer-=dt;
  if(world.burstLeft>0&&world.burstTimer<=0){discharge(world,gun);world.burstLeft--;world.burstTimer=gun.burstGap;return;}
+ if(gun.mode==='orbit'){let count=0;for(const b of world.allies)if(b.active&&b.mode==='orbit')count++;if(count>=6)return;}
  if(!(preferences.autoFire||input.shoot)||world.fireTimer>1e-9)return;
  world.burstLeft=gun.mode==='burst'?gun.count-1:0;
  discharge(world,gun);world.burstTimer=gun.burstGap||0;
- world.fireTimer=gun.interval*world.stats.interval/B.projectiles.interval;
+ world.fireTimer=gun.interval*world.stats.interval/B.projectiles.interval;world.cooldowns[gun.id]=world.fireTimer;
 }

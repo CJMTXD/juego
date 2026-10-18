@@ -14,7 +14,7 @@ export function createWorld(seed=Date.now()>>>0, unlocks=0, characterId='remende
  const rooms=generateMap(seed);
  const character=characters[characterId]||characters.remender;
  return {zone,worldIndex:Math.max(0,Math.min(worlds.length-1,startWorld)),pendingWorld:0,zoneCleared:0,roomTime:0,hazardClock:0,hazardPhase:0,environmentSlow:1,hazardPositions:[[210,120],[430,240]],mark:{active:false,x:0,y:0,radius:38,timer:0},character,shield:character.kind==='shield',seed,random:seededRandom(seed^0x12345678),unlocks,rooms,roomId:0,player:{x:320,y:180,radius:character.radius,angle:0,hp:character.health,maxHp:character.health,invulnerable:0,dashTime:0,dashCooldown:0,dx:1,dy:0},
-  allies:createBulletPool(s.bulletCapacity),hostiles:createBulletPool(s.enemyCapacity),enemies:Array.from({length:16},(_,id)=>({id,active:false,type:'keeper',x:0,y:0,radius:12,hp:0,maxHp:0,timer:0,warning:false,pattern:'ring',angle:0,offset:0,phase:0,flash:0,behavior:'stay',speed:0,charge:0,targetX:0,targetY:0})),inventory:{},weaponSlots:[character.weapon],weaponIndex:0,weaponOffer:null,burstLeft:0,burstTimer:0,charge:0,stats:{speed:character.speed,damage:character.damage,interval:B.projectiles.interval,bulletSpeed:B.projectiles.speed,pierce:0,side:0},
+  allies:createBulletPool(s.bulletCapacity),hostiles:createBulletPool(s.enemyCapacity),enemies:Array.from({length:16},(_,id)=>({id,active:false,type:'keeper',x:0,y:0,radius:12,hp:0,maxHp:0,timer:0,warning:false,pattern:'ring',angle:0,offset:0,phase:0,flash:0,behavior:'stay',speed:0,charge:0,targetX:0,targetY:0})),inventory:{},weaponSlots:[character.weapon],weaponIndex:0,cooldowns:Object.fromEntries(Object.keys(weapons).map(id=>[id,0])),weaponOffer:null,burstLeft:0,burstTimer:0,charge:0,stats:{speed:character.speed,damage:character.damage,interval:B.projectiles.interval,bulletSpeed:B.projectiles.speed,pierce:0,side:0},
   damageDealt:0,status:'playing',time:0,kills:0,cleared:0,wave:0,spawnTimer:0,fireTimer:0,enemyId:0,options:[],events:[],shake:0,settled:false,exitLock:0.5,bossPhase:0};
 }
 export function recalculate(world) {
@@ -133,7 +133,7 @@ function moveBullets(world,bullets,dt,allied){
   if(!b.active)continue;b.age+=dt;b.delay=Math.max(0,b.delay-dt);
   if(allied&&b.mode==='homing'){let target=null,distance=Infinity;for(const e of world.enemies)if(e.active){const d=(e.x-b.x)**2+(e.y-b.y)**2;if(d<distance){distance=d;target=e;}}if(target){const aim=Math.atan2(target.y-b.y,target.x-b.x),angle=Math.atan2(b.vy,b.vx),difference=Math.atan2(Math.sin(aim-angle),Math.cos(aim-angle)),next=angle+clamp(difference,-b.turn*dt,b.turn*dt),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(next)*speed;b.vy=Math.sin(next)*speed;}}
   if(allied&&b.mode==='boomerang'&&b.age>0.65){if(!b.returned){b.hits=0;b.returned=true;}const angle=Math.atan2(world.player.y-b.y,world.player.x-b.x),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(angle)*speed;b.vy=Math.sin(angle)*speed;if(Math.hypot(b.x-world.player.x,b.y-world.player.y)<12)b.active=false;}
-  b.px=b.x;b.py=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;if(allied&&b.mode==='orbit'){b.orbit+=3.2*dt;b.x=world.player.x+Math.cos(b.orbit)*b.orbitRadius;b.y=world.player.y+Math.sin(b.orbit)*b.orbitRadius;}
+  b.px=b.x;b.py=b.y;b.x+=b.vx*dt*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<72?0.75:1);b.y+=b.vy*dt*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<72?0.75:1);b.life-=dt;if(allied&&b.mode==='orbit'){b.orbit+=3.2*dt;b.x=world.player.x+Math.cos(b.orbit)*b.orbitRadius;b.y=world.player.y+Math.sin(b.orbit)*b.orbitRadius;}
   if(b.mode==='sine'){b.x+=Math.cos(b.turn+Math.PI/2)*Math.sin((8-b.life)*5)*32*dt;b.y+=Math.sin(b.turn+Math.PI/2)*Math.sin((8-b.life)*5)*32*dt;}
   b.distance+=Math.hypot(b.vx,b.vy)*dt;
   if(allied&&b.mode==='bounce'&&b.bounces>0&&(b.x<24||b.x>616||b.y<24||b.y>336)){if(b.x<24||b.x>616){b.vx=-b.vx;b.x=clamp(b.x,24,616);}if(b.y<24||b.y>336){b.vy=-b.vy;b.y=clamp(b.y,24,336);}b.bounces--;}
@@ -143,7 +143,7 @@ function moveBullets(world,bullets,dt,allied){
     // Cada enemigo ocupa un bit: nunca se repite daño al atravesarlo.
     const bit=1<<(e.id%30);
     if(!e.active||(b.hits&bit)||!sweptHit(b.px,b.py,b.x,b.y,e.x,e.y,e.radius+b.radius))continue;
-    world.damageDealt+=Math.min(e.hp,b.damage);e.hp-=b.damage;e.flash=0.08;b.hits|=bit;world.events.push('hit');
+    const dealt=b.damage*(world.character.kind==='light'&&world.player.hp===world.player.maxHp?1.15:1);world.damageDealt+=Math.min(e.hp,dealt);e.hp-=dealt;e.flash=0.08;b.hits|=bit;world.events.push('hit');
     if(e.hp<=0)killEnemy(world,e);
     if(b.pierce<=0){b.active=false;break;}b.pierce--;
    }

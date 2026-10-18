@@ -87,3 +87,5 @@ Objeto implementado: **Tinta de la balanza**, un recuerdo material del ascenso. 
 Objeto implementado: **Sol en una vasija**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
 
 Objeto implementado: **Media luna del retorno**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
+
+Personaje implementado: **weaver**. Su motivo de ascenso aparece en la selección; los detalles y condiciones están en characters.js.
