@@ -1,0 +1,23 @@
+import { defaults } from './data.js';
+const KEY='ascenso-save-v1';
+export function freshSave() { return {version:1, preferences:{bindings:{...defaults},autoFire:true, muted:false,reducedEffects:false},progress:{echoes:0,runs:0,wins:0,unlocks:0}}; }
+const validKey = key => typeof key==='string' && /^(Key[A-Z]|Digit[0-9]|Arrow(Up|Down|Left|Right)|Space|ShiftLeft|ShiftRight)$/.test(key);
+export function validateSave(raw) {
+ const save=freshSave();
+ if (!raw || raw.version!==1) return save;
+ const pref=raw.preferences;
+ if(pref && typeof pref==='object') {
+  for(const k of ['autoFire','muted','reducedEffects']) if(typeof pref[k]==='boolean')save.preferences[k]=pref[k];
+  const b=pref.bindings;
+  if(b && Object.keys(defaults).every(k=>validKey(b[k])) && new Set(Object.keys(defaults).map(k=>b[k])).size===5) save.preferences.bindings=Object.fromEntries(Object.keys(defaults).map(k=>[k,b[k]]));
+ }
+ for(const key of ['echoes','runs','wins','unlocks']) {
+  const value=raw.progress?.[key];
+  if(Number.isSafeInteger(value)&&value>=0&&value<=1000000)save.progress[key]=value;
+ }
+ save.progress.unlocks=Math.min(2,save.progress.unlocks);
+ return save;
+}
+export function loadSave() { try {return {save:validateSave(JSON.parse(localStorage.getItem(KEY))),error:false};}catch{return {save:freshSave(),error:true};} }
+export function persist(save) { try {localStorage.setItem(KEY,JSON.stringify(save));return true;}catch{return false;} }
+export { validKey };

@@ -8,7 +8,7 @@ if not errorlevel 1 (
 )
 where python >nul 2>&1
 if not errorlevel 1 (
-  python --version >nul 2>&1
+  python -c "import sys; sys.exit(0 if sys.version_info.major >= 3 else 1)" >nul 2>&1
   if not errorlevel 1 goto python
 )
 where node >nul 2>&1
@@ -17,16 +17,13 @@ echo Instala Python 3 desde python.org y activa Add Python to PATH, o instala No
 pause
 exit /b 1
 :pythonlauncher
-start "" "http://127.0.0.1:8000"
-py -3 -m http.server 8000 --bind 127.0.0.1
+py -3 server.py --open
  goto end
 :python
-start "" "http://127.0.0.1:8000"
-python -m http.server 8000 --bind 127.0.0.1
+python server.py --open
  goto end
 :node
-start "" "http://127.0.0.1:8000"
-node server.cjs
+node server.cjs --open
 :end
 if errorlevel 1 echo No se pudo iniciar. Comprueba si el puerto 8000 esta ocupado.
 pause

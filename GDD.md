@@ -1,66 +1,101 @@
-# Prototipo bullet hell roguelike
+# El umbral — título provisional
 
-## Visión y decisiones
-Juego 2D para PC en HTML5 Canvas, módulos JavaScript y CSS, sin motor.
-Visión confirmada: bullet hell roguelike cenital de esquiva y combate contra enemigos y jefes.
-El personaje comienza en el infierno y asciende hacia el cielo, pasando por mundos distintos
-con identidad visual, enemigos y jefe propios. Inspiración libre en La Divina Comedia y otras
-mitologías, incluido el Olimpo, con personajes, nombres y diseños originales.
-Las historias de cada zona darán contexto a la siguiente; explicación narrativa aún propuesta.
-Título, protagonista y trama pendientes; opciones en docs/historia.md no confirmadas.
-Duración objetivo de la partida completa: 15–25 minutos, pendiente de medir.
+## Visión y alcance
+Bullet hell roguelike 2D cenital para PC, HTML5 Canvas, módulos ES y CSS, sin motor.
+Un personaje asciende del infierno al cielo entre mundos mitológicos conectados.
+La nueva autorización permite completar el ciclo jugable sin nuevas preguntas.
+Se conserva el apuntado con ratón pedido originalmente.
 
-Alcance inicial confirmado: una zona pequeña del infierno, 1–2 enemigos,
-2–3 patrones y 1 jefe. Se construirá por fases; todavía no está implementada.
+Entrega actual: **primera zona del infierno jugable de principio a fin**. No se han
+implementado los mundos superiores. Título, protagonista e historia son propuestas,
+no decisiones definitivas; véase docs/historia.md. El final cierra esta primera zona.
+La duración objetivo del juego ampliado es 15–25 min; aún no se ha calibrado con humanos.
 
-## Jugabilidad prevista (no implementada)
-Controles reasignables en menú y guardados; disparo automático activable/desactivable.
-Salas conectadas y encuentros variables con lógica; mejoras temporales por partida,
-con rarezas, límites y sinergias. Muerte permanente de la partida; desbloqueos entre
-partidas y guardado validado/versionado. Ataques con señal previa, reacción y vías de
-escape; sin apariciones encima del jugador. Amenazas, balas aliadas y decoración se
-distinguirán por forma y color. Ningún sistema de esta lista debe anticipar su fase.
+## Funciones implementadas
+- Inicio, opciones, pausa manual/automática, muerte, reinicio y victoria con epílogo.
+- WASD normalizado, hitbox visible de radio 4 px frente a cuerpo visual 32×32.
+- Apuntado independiente al ratón; disparo automático opcional o clic sostenido.
+- Controles reasignables, detección de conflictos, restauración y guardado local.
+- Impulso breve con invulnerabilidad y recarga visible.
+- Dos enemigos: Custodio de ceniza y Lamentador; oleadas configuradas según profundidad.
+- Tres patrones con aviso previo: anillo, abanico y espiral (esta última en el jefe).
+- Colisiones barridas, daño, invulnerabilidad tras impacto y muerte permanente de partida.
+- Mapa conectado por semilla: inicio, 7 salas de combate, jefe y hasta 2 refugios laterales.
+- Diseño de mapa, encuentros y recompensas reproducibles con la misma semilla y desbloqueos.
+- Puertas bloqueadas durante el combate; solo se viaja a salas conectadas. Refugios curan una vez.
+- Elección de 1 entre 3 mejoras diferentes tras cada sala. Rarezas, límites y sinergia explícita.
+- Jefe El Sellador, 180 PV, tres fases con descanso y limpieza de balas al cambiar.
+- Ecos persistentes al morir, abandonar o vencer; compra de dos nuevas opciones para futuras partidas.
+- Guardado v1 validado y recuperación de JSON corrupto; aviso si falla el almacenamiento.
+- Sonidos sintetizados de disparo, impacto, daño, muerte, recompensa, curación y victoria.
+- Silenciar, reducir efectos/sacudida, sprites provisionales originales hechos con matrices.
 
-## Fase actual: 1 — movimiento, hitbox y disparo
-Implementado: arena 640×360, WASD con diagonal normalizada, apuntado con ratón,
-disparo automático, pool de 128 balas y pausa al perder foco con reanudación manual.
-El disparo sigue la dirección del ratón al emitirse; no busca enemigos.
-Punto blanco = hitbox real. Figura provisional = 32×32.
-No hay enemigos, daño, colisiones con entidades, progreso ni preferencias guardadas.
-No se necesita persistencia todavía; se añadirá versionada al introducir preferencias.
+## Controles iniciales
+WASD: movimiento; ratón: dirección; Espacio: impulso; Esc: pausa.
+Automático activado por defecto; si se desactiva, mantener clic izquierdo.
+El tiempo no avanza en menús/recompensas, ni al perder foco. Reanudar es manual.
+Se puede usar el mapa o caminar hacia las puertas abiertas.
 
-## Balance provisional
-Jugador: 170 px/s; hitbox: radio 4 px. Bala aliada: 360 px/s, radio 4 px,
-una bala cada 0,2 s (5/s), ángulo libre de 0–360° hacia el ratón, sin dispersión.
-Simulación: pasos de 1/120 s y máximo 0,05 s acumulados por fotograma.
-Las balas desaparecen al llegar al borde; pool lleno omite emisiones.
-Antes de añadir blancos se implementará colisión barrida para proyectiles rápidos.
+## Balance provisional y patrones
+Resolución lógica 640×360. Simulación fija 1/120 s; acumulación máxima de 0,05 s por fotograma.
+Jugador: 170 px/s, 5 PV, daño recibido 1, invulnerabilidad 0,9 s tras impacto.
+Impulso: 0,16 s a velocidad ×2,8; invulnerabilidad 0,18 s; recarga 1,5 s.
+Bala aliada: 360 px/s, radio 3, daño 1, una cada 0,2 s. Pool 128.
+Balas enemigas: radio 4, daño 1; pool 512; lleno omite emisiones, sin sobrescribir balas activas.
+Custodio: 7 PV; Lamentador: 6 PV y aproximación a 20 px/s; vida +1 por cada 3 niveles de profundidad.
+Aparecen a más de 125 px del jugador; señal de llegada inicial de 1,4 s.
 
-## Arte
-Pixel art cartoon cenital original; formas provisionales, luz arriba a la izquierda.
-Tamaños previstos: comunes 32×32, jefes 64×64, balas 8–16, losetas 16×16.
-Paleta inicial propuesta, usada provisionalmente (12 colores, máximo 24; pendiente de confirmar):
-#17151C #27232D #38343F #514B56 #716976 #948995
-#D3C3A1 #EEE1BF #49394F #70556E #3F7F92 #A2E1E8
-Nuevos colores de amenazas se decidirán al añadir el primer enemigo.
+| Patrón | Velocidad | Cantidad | Ángulo | Cadencia | Aviso |
+| --- | --- | --- | --- | --- | --- |
+| Anillo | 90 px/s | 12 | 360°, huecos de 30° | 2,6 s | 0,65 s |
+| Abanico | 105 px/s | 5 | 60° hacia la posición fijada al avisar | 2,1 s | 0,60 s |
+| Espiral | 95 px/s | 6 | 360°, gira 21,8° por emisión | 1,1 s | 0,55 s |
+
+El jefe añade 5 px/s por fase; cambios al 66% y 33% de vida, descanso 1,5 s.
+Los proyectiles no persiguen al jugador después de emitirse. Ángulos internos en radianes.
+Aún es necesario evaluar justicia y diversión mediante partidas humanas.
+
+## Mejoras y progreso
+Común 70%, rara 25%, épica 5%, renormalizadas entre categorías elegibles por elección.
+Brasa: daño +25%, máx. 4. Pulso: cadencia +12%, máx. 4. Suela: movimiento +12%, máx. 3.
+Vasija: +1 PV máximo y curación, máx. 2. Eco partido: +2 laterales al 55% de daño, máx. 2.
+Aguja: +1 penetración, máx. 2. Agua: cura 2, máx. 9. Memoria: daño ×1,5, máx. 1.
+**Sinergia** Brasa + Memoria: ×1,35 adicional. Estadísticas recalculadas desde la base.
+Lente: velocidad de bala +30% y daño +10%, máx. 2; se desbloquea por 5 ecos.
+Velo: +0,5 s de invulnerabilidad tras daño, máx. 1; se desbloquea después por 10 ecos.
+Ecos: 1 por sala completada y +6 por victoria. No son mejoras permanentes de poder.
+Inventario, vida y mapa se reinician; solo opciones, ecos, desbloqueos y estadísticas se guardan.
+Cerrar/recargar durante una partida la descarta: no hay guardado de partida en curso.
+
+## Dirección artística
+Pixel art cartoon cenital original, cabeza grande, contorno oscuro, luz arriba a la izquierda.
+Sprites provisionales 32×32; jefe 64×64; balas aliadas cuadradas y amenazas romboidales.
+Nearest-neighbor, escala entera cuando cabe, reducción solo para pantallas pequeñas.
+Paleta provisional actual (19 colores, máximo 24):
+#17151C #27232D #38343F #514B56 #716976 #948995 #44352F #665044
+#D3C3A1 #EEE1BF #A97663 #49394F #70556E #66705A #3F7F92 #A2E1E8
+#FF385D #FF922E #FFE34B
+Los tres últimos se reservan para amenazas y señales. La paleta definitiva queda pendiente.
 
 ## Archivos y ejecución
-index.html y styles.css: página; src/input.js: entrada; src/simulation.js: simulación;
-src/render.js: dibujo; src/data.js: parámetros; src/main.js: bucle y pausa.
-assets/: reservado para recursos. iniciar.bat: lanzador Windows con Python o Node.
-En PowerShell: `./iniciar.bat`. Alternativa: `node server.cjs` y abrir
-http://127.0.0.1:8000. No abrir index.html directamente: usa módulos ES.
+`index.html`, `styles.css`: interfaz; `src/input.js`: entrada; `src/simulation.js`: juego;
+`src/render.js`: dibujo/matrices; `src/data.js`: configuraciones; `src/map.js`: generación;
+`src/storage.js`: validación; `src/audio.js`: síntesis; `src/main.js`: bucle y menús.
+`iniciar.bat` detecta Python/Node y usa `server.py` o `server.cjs`; abre tras enlazar el puerto.
+PowerShell: `.\iniciar.bat`. Alternativa: `node server.cjs` o `python server.py`.
+Abrir http://127.0.0.1:8000. Cerrar servidor con Ctrl+C. No abrir index.html con doble clic.
+Se necesita Python 3 o Node.js LTS, sin instalar paquetes para jugar.
 
-## Pendientes y próxima tarea
-Fase 1 en revisión: esperar la elección explícita del modo de apuntado antes de modificarlo.
-El ratón fue elegido en la petición inicial; la nueva petición vuelve a abrir esta decisión.
-Conservar el prototipo existente hasta recibir respuesta. Después, validar la fase 1 y detenerse.
-Ejecución de iniciar.bat en Windows pendiente: solo se revisó desde Linux.
-Orden posterior: 2) enemigo, patrón, daño, muerte y reinicio; 3) salas conectadas;
-4) mejoras y sinergias; 5) jefe; 6) meta-progresión y guardado; 7) pulido, audio y arte final.
-Menú de controles, opción de disparo y persistencia aún pendientes; no se presentan como hechos.
+## Comprobaciones y límites
+10 pruebas Node: 1000 semillas, movimiento, disparos, pools, colisión barrida, daño/muerte,
+avisos, tres patrones, mejoras, límites, sinergia y validación del guardado.
+Recorrido automático de zona hasta victoria con balas reales y todos los estados del jefe;
+usa invulnerabilidad de prueba para aislar el flujo, no acredita dificultad ni duración humanas.
+Chromium: opciones, conflictos de teclas, persistencia al recargar, semilla inválida,
+mapa, combate, pausa por Escape/foco, abandono y reinicio; sin errores JavaScript.
+Servidores Python y Node responden HTTP 200. Lanzador .bat revisado, no ejecutado en Windows.
+Pruebas: `node --test tests/game.test.mjs` (Node 22+ recomendado).
 
-## Validación de esta tarea
-Sintaxis de módulos y servidor correcta. Chromium: HTTP 200, sin errores JavaScript;
-movimiento 170 px/s, diagonal, dirección, cadencia, pool, bordes y pausa comprobados.
-Lanzador .bat revisado; ejecución nativa en Windows pendiente.
+## Próxima tarea
+Jugar la primera zona para ajustar dificultad y duración antes de crear mundos superiores.
+Arte final, música, narrativa definitiva y el resto del ascenso siguen pendientes.

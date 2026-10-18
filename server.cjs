@@ -8,6 +8,7 @@ const server = http.createServer((req, res) => {
   let pathname;
   try { pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname); }
   catch { res.writeHead(400); res.end(); return; }
+  if (pathname.split('/').some(part => part.startsWith('.'))) { res.writeHead(403); res.end(); return; }
   const file = path.resolve(root, '.' + (pathname === '/' ? '/index.html' : pathname));
   if (!file.startsWith(root + path.sep)) { res.writeHead(403); res.end(); return; }
   fs.readFile(file, (error, data) => {
@@ -16,4 +17,11 @@ const server = http.createServer((req, res) => {
   });
 });
 server.on('error', error => { console.error('No se pudo iniciar el servidor:', error.message); process.exit(1); });
-server.listen(8000, '127.0.0.1', () => console.log('Juego disponible en http://127.0.0.1:8000. Cierra con Ctrl+C.'));
+server.listen(8000, '127.0.0.1', () => {
+  console.log('Juego disponible en http://127.0.0.1:8000. Cierra con Ctrl+C.');
+  if (process.argv.includes('--open') && process.platform === 'win32') {
+    require('node:child_process').execFile('cmd.exe', ['/c', 'start', '', 'http://127.0.0.1:8000'], error => {
+      if (error) console.log('Abre http://127.0.0.1:8000 en tu navegador.');
+    });
+  }
+});

@@ -1,7 +1,7 @@
 # Historia — propuestas, no confirmadas
 
 Nada de este documento fija el título, protagonista ni trama. La narrativa no bloquea
-el prototipo ni requiere implementar sistemas nuevos en la fase 1.
+la jugabilidad. El prototipo usa estos motivos de forma provisional.
 
 ## Hilo conductor propuesto: un mismo mundo, distintos refugios
 Tras una ruptura del ciclo de la muerte, las comunidades de almas construyeron refugios
@@ -39,8 +39,20 @@ y conflictos se diseñarán de forma original; no se adaptarán personajes ni te
 Un depósito subterráneo de promesas abandonadas, con piedra gastada y formas provisionales
 apagadas. Sus habitantes custodian fragmentos que desconocen cómo leer. Su futuro jefe
 protege una compuerta porque cree que abrirla inundará el refugio: motivación comprensible,
-no maldad arbitraria. Enemigos y jefe no se implementan en la fase actual.
+no maldad arbitraria. Esta primera zona ya tiene enemigos y jefe provisionales; detalles de implementación en GDD.md.
 
 ## Pendientes
 Elegir título, protagonista y conflicto central más adelante. No añadir diálogos,
-cinemáticas ni zonas adicionales antes de validar la primera zona jugable.
+cinemáticas ni zonas adicionales antes de evaluar la primera zona jugable con partidas humanas.
+
+## Uso provisional en la entrega
+La interfaz usa «El umbral» como título de trabajo y «El Sellador» para el jefe.
+Son nombres originales provisionales, no decisiones narrativas definitivas.
+El epílogo termina esta primera zona; no promete que los mundos superiores ya sean jugables.
+
+## Mundos superiores propuestos, todavía no jugables
+- Purgatorio: talleres donde los recuerdos se reparan y cambian de dueño.
+- Corte de las cimas: inspiración libre en el Olimpo; un consejo original convierte
+  los juramentos en ley y envía al fondo los recuerdos que contradicen su autoridad.
+- Paraíso: jardines que parecen perfectos porque han eliminado su memoria del daño.
+Todos son refugios del mismo mundo roto. La marca del depósito conecta sus decisiones.
