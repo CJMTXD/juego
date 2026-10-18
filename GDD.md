@@ -130,3 +130,5 @@ Fase 5 / arma añadida y comprobada: Luz del testimonio (beam). Datos en weapons
 Fase 5 / arma añadida y comprobada: Astrolabio roto (orbit). Datos en weapons.js.
 
 Fase 5 / arma añadida y comprobada: Tinta de la balanza (area). Datos en weapons.js.
+
+Fase 5 / arma añadida y comprobada: Sol en una vasija (charge). Datos en weapons.js.
