@@ -84,3 +84,11 @@ test('los tres patrones respetan cantidades, velocidades y ángulos definidos',(
 test('la recompensa de reserva no supera los límites de acumulación',()=>{
  const w=createWorld();for(const u of upgrades)w.inventory[u.id]=u.max;w.player.hp=1;offerUpgrades(w);assert.equal(w.options[0].id,'restore');assert(chooseUpgrade(w,'restore'));assert.equal(w.player.hp,3);for(const u of upgrades)assert.equal(w.inventory[u.id],u.max);
 });
+
+test('cuatro armas configurables: ráfaga, dispersión, rebote y alternancia',async()=>{
+ const {weapons}=await import('../src/data/weapons.js');const {equipWeapon,swapWeapon}=await import('../src/weapons.js');
+ for(const gun of Object.values(weapons)){
+  const w=createWorld();equipWeapon(w,gun.id);const i=input();steps(w,0.6,i);assert(w.events.includes('shoot'),gun.id);assert(w.allies.some(b=>b.mode===gun.mode),gun.id);
+ }
+ const w=createWorld();equipWeapon(w,'ricochet');let b=emit(w.allies,614,100,0,300,3,1);b.mode='bounce';b.bounces=2;steps(w,0.05);assert(b.vx<0);assert.equal(b.bounces,1);swapWeapon(w);assert.equal(w.weaponIndex,0);
+});

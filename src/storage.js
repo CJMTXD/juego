@@ -8,8 +8,8 @@ export function validateSave(raw) {
  const pref=raw.preferences;
  if(pref && typeof pref==='object') {
   for(const k of ['autoFire','muted','reducedEffects']) if(typeof pref[k]==='boolean')save.preferences[k]=pref[k];
-  const b=pref.bindings;
-  if(b && Object.keys(defaults).every(k=>validKey(b[k])) && new Set(Object.keys(defaults).map(k=>b[k])).size===5) save.preferences.bindings=Object.fromEntries(Object.keys(defaults).map(k=>[k,b[k]]));
+  const b={...defaults,...pref.bindings};
+  if(b && Object.keys(defaults).every(k=>validKey(b[k])) && new Set(Object.keys(defaults).map(k=>b[k])).size===Object.keys(defaults).length) save.preferences.bindings=Object.fromEntries(Object.keys(defaults).map(k=>[k,b[k]]));
  }
  for(const key of ['echoes','runs','wins','unlocks']) {
   const value=raw.progress?.[key];

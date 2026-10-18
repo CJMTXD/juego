@@ -60,3 +60,7 @@ Todos son refugios del mismo mundo roto. La marca del depósito conecta sus deci
 ## Registro de ampliación — fase 1
 Confirmado: se conserva el depósito y su jefe. La arquitectura de balance está preparada;
 los nuevos mundos y habitantes continúan propuestos hasta su implementación.
+
+## Fase 2 — objetos presentes en el juego
+Aguja de ceniza conserva las promesas; Abanico de sal recuerda la dársena; Voz entrecortada
+divide un mensaje; Moneda del regreso paga dos retornos contra los muros.

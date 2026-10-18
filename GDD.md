@@ -104,3 +104,9 @@ Arte final, música, narrativa definitiva y el resto del ascenso siguen pendient
 Respaldo previo e167276. Balance existente extraído a src/data/balance.js sin alterar
 los valores ni el flujo jugable. Las 10 pruebas previas siguen pasando.
 Siguiente fase: cuatro armas configurables; todavía sin mundos ni personajes adicionales.
+
+## Ampliación — fase 2 completada
+Cuatro armas en src/data/weapons.js: Aguja, Abanico, Voz y Moneda. Dos ranuras y Q
+configurable para alternar. Los cofres ofrecen arma o mejora; ráfagas limitan los ecos
+laterales a una emisión por ciclo. Escopeta + ráfaga reduce dispersión 20%. 11 pruebas y
+recorrido de zona anterior correctos; menús y combate comprobados en Chromium.

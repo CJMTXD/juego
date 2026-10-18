@@ -1,12 +1,15 @@
+import {createBulletPool,emit} from './projectiles.js';
+export {emit} from './projectiles.js';
+import {updateWeapon,equipWeapon} from './weapons.js';
+import {weapons} from './data/weapons.js';
 import { balance as B } from './data/balance.js';
 import { settings as s, enemyTypes, patterns, upgrades } from './data.js';
 import { seededRandom, generateMap } from './map.js';
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-function pool(capacity){return Array.from({length:capacity},()=>({active:false,x:0,y:0,px:0,py:0,vx:0,vy:0,life:0,radius:0,damage:0,pierce:0,hits:0,shape:0}));}
 export function createWorld(seed=Date.now()>>>0, unlocks=0) {
  const rooms=generateMap(seed);
  return {seed,random:seededRandom(seed^0x12345678),unlocks,rooms,roomId:0,player:{x:320,y:180,radius:s.hitRadius,angle:0,hp:B.player.health,maxHp:B.player.health,invulnerable:0,dashTime:0,dashCooldown:0,dx:1,dy:0},
-  allies:pool(s.bulletCapacity),hostiles:pool(s.enemyCapacity),enemies:[],inventory:{},stats:{speed:B.player.speed,damage:B.player.damage,interval:B.projectiles.interval,bulletSpeed:B.projectiles.speed,pierce:0,side:0},
+  allies:createBulletPool(s.bulletCapacity),hostiles:createBulletPool(s.enemyCapacity),enemies:[],inventory:{},weaponSlots:['needle'],weaponIndex:0,weaponOffer:null,burstLeft:0,burstTimer:0,charge:0,stats:{speed:B.player.speed,damage:B.player.damage,interval:B.projectiles.interval,bulletSpeed:B.projectiles.speed,pierce:0,side:0},
   status:'playing',time:0,kills:0,cleared:0,wave:0,spawnTimer:0,fireTimer:0,enemyId:0,options:[],events:[],shake:0,settled:false,exitLock:0.5,bossPhase:0};
 }
 export function recalculate(world) {
@@ -19,10 +22,6 @@ export function sweptHit(ax,ay,bx,by,cx,cy,radius){
  const dx=bx-ax,dy=by-ay,len=dx*dx+dy*dy;
  const t=len?clamp(((cx-ax)*dx+(cy-ay)*dy)/len,0,1):0;
  return (ax+t*dx-cx)**2+(ay+t*dy-cy)**2<=radius*radius;
-}
-export function emit(bullets,x,y,angle,speed,radius,damage,pierce=0,shape=0){
- const b=bullets.find(item=>!item.active);if(!b)return false;
- b.active=true;b.x=x;b.y=y;b.px=x;b.py=y;b.vx=Math.cos(angle)*speed;b.vy=Math.sin(angle)*speed;b.radius=radius;b.damage=damage;b.pierce=pierce;b.hits=0;b.life=B.projectiles.life;b.shape=shape;return true;
 }
 function clearBullets(world){for(const b of world.allies)b.active=false;for(const b of world.hostiles)b.active=false;}
 export function offerUpgrades(world) {
@@ -39,11 +38,14 @@ export function offerUpgrades(world) {
   world.options.push(available.splice(index,1)[0]);
  }
  if(!world.options.length)world.options=[{id:'restore',name:'Último recuerdo',rarity:'common',max:1,text:'Recupera 2 de vida. No añade niveles.'}];
+ const guns=Object.values(weapons).filter(g=>!world.weaponSlots.includes(g.id));
+ world.weaponOffer=guns.length?guns[Math.floor(world.random()*guns.length)]:null;
  world.status='reward';
 }
 export function chooseUpgrade(world,id){
- if(world.status!=='reward'||!world.options.some(u=>u.id===id))return false;
- if(id!=='restore')world.inventory[id]=(world.inventory[id]||0)+1;
+ if(world.status!=='reward'||(!(id==='weapon'&&world.weaponOffer)&&!world.options.some(u=>u.id===id)))return false;
+ if(id==='weapon'){if(!world.weaponOffer)return false;equipWeapon(world,world.weaponOffer.id);}
+ else if(id!=='restore')world.inventory[id]=(world.inventory[id]||0)+1;
  recalculate(world);
  if(id==='heart')world.player.hp=Math.min(world.player.maxHp,world.player.hp+1);
  if(id==='mercy'||id==='restore')world.player.hp=Math.min(world.player.maxHp,world.player.hp+2);
@@ -111,7 +113,9 @@ function killEnemy(world,e){
 }
 function moveBullets(world,bullets,dt,allied){
  for(const b of bullets){
-  if(!b.active)continue;b.px=b.x;b.py=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
+  if(!b.active)continue;b.px=b.x;b.py=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;b.distance+=Math.hypot(b.vx,b.vy)*dt;
+  if(allied&&b.mode==='bounce'&&b.bounces>0&&(b.x<24||b.x>616||b.y<24||b.y>336)){if(b.x<24||b.x>616){b.vx=-b.vx;b.x=clamp(b.x,24,616);}if(b.y<24||b.y>336){b.vy=-b.vy;b.y=clamp(b.y,24,336);}b.bounces--;}
+  if(b.distance>b.range)b.active=false;if(!b.active)continue;
   if(allied){
    for(const e of world.enemies){
     // Cada enemigo ocupa un bit: nunca se repite daño al atravesarlo.
@@ -136,13 +140,7 @@ export function updateWorld(world,input,dt,preferences){
  const speed=world.stats.speed*(p.dashTime>0?B.player.dashMultiplier:1);
  p.x=clamp(p.x+dx*speed*dt,36,604);p.y=clamp(p.y+dy*speed*dt,36,324);
  if(Math.hypot(input.mouseX-p.x,input.mouseY-p.y)>0.1)p.angle=Math.atan2(input.mouseY-p.y,input.mouseX-p.x);
- world.fireTimer-=dt;
- if((preferences.autoFire||input.shoot)&&world.fireTimer<=1e-9){
-  const emitPlayer=(angle,damage)=>emit(world.allies,p.x+Math.cos(angle)*18,p.y+Math.sin(angle)*18,angle,world.stats.bulletSpeed,3,damage,world.stats.pierce);
-  emitPlayer(p.angle,world.stats.damage);
-  for(let i=1;i<=world.stats.side;i++){emitPlayer(p.angle+B.upgrades.sideAngle*i,world.stats.damage*B.upgrades.sideDamage);emitPlayer(p.angle-B.upgrades.sideAngle*i,world.stats.damage*B.upgrades.sideDamage);}
-  world.fireTimer=world.stats.interval;world.events.push('shoot');
- }
+ updateWeapon(world,input,dt,preferences);
  const room=world.rooms[world.roomId];
  if(!room.cleared){
   if(!world.enemies.some(e=>e.active)){
