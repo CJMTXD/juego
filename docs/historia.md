@@ -1,109 +1,106 @@
-# Historia — propuestas, no confirmadas
+# Historia del ascenso
 
-Nada de este documento fija el título, protagonista ni trama. La narrativa no bloquea
-la jugabilidad. El prototipo usa estos motivos de forma provisional.
+## Confirmado: contenido que ya aparece en el juego
+El umbral es el título de trabajo. Los personajes y nombres son originales.
+Un único más allá se fragmentó tras romperse el ciclo de los recuerdos. Las culturas
+llamaron de formas distintas a sus regiones; no son universos pegados al azar.
+Los refugios inferiores almacenan dolor, los intermedios reparan los vínculos y las
+alturas borran recuerdos para mantener una paz aparente. Lo que cae desde arriba
+alimenta el sufrimiento de abajo. Ascender permite devolver las memorias al ciclo.
 
-## Hilo conductor propuesto: un mismo mundo, distintos refugios
-Tras una ruptura del ciclo de la muerte, las comunidades de almas construyeron refugios
-a distintas alturas de un único mundo. Con el tiempo, cada refugio convirtió su manera
-de sobrevivir en una ley sagrada. Las capas profundas retienen recuerdos dolorosos;
-las intermedias los intercambian; las superiores los borran para conservar una paz aparente.
-Los reinos inspirados en otras mitologías son culturas de este mismo mundo y responden
-al mismo problema, con soluciones incompatibles, en lugar de universos unidos al azar.
+Se cuenta con nombres, tres fragmentos por mundo, descripciones y frases breves
+de guardianes. No se copian personajes, nombres propios ni textos de las mitologías.
 
-El ascenso permite descubrir que los restos que caen desde arriba alimentan las crisis
-de abajo. Una marca vista en el infierno reaparece como sello de autoridad en una zona
-superior: cada revelación reinterpreta lo aprendido antes. Todos los nombres, habitantes
-y conflictos se diseñarán de forma original; no se adaptarán personajes ni textos existentes.
+### 1. Depósito de ceniza — Infierno · círculo del olvido
+Descenso infernal: archivo de promesas abandonadas.
 
-## Opciones de título
-- **Lo que cae del cielo**: pone el misterio del ascenso en primer plano.
-- **La deuda de las alturas**: destaca las consecuencias entre mundos.
-- **Los peldaños del olvido**: centra el tema de los recuerdos.
+Habitantes: Custodio de ceniza, Lamentador, Recolector de brasas.
+Guardián: **El Sellador**. «Si abro el sello, recordarán lo que hicieron.»
 
-## Opciones de protagonista
-- **La remendadora de ecos**: una habitante del fondo que repara objetos con recuerdos
-  ajenos; descubre en uno de ellos un recuerdo propio procedente de arriba.
-- **El portador del hueco**: un ser de barro con una cavidad luminosa donde debería
-  guardar su nombre; busca saber quién decidió dejarlo vacío.
-- **La mensajera sin destino**: despierta con una carta que cambia al cruzar cada umbral;
-  su destinatario parece ser una institución y no una persona.
+- Los recuerdos que caen desde arriba alimentan el depósito.
+- La marca del sello también está grabada en las cartas del cielo.
+- El dolor de abajo paga la calma de arriba.
 
-## Opciones de trama
-- **Restituir el ciclo**: llevar una memoria hasta la cima para que las almas vuelvan
-  a transformarse, aun a costa de que los refugios pierdan su estabilidad.
-- **Romper la deuda**: descubrir quién se beneficia del ascenso y abrir un camino
-  que permita a las capas compartir recuerdos sin sacrificarse unas a otras.
+### 2. Dársena de sal — Infierno · río de los nombres
+Inspiración egipcia y mesopotámica: pesas, nombres y cruce del río.
 
-## Primera zona propuesta
-Un depósito subterráneo de promesas abandonadas, con piedra gastada y formas provisionales
-apagadas. Sus habitantes custodian fragmentos que desconocen cómo leer. Su futuro jefe
-protege una compuerta porque cree que abrirla inundará el refugio: motivación comprensible,
-no maldad arbitraria. Esta primera zona ya tiene enemigos y jefe provisionales; detalles de implementación en GDD.md.
+Habitantes: Remero sin orilla, Pesador de sal, Junco de vidrio.
+Guardián: **La Tasadora de nombres**. «Todo nombre pesa. El tuyo todavía cambia.»
 
-## Pendientes
-Elegir título, protagonista y conflicto central más adelante. No añadir diálogos,
-cinemáticas ni zonas adicionales antes de evaluar la primera zona jugable con partidas humanas.
+- El río pesa cada nombre antes de dejarlo pasar.
+- Las balanzas no miden pecados: miden quién puede pagar.
+- Los talleres del ascenso reparan las pesas a cambio de silencio.
 
-## Uso provisional en la entrega
-La interfaz usa «El umbral» como título de trabajo y «El Sellador» para el jefe.
-Son nombres originales provisionales, no decisiones narrativas definitivas.
-El epílogo termina esta primera zona; no promete que los mundos superiores ya sean jugables.
+### 3. Terrazas del hilo — Purgatorio · terrazas de los vínculos
+Inspiración nórdica y japonesa: hilos, vínculos y talleres de reparación.
 
-## Mundos superiores propuestos, todavía no jugables
-- Purgatorio: talleres donde los recuerdos se reparan y cambian de dueño.
-- Corte de las cimas: inspiración libre en el Olimpo; un consejo original convierte
-  los juramentos en ley y envía al fondo los recuerdos que contradicen su autoridad.
-- Paraíso: jardines que parecen perfectos porque han eliminado su memoria del daño.
-Todos son refugios del mismo mundo roto. La marca del depósito conecta sus decisiones.
+Habitantes: Nudo peregrino, Carrete hueco, Aguja errante.
+Guardián: **La Hilandera del intervalo**. «Puedo coser un camino. No puedo elegir por ti.»
 
-## Registro de ampliación — fase 1
-Confirmado: se conserva el depósito y su jefe. La arquitectura de balance está preparada;
-los nuevos mundos y habitantes continúan propuestos hasta su implementación.
+- Cada nombre es un hilo. El río entregó los nudos a estos talleres.
+- La Hilandera cose rutas para quienes no pueden pagar la balanza.
+- La corte de las cimas ordenó cortar los lazos que unían a los caídos.
 
-## Fase 2 — objetos presentes en el juego
-Aguja de ceniza conserva las promesas; Abanico de sal recuerda la dársena; Voz entrecortada
-divide un mensaje; Moneda del regreso paga dos retornos contra los muros.
+### 4. Jardín del peso — Purgatorio · terrazas de la deuda
+Inspiración mesoamericana y egipcia: cosecha, deuda y medida.
 
-## Fase 3 — personajes ya presentes
-Remendadora: busca su recuerdo y cura cada seis salas. Portador: protege el hueco de
-su nombre con un escudo por sala. Mensajera: asciende con una carta sin destino y un
-impulso más frecuente. Sus motivos aparecen en la selección de personaje.
+Habitantes: Jardinero de hueso, Raíz penitente, Ave de las pesas.
+Guardián: **El Medidor de estaciones**. «No arranques las raíces. Reparte el peso.»
 
-## Fase 4 — confirmado en el juego
-La Dársena de sal pesa los nombres en un río común del más allá. Remero sin orilla,
-Pesador de sal y Junco de vidrio sirven a la Tasadora. Sus pesas se reparan en las
-terrazas superiores: esta pista enlaza ambas regiones. Inspiración libre egipcia y
-mesopotámica, con seres originales. La transición y los textos breves ya aparecen.
+- Las raíces crecen con el peso que el río negó a los vivos.
+- El Medidor protege un jardín que solo florece cuando alguien recuerda.
+- La primera cosecha fue enviada arriba. El hambre se quedó en las raíces.
 
-Objeto implementado: **Hilo del destino**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
+### 5. Corte de los juramentos — Paraíso · esfera de la autoridad
+Inspiración del Olimpo y los sellos mesopotámicos: autoridad y juramentos.
 
-Objeto implementado: **Luz del testimonio**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
+Habitantes: Notario del reflejo, Heraldo sin boca, Juramento de mármol.
+Guardián: **Las Dos Voces**. «La otra voz lo ordenó. Yo solo lo repetí.»
 
-Objeto implementado: **Astrolabio roto**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
+- La corte llama ley a los recuerdos que decidió conservar.
+- Dos voces dictan una verdad. Solo una admite haber visto el depósito.
+- Tras los espejos hay un jardín sin memoria: el origen de todo lo que cae.
 
-Objeto implementado: **Tinta de la balanza**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
+### 6. Esfera del alba vacía — Paraíso · esfera del recuerdo
+Esfera celestial original: luz, memoria y responsabilidad compartida.
 
-Objeto implementado: **Sol en una vasija**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
+Habitantes: Ángel del párpado, Lluvia de nombres, Testigo del vacío.
+Guardián: **El Jardín que Olvida**. «Si todos recuerdan, ¿quién podrá descansar?»
 
-Objeto implementado: **Media luna del retorno**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
+- La luz parece limpia porque nadie recuerda lo que quemó.
+- El origen del dolor no es un monstruo: es el miedo a compartirlo.
+- Devuelves los recuerdos al ciclo. Las alturas ya no pueden olvidar a quienes sostienen su paz.
 
-Personaje implementado: **weaver**. Su motivo de ascenso aparece en la selección; los detalles y condiciones están en characters.js.
+### Almas jugables
+- **Remendadora de ecos**: Repara recuerdos ajenos para encontrar el suyo. Arma: Aguja de ceniza. Cada 6 salas de combate recupera 1 de vida.
+- **Portador del hueco**: Una vasija sin nombre exige conocer a su creador. Arma: Moneda del regreso. El primer impacto de cada sala queda bloqueado.
+- **Mensajera velada**: Su carta cambia de destinatario con cada ascenso. Arma: Voz entrecortada. El impulso recarga en 1,1 s en lugar de 1,5 s.
+- **Tejedora de bruma**: Busca el hilo que une los nombres que el río separó. Arma: Astrolabio roto. Las balas a menos de 72 px se mueven un 25% más despacio.
+- **Testigo del alba**: Abandona la corte para devolver al fondo sus recuerdos. Arma: Luz del testimonio. +15% de daño mientras conserve toda su vida.
 
-Personaje implementado: **witness**. Su motivo de ascenso aparece en la selección; los detalles y condiciones están en characters.js.
+### Objetos y armas
+- **Aguja de ceniza**: Precisa y de largo alcance.
+- **Abanico de sal**: Cinco fragmentos: potente de cerca.
+- **Voz entrecortada**: Ráfaga de tres pulsos que siguen tu apuntado.
+- **Moneda del regreso**: Rebota dos veces en las paredes.
+- **Hilo del destino**: Curva hasta el enemigo más cercano; giro limitado.
+- **Luz del testimonio**: Rayo de pulsos penetrantes, alcance medio.
+- **Astrolabio roto**: Tres sellos orbitales. Exige combatir muy cerca.
+- **Tinta de la balanza**: Sello en el cursor; estalla tras 0,55 s.
+- **Sol en una vasija**: Carga luminosa; automático carga y suelta, manual al soltar clic.
+- **Media luna del retorno**: Regresa y puede golpear otra vez durante el retorno.
 
-## Implementado: Terrazas del hilo
-Inspiración libre nórdica y japonesa: vínculos tejidos, nunca personajes tomados de mitos. Viento ascendente anunciado y teletransporte del jefe con destino visible.
-Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y aparecen durante la partida.
+### Mejoras que cuentan el mundo
+Brasa cautiva conserva un dolor; Pulso prestado repite una voz; Suela de humo recuerda
+un viaje; Vasija remendada protege un nombre; Eco partido divide un mensaje; Aguja
+del umbral atraviesa un sello; Agua olvidada repara; Memoria incandescente impide
+olvidar; Lente del retorno muestra lo borrado; Velo del guardián presta tiempo.
 
-## Implementado: Jardín del peso
-Inspiración libre egipcia y mesoamericana: la medida y el crecimiento. Raíces lentificadoras señalizadas; embestida del jefe con trayectoria fijada durante el aviso.
-Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y aparecen durante la partida.
+### Cierre implementado
+Al vencer al Jardín que Olvida, los recuerdos vuelven al ciclo y las alturas deben
+reconocer a quienes sostienen su paz. La campaña tiene un final real tras seis mundos.
 
-## Implementado: Corte de los juramentos
-Inspiración libre del Olimpo y de los sellos mesopotámicos: un consejo original gobierna mediante juramentos. Espejos anunciados reflejan cada bala como máximo una vez; el jefe emite desde un eco visible.
-Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y aparecen durante la partida.
-
-## Implementado: Esfera del alba vacía
-Esfera original inspirada en jardines celestiales, sin copiar textos religiosos. Eclipse en dos bandas con 1,5 s de aviso, lluvia con corredor libre y sello central del jefe; cierre del ascenso.
-Los tres fragmentos, nombres de enemigos y frase del jefe están en worlds.js y aparecen durante la partida.
+## Propuesto, no implementado ni confirmado
+Título definitivo: Lo que cae del cielo / La deuda de las alturas / Los peldaños del olvido.
+Ampliar consecuencias narrativas y finales alternativos; diálogos entre almas.
+No hay cinemáticas largas, nuevas regiones posteriores ni personajes míticos copiados.

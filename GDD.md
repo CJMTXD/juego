@@ -154,3 +154,13 @@ combate de principio a fin con supervivencia aislada, antes de pasar al siguient
 Fase 5 / mundo completo añadido: **Esfera del alba vacía**. Tres enemigos propios, jefe con tres
 fases, peligro anunciado, piso y motivo musical definidos en worlds.js. Prueba de
 combate de principio a fin con supervivencia aislada, antes de pasar al siguiente mundo.
+
+## Ampliación — fase 6 completada
+Campaña de 6 mundos, 18 enemigos comunes y 6 jefes; 10 armas y 5 personajes.
+Balance revisado: límites de daño/recarga, máximo de orbitales, mejoras útiles para
+armas de área y entrada accesible a mundos desbloqueados. Parámetros y motivos en docs/balance.md.
+Panel F3 / ?debug=1: FPS, DPS de cinco segundos, balas y tiempo de sala.
+20 pruebas de lógica y pruebas de navegador sobre los seis mundos correctas.
+Pools: 128 aliadas,512 enemigas,16 enemigos,64 partículas. Duración humana pendiente
+de calibración; no se presenta el apuntado perfecto automatizado como una partida humana.
+Siguiente fase: música por mundo, ambiente y último pulido de transiciones.

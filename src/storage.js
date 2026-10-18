@@ -11,6 +11,7 @@ export function validateSave(raw) {
  if(pref && typeof pref==='object') {
   for(const k of ['autoFire','muted','reducedEffects']) if(typeof pref[k]==='boolean')save.preferences[k]=pref[k];
   const b={...defaults,...pref.bindings};
+  if(pref.bindings&&!pref.bindings.swap)b.swap=['KeyQ','KeyE','KeyR','KeyX','KeyZ','KeyC'].find(key=>!Object.values(pref.bindings).includes(key))||'KeyQ';
   if(b && Object.keys(defaults).every(k=>validKey(b[k])) && new Set(Object.keys(defaults).map(k=>b[k])).size===Object.keys(defaults).length) save.preferences.bindings=Object.fromEntries(Object.keys(defaults).map(k=>[k,b[k]]));
  }
  for(const key of ['echoes','runs','wins','unlocks','totalEchoes','worlds','bossMask']) {
@@ -19,6 +20,7 @@ export function validateSave(raw) {
  }
  if(Array.isArray(raw.progress?.characters))save.progress.characters=[...new Set(['remender',...raw.progress.characters.filter(id=>characters[id])])];
  save.progress.totalEchoes=Math.max(save.progress.totalEchoes,save.progress.echoes);
+ if(raw.version===1&&save.progress.wins>0){save.progress.bossMask|=1;save.progress.worlds=Math.max(2,save.progress.worlds);}
  save.progress.worlds=Math.max(1,Math.min(6,save.progress.worlds));save.progress.bossMask&=63;
  save.progress.unlocks=Math.min(2,save.progress.unlocks);
  return save;

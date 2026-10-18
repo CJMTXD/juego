@@ -139,3 +139,39 @@ test('cada mundo configurado es completable, con tres enemigos y patrones válid
   const w=createWorld(31,2,'remender',index);finishZone(w);assert.equal(w.status,index===worlds.length-1?'won':'transition');assert.equal(w.pendingWorld,index+1);
  }
 });
+
+test('las diez armas infligen daño real, no solo efectos visuales',async()=>{
+ const {weapons}=await import('../src/data/weapons.js');const {equipWeapon}=await import('../src/weapons.js');
+ for(const gun of Object.values(weapons)){
+  const w=createWorld(),i=input();equipWeapon(w,gun.id);const e=w.enemies[0];Object.assign(e,{active:true,type:'keeper',x:gun.mode==='orbit'?368:440,y:180,hp:1000,maxHp:1000,timer:999,behavior:'stay',speed:0});i.mouseX=e.x;i.mouseY=e.y;
+  steps(w,4,i);assert(w.damageDealt>0,`${gun.id} no hace daño`);assert(e.hp<1000,gun.id);
+ }
+});
+
+test('no se puede eludir la cadencia alternando armas y las entidades se reutilizan',async()=>{
+ const {equipWeapon}=await import('../src/weapons.js');const w=createWorld(),i=input();equipWeapon(w,'ricochet');const refs=[w.allies,w.hostiles,w.enemies,w.particles],first=w.allies[0];
+ for(let n=0;n<120;n++){i.swap=true;updateWorld(w,i,1/120,preferences());}
+ assert(w.events.filter(e=>e==='shoot').length<=9);assert.equal(w.allies,refs[0]);assert.equal(w.hostiles,refs[1]);assert.equal(w.enemies,refs[2]);assert.equal(w.particles,refs[3]);assert.equal(w.allies[0],first);
+});
+
+test('pasivas nuevas: aura ralentizadora, luz con vida completa y desbloqueos',async()=>{
+ const {characters,canSelect}=await import('../src/data/characters.js');
+ assert(!canSelect(freshSave().progress,characters.weaver));assert(canSelect({...freshSave().progress,bossMask:4},characters.weaver));assert(canSelect({...freshSave().progress,bossMask:16},characters.witness));
+ const aura=createWorld(1,0,'weaver'),plain=createWorld();emit(aura.hostiles,350,180,0,100,4,1);emit(plain.hostiles,350,180,0,100,4,1);updateWorld(aura,input(),1/120,preferences());updateWorld(plain,input(),1/120,preferences());assert(aura.hostiles[0].x<plain.hostiles[0].x);
+ const light=createWorld(1,0,'witness');Object.assign(light.enemies[0],{active:true,type:'keeper',x:400,y:180,hp:100,maxHp:100,timer:999});steps(light,0.2);assert(light.damageDealt>=0.575);
+});
+
+test('peligros: aviso antes de daño, pasillo libre y reflejo limitado',async()=>{
+ const {updateHazard}=await import('../src/hazards.js');const {worlds}=await import('../src/data/worlds.js');
+ for(let index=0;index<worlds.length;index++){
+  const w=createWorld(3,0,'remender',index);travel(w,1);w.hazardClock=3.5;let hits=0;updateHazard(w,0.01,()=>hits++);assert.equal(w.hazardPhase,1);assert.equal(hits,0);
+  w.player.x=320;w.player.y=310;w.hazardClock=4.7;updateHazard(w,0.01,()=>hits++);assert.equal(hits,0,worlds[index].id);
+ }
+ const mirrors=createWorld(3,0,'remender',4);travel(mirrors,1);mirrors.hazardClock=4.7;const b=emit(mirrors.hostiles,199,120,0,300,4,1);updateWorld(mirrors,input(),1/120,preferences());assert(b.reflected);assert(b.vx<0);
+});
+
+test('campaña completa conserva mejoras, termina en victoria y visita seis mundos',async()=>{
+ const {advanceWorld}=await import('../src/simulation.js');const {worlds}=await import('../src/data/worlds.js');const w=createWorld(9921,2),visits=[];
+ for(let zone=0;zone<worlds.length;zone++){visits.push(w.worldIndex);finishZone(w);if(zone<worlds.length-1){assert.equal(w.status,'transition');assert(advanceWorld(w));}}
+ assert.deepEqual(visits,[0,1,2,3,4,5]);assert.equal(w.status,'won');assert.equal(w.cleared,48);assert.equal(w.pendingWorld,6);assert(w.time>0);assert(w.kills>200);
+});

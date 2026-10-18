@@ -24,6 +24,8 @@ function projectile(world,gun,angle,damage){
  return bullet;
 }
 function discharge(world,gun,damageScale=1){
+ if(gun.mode==='orbit'||gun.mode==='area')damageScale*=1+world.stats.side*B.weapons.sideUtility;
+ if(['orbit','area','beam'].includes(gun.mode))damageScale*=1+world.stats.pierce*B.weapons.pierceUtility;
  const p=world.player;
  const count=gun.mode==='burst'?1:gun.count;
  const spread=world.weaponSlots.includes('scatter')&&world.weaponSlots.includes('burst')?gun.spread*0.8:gun.spread;
@@ -44,9 +46,20 @@ export function updateWeapon(world,input,dt,preferences){
   if(world.charge>=gun.interval-1e-9||(!preferences.autoFire&&!input.shoot&&world.charge>0.15)){discharge(world,gun,world.charge/gun.interval);world.charge=0;}return;
  }world.burstTimer-=dt;
  if(world.burstLeft>0&&world.burstTimer<=0){discharge(world,gun);world.burstLeft--;world.burstTimer=gun.burstGap;return;}
- if(gun.mode==='orbit'){let count=0;for(const b of world.allies)if(b.active&&b.mode==='orbit')count++;if(count>=6)return;}
+ if(gun.mode==='orbit'){let count=0;for(const b of world.allies)if(b.active&&b.mode==='orbit')count++;if(count>=B.weapons.maxOrbitals)return;}
  if(!(preferences.autoFire||input.shoot)||world.fireTimer>1e-9)return;
  world.burstLeft=gun.mode==='burst'?gun.count-1:0;
  discharge(world,gun);world.burstTimer=gun.burstGap||0;
  world.fireTimer=gun.interval*world.stats.interval/B.projectiles.interval;world.cooldowns[gun.id]=world.fireTimer;
+}
+
+export function weaponSynergy(world){const ids=world.weaponSlots;if(ids.includes('scatter')&&ids.includes('burst'))return 'Voz + Sal: dispersión -20%';if(ids.includes('ricochet')&&ids.includes('orbit'))return 'Regreso + Astrolabio: un rebote extra (máx. 3)';if(ids.includes('beam')&&ids.includes('needle'))return 'Luz + Aguja: una penetración extra';if(ids.includes('area')&&ids.includes('charge'))return 'Tinta + Sol: +10% de daño';return '';}
+
+export function rollWeapon(world,boss=false){
+ const available=Object.values(weapons).filter(g=>!world.weaponSlots.includes(g.id)&&(!boss||g.rarity!=='common'));
+ const groups=['common','rare','epic'].filter(r=>available.some(g=>g.rarity===r));if(!groups.length)return null;
+ const weights=boss?B.progression.bossWeights:B.progression.weights;
+ let roll=world.random()*groups.reduce((n,r)=>n+weights[r],0),rarity=groups[groups.length-1];
+ for(const r of groups){roll-=weights[r];if(roll<0){rarity=r;break;}}
+ const group=available.filter(g=>g.rarity===rarity);return group[Math.floor(world.random()*group.length)];
 }
