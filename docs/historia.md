@@ -81,3 +81,5 @@ Objeto implementado: **Hilo del destino**, un recuerdo material del ascenso. Su 
 Objeto implementado: **Luz del testimonio**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
 
 Objeto implementado: **Astrolabio roto**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.
+
+Objeto implementado: **Tinta de la balanza**, un recuerdo material del ascenso. Su descripción breve aparece al obtenerlo.

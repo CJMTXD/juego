@@ -128,3 +128,5 @@ Fase 5 / arma añadida y comprobada: Hilo del destino (homing). Datos en weapons
 Fase 5 / arma añadida y comprobada: Luz del testimonio (beam). Datos en weapons.js.
 
 Fase 5 / arma añadida y comprobada: Astrolabio roto (orbit). Datos en weapons.js.
+
+Fase 5 / arma añadida y comprobada: Tinta de la balanza (area). Datos en weapons.js.

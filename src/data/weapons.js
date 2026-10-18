@@ -7,4 +7,5 @@ export const weapons = {
  homing:{id:'homing',name:'Hilo del destino',mode:'homing',damage:1.1,interval:0.26,speed:260,range:600,count:1,spread:0,turn:3,rarity:'rare',source:'cofre',special:'Curva hasta el enemigo más cercano; giro limitado.',tone:520,shape:4},
  beam:{id:'beam',name:'Luz del testimonio',mode:'beam',damage:0.5,interval:0.1,speed:14000,range:420,count:1,spread:0,pierce:4,rarity:'rare',source:'cofre / jefe',special:'Rayo de pulsos penetrantes, alcance medio.',tone:880,shape:5},
  orbit:{id:'orbit',name:'Astrolabio roto',mode:'orbit',damage:2.2,interval:1.5,speed:0,range:10000,count:3,spread:6.283185307,orbitRadius:48,duration:1.45,rarity:'epic',source:'cofre / jefe',special:'Tres sellos orbitales. Exige combatir muy cerca.',tone:660,shape:6},
+ area:{id:'area',name:'Tinta de la balanza',mode:'area',damage:5.5,interval:1.2,speed:0,range:270,count:1,spread:0,radius:46,delay:0.55,rarity:'rare',source:'cofre',special:'Sello en el cursor; estalla tras 0,55 s.',tone:170,shape:7},
 };
