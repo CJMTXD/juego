@@ -36,7 +36,7 @@ export function createRenderer(canvas){
  for(const b of world.allies){if(!b.active)continue;const x=Math.round(b.x),y=Math.round(b.y);ctx.fillStyle=c.cyanDark;ctx.fillRect(x-4,y-4,8,8);ctx.fillStyle=c.cyan;ctx.fillRect(x-2,y-2,4,4);}
  for(const b of world.hostiles){if(!b.active)continue;const x=Math.round(b.x),y=Math.round(b.y);diamond(x,y,6,c.outline);diamond(x,y,5,b.shape?c.orange:c.red);diamond(x-1,y-1,2,c.yellow);}
  const p=world.player,x=Math.round(p.x),y=Math.round(p.y);
- if(p.invulnerable<=0||Math.floor(world.time*18)%2===0)ctx.drawImage(sprites.player,x-16,y-16);
+ if(p.invulnerable<=0||Math.floor(world.time*18)%2===0){ctx.drawImage(sprites.player,x-16,y-16);ctx.fillStyle=c[world.character.color];ctx.fillRect(x-11,y+5,22,7);if(world.character.look===1){ctx.fillStyle=c.outline;ctx.fillRect(x-5,y-10,10,8);}if(world.character.look===2){ctx.fillStyle=c.cyan;ctx.fillRect(x-10,y-15,20,3);}}
  ctx.strokeStyle=c.cyanDark;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+Math.cos(p.angle)*21,y+Math.sin(p.angle)*21);ctx.stroke();
  ctx.fillStyle=c.outline;ctx.beginPath();ctx.arc(x,y,p.radius+2,0,Math.PI*2);ctx.fill();ctx.fillStyle=c.white;ctx.beginPath();ctx.arc(x,y,p.radius,0,Math.PI*2);ctx.fill();
  if(p.dashTime>0){ctx.strokeStyle=c.cyan;ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,14,0,Math.PI*2);ctx.stroke();}

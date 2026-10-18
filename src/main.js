@@ -1,3 +1,4 @@
+import {characters,canSelect,refreshCharacters} from './data/characters.js';
 import {currentWeapon} from './weapons.js';
 import {settings,defaults,upgrades,lore} from './data.js';
 import {createWorld,updateWorld,chooseUpgrade,travel} from './simulation.js';
@@ -6,7 +7,7 @@ import {createRenderer} from './render.js';
 import {loadSave,persist,validKey} from './storage.js';
 import {createAudio} from './audio.js';
 const $=id=>document.getElementById(id),canvas=$('game'),panel=$('panel');
-const loaded=loadSave();const save=loaded.save;
+const loaded=loadSave();const save=loaded.save;refreshCharacters(save.progress);
 let saveError=loaded.error,world=createWorld(1,save.progress.unlocks),mode='title',settingsReturn='title',waitingKey=null,previous=0,accumulator=0,lastHud=0,lastPanel='',lastMap='';
 const audio=createAudio(()=>save.preferences);
 const input=createInput(canvas,()=>save.preferences.bindings,()=>togglePause());
@@ -21,7 +22,7 @@ function startRun(){
  const text=$('seed-input')?.value.trim();let seed;
  if(text){if(!/^\d{1,10}$/.test(text)||Number(text)>4294967295){$('seed-error').textContent='Usa un entero entre 0 y 4294967295.';return;}seed=Number(text);}
  else {const values=new Uint32Array(1);crypto.getRandomValues(values);seed=values[0];}
- world=createWorld(seed,save.progress.unlocks);save.progress.runs++;saveNow();audio.unlock();setMode('playing');updateHud();
+ world=createWorld(seed,save.progress.unlocks,save.preferences.character);save.progress.runs++;saveNow();audio.unlock();setMode('playing');updateHud();
 }
 function settle(){
  if(world.settled||!['dead','won'].includes(world.status))return;
@@ -29,9 +30,9 @@ function settle(){
  const earned=world.cleared+(world.status==='won'?6:0);
  save.progress.echoes=Math.min(1000000,save.progress.echoes+earned);
  if(world.status==='won')save.progress.wins++;
- world.earned=earned;saveNow();resetClock();lastPanel='';
+ save.progress.totalEchoes+=earned;refreshCharacters(save.progress);world.earned=earned;saveNow();resetClock();lastPanel='';
 }
-function titlePanel(){return `<span class="eyebrow">EL DEPÓSITO DE LAS PROMESAS</span><h2>Lo que cae desde arriba</h2><p>Las alturas arrojan sus recuerdos al fondo. Cruza las salas del depósito y vence al Sellador para abrir la primera compuerta. Un primer capítulo completo; el resto del ascenso aún espera.</p><div class="stats"><span>${save.progress.echoes} ecos</span><span>${save.progress.wins} victorias</span><span>${save.progress.unlocks}/2 desbloqueos</span></div><div class="actions"><button class="primary" data-action="start">Comenzar partida</button><button data-action="settings">Opciones</button><button data-action="unlock" ${save.progress.unlocks>=2?'disabled':''}>${save.progress.unlocks>=2?'Todo desbloqueado':`Desbloquear ${save.progress.unlocks===0?'Lente':'Velo'} · ${save.progress.unlocks===0?5:10} ecos`}</button></div><label>Semilla opcional <input id="seed-input" type="text" inputmode="numeric" maxlength="10" placeholder="Aleatoria" aria-describedby="seed-error"></label><p id="seed-error" role="status"></p><p>WASD · ratón · Espacio para un impulso invulnerable breve. Esc para pausar.<br>Las mejoras son temporales; los ecos se conservan al terminar.</p>`;}
+function titlePanel(){return `<span class="eyebrow">EL DEPÓSITO DE LAS PROMESAS</span><h2>Lo que cae desde arriba</h2><p>Las alturas arrojan sus recuerdos al fondo. Cruza las salas del depósito y vence al Sellador para abrir la primera compuerta. Un primer capítulo completo; el resto del ascenso aún espera.</p><div class="stats"><span>${save.progress.echoes} ecos</span><span>${save.progress.wins} victorias</span><span>${save.progress.unlocks}/2 desbloqueos</span></div><div class="actions"><button class="primary" data-action="start">Comenzar partida</button><button data-action="settings">Opciones</button><button data-action="characters">Personajes · ${characters[save.preferences.character].name}</button><button data-action="unlock" ${save.progress.unlocks>=2?'disabled':''}>${save.progress.unlocks>=2?'Todo desbloqueado':`Desbloquear ${save.progress.unlocks===0?'Lente':'Velo'} · ${save.progress.unlocks===0?5:10} ecos`}</button></div><label>Semilla opcional <input id="seed-input" type="text" inputmode="numeric" maxlength="10" placeholder="Aleatoria" aria-describedby="seed-error"></label><p id="seed-error" role="status"></p><p>WASD · ratón · Espacio para un impulso invulnerable breve. Esc para pausar.<br>Las mejoras son temporales; los ecos se conservan al terminar.</p>`;}
 function settingsPanel(){const b=save.preferences.bindings;return `<h2>Opciones</h2><p>Los cambios se guardan solo en este navegador.</p><div class="settings">${[['up','Arriba'],['down','Abajo'],['left','Izquierda'],['right','Derecha'],['dash','Impulso'],['swap','Cambiar arma']].map(([id,label])=>`<div class="setting"><span>${label}</span><button data-bind="${id}">${waitingKey===id?'Pulsa una tecla…':keyName(b[id])}</button></div>`).join('')}<label class="setting wide">Disparo automático<input type="checkbox" data-pref="autoFire" ${save.preferences.autoFire?'checked':''}></label><label class="setting wide">Silenciar audio<input type="checkbox" data-pref="muted" ${save.preferences.muted?'checked':''}></label><label class="setting wide">Reducir efectos y sacudida<input type="checkbox" data-pref="reducedEffects" ${save.preferences.reducedEffects?'checked':''}></label></div><p id="binding-message" role="status">Pulsa un control para reasignarlo. Esc cancela. Sin disparo automático, mantén clic izquierdo.</p><div class="actions"><button data-action="reset-controls">Restaurar controles</button><button class="primary" data-action="back">Volver</button></div>`;}
 function updatePanel(){
  let screen=mode==='playing'?world.status:mode;
@@ -41,6 +42,7 @@ function updatePanel(){
  let html='';
  if(screen==='title')html=titlePanel();
  else if(screen==='settings')html=settingsPanel();
+ else if(screen==='characters')html=`<h2>Elige tu memoria</h2><div class="cards">${Object.values(characters).map(c=>`<button class="upgrade" data-character="${c.id}" ${canSelect(save.progress,c)?'':'disabled'}><strong>${c.name}</strong><span>Vida ${c.health} · Vel. ${c.speed} · Hitbox ${c.radius} · Daño ×${c.damage}</span><span>${c.passive}</span><small>${c.story} ${canSelect(save.progress,c)?'':c.unlock}</small></button>`).join('')}</div><button data-action="title">Volver</button>`;
  else if(screen==='paused')html='<h2>En pausa</h2><p>El tiempo se ha detenido. Reanuda cuando estés listo.</p><div class="actions"><button class="primary" data-action="resume">Continuar</button><button data-action="settings">Opciones</button><button data-action="abandon">Terminar partida</button></div>';
  else if(screen==='abandon')html='<h2>¿Terminar esta partida?</h2><p>Las mejoras temporales se perderán. Conservarás los ecos de las salas completadas.</p><div class="actions"><button data-action="resume">Seguir jugando</button><button data-action="confirm-abandon">Terminar</button></div>';
  else if(screen==='reward')html=`<span class="eyebrow">SALA SUPERADA</span><h2>Conserva un fragmento</h2><p>${lore[Math.min(7,world.rooms[world.roomId].depth)]}</p><div class="cards">${world.options.map(u=>`<button class="upgrade ${u.rarity}" data-upgrade="${u.id}"><span class="rarity">${{common:'COMÚN',rare:'RARA',epic:'ÉPICA'}[u.rarity]}</span><strong>${u.name}</strong><span>${u.text}</span><small>Nivel ${world.inventory[u.id]||0} / ${u.max}</small></button>`).join('')}</div><div class="actions">${world.weaponOffer?`<button data-upgrade="weapon">Arma: ${world.weaponOffer.name} · ${world.weaponOffer.special}</button>`:""}</div><p>Elige una mejora o el arma. Dos ranuras; Q alterna.</p>`;
@@ -50,7 +52,7 @@ function updatePanel(){
  panel.querySelector('button:not(:disabled)')?.focus({preventScroll:true});
 }
 function updateHud(){
- const p=world.player,room=world.rooms[world.roomId];$('health').textContent='● '.repeat(p.hp)+'○ '.repeat(Math.max(0,p.maxHp-p.hp));$('dash-meter').value=1.5-p.dashCooldown;$('timer').textContent=timeText(world.time);$('room-name').textContent=room.name;$('weapon-name').textContent=`${currentWeapon(world).name} · Q: alternar`; 
+ const p=world.player,room=world.rooms[world.roomId];$('health').textContent='● '.repeat(p.hp)+'○ '.repeat(Math.max(0,p.maxHp-p.hp));$('dash-meter').value=1.5-p.dashCooldown;$('timer').textContent=timeText(world.time);$('room-name').textContent=room.name;$('weapon-name').textContent=`${currentWeapon(world).name} · Q: alternar`;
  $('wave').textContent=room.kind==='boss'?'Jefe':room.cleared?'Salidas abiertas':`Oleada ${Math.max(1,world.wave)} / ${room.waves}`;
  $('notice').textContent=room.cleared?(room.kind==='rest'?'Refugio: recuperas 2 de vida la primera vez.':room.kind==='start'?'Elige la primera sala en el mapa. Las puertas claras indican salidas.':lore[Math.min(room.depth,8)]):'Esquiva los rombos. Los anillos y las líneas naranjas anuncian el próximo ataque.';
  const boss=world.enemies.find(e=>e.active&&e.type==='boss');$('boss-hud').hidden=!boss;
@@ -75,14 +77,16 @@ $('menu-button').addEventListener('click',()=>{audio.unlock();togglePause();});
 panel.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;audio.unlock();
  if(target.dataset.upgrade){if(chooseUpgrade(world,target.dataset.upgrade)){lastPanel='';updatePanel();updateHud();canvas.focus();}return;}
+ if(target.dataset.character){if(canSelect(save.progress,characters[target.dataset.character])){save.preferences.character=target.dataset.character;saveNow();setMode('title');}return;}
  if(target.dataset.bind){waitingKey=target.dataset.bind;lastPanel='';updatePanel();return;}
  switch(target.dataset.action){
+  case 'characters':setMode('characters');break;
   case 'start':startRun();break;
   case 'resume':setMode('playing');break;
   case 'settings':settingsReturn=mode;setMode('settings');break;
   case 'back':setMode(settingsReturn);break;
   case 'reset-controls':save.preferences.bindings={...defaults};saveNow();waitingKey=null;lastPanel='';updatePanel();break;
-  case 'restart':world=createWorld(Date.now()>>>0,save.progress.unlocks);save.progress.runs++;saveNow();setMode('playing');break;
+  case 'restart':world=createWorld(Date.now()>>>0,save.progress.unlocks,save.preferences.character);save.progress.runs++;saveNow();setMode('playing');break;
   case 'title':setMode('title');break;
   case 'abandon':setMode('abandon');break;
   case 'confirm-abandon':world.status='dead';settle();setMode('playing');break;

@@ -52,7 +52,7 @@ test('recompensas sin duplicados, límites, sinergias y acceso por desbloqueo',(
 test('guardado versionado: corrupción, valores imposibles y teclas duplicadas',()=>{
  assert.deepEqual(validateSave(null),freshSave());assert.deepEqual(validateSave({version:2}),freshSave());
  const bad=freshSave();bad.progress.echoes=-10;bad.progress.unlocks=99;bad.preferences.bindings.up='KeyD';bad.preferences.muted='false';const result=validateSave(bad);assert.equal(result.progress.echoes,0);assert.equal(result.progress.unlocks,2);assert.deepEqual(result.preferences.bindings,defaults);assert.equal(result.preferences.muted,false);
- const good=freshSave();good.progress.echoes=8;good.preferences.bindings.up='ArrowUp';assert.deepEqual(validateSave(good),good);
+ const good=freshSave();good.progress.echoes=8;good.progress.totalEchoes=8;good.preferences.bindings.up='ArrowUp';assert.deepEqual(validateSave(good),good);
 });
 
 test('zona completa: combate real, oleadas, mejoras, refugio y tres fases del jefe',()=>{
@@ -91,4 +91,11 @@ test('cuatro armas configurables: ráfaga, dispersión, rebote y alternancia',as
   const w=createWorld();equipWeapon(w,gun.id);const i=input();steps(w,0.6,i);assert(w.events.includes('shoot'),gun.id);assert(w.allies.some(b=>b.mode===gun.mode),gun.id);
  }
  const w=createWorld();equipWeapon(w,'ricochet');let b=emit(w.allies,614,100,0,300,3,1);b.mode='bounce';b.bounces=2;steps(w,0.05);assert(b.vx<0);assert.equal(b.bounces,1);swapWeapon(w);assert.equal(w.weaponIndex,0);
+});
+
+test('personajes, habilidades y migración del guardado antiguo',async()=>{
+ const {characters,canSelect,refreshCharacters}=await import('../src/data/characters.js');const progress=freshSave().progress;assert(!canSelect(progress,characters.hollow));progress.runs=3;refreshCharacters(progress);assert(progress.characters.includes('hollow'));
+ const tank=createWorld(1,0,'hollow');assert.equal(tank.player.hp,6);assert.equal(damagePlayer(tank),true);assert.equal(tank.player.hp,6);tank.player.invulnerable=0;damagePlayer(tank);assert.equal(tank.player.hp,5);
+ const fast=createWorld(1,0,'courier'),i=input();i.dash=true;updateWorld(fast,i,1/120,preferences());assert.equal(fast.player.radius,3);assert.equal(fast.player.dashCooldown,1.1);
+ const migrated=validateSave({version:1,preferences:{autoFire:false,bindings:{up:'KeyW',down:'KeyS',left:'KeyA',right:'KeyD',dash:'Space'}},progress:{echoes:12,wins:1}});assert.equal(migrated.version,2);assert.equal(migrated.progress.echoes,12);assert.equal(migrated.preferences.autoFire,false);assert.equal(migrated.preferences.bindings.swap,'KeyQ');
 });

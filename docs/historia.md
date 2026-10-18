@@ -64,3 +64,8 @@ los nuevos mundos y habitantes continúan propuestos hasta su implementación.
 ## Fase 2 — objetos presentes en el juego
 Aguja de ceniza conserva las promesas; Abanico de sal recuerda la dársena; Voz entrecortada
 divide un mensaje; Moneda del regreso paga dos retornos contra los muros.
+
+## Fase 3 — personajes ya presentes
+Remendadora: busca su recuerdo y cura cada seis salas. Portador: protege el hueco de
+su nombre con un escudo por sala. Mensajera: asciende con una carta sin destino y un
+impulso más frecuente. Sus motivos aparecen en la selección de personaje.

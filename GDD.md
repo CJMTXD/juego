@@ -110,3 +110,8 @@ Cuatro armas en src/data/weapons.js: Aguja, Abanico, Voz y Moneda. Dos ranuras y
 configurable para alternar. Los cofres ofrecen arma o mejora; ráfagas limitan los ecos
 laterales a una emisión por ciclo. Escopeta + ráfaga reduce dispersión 20%. 11 pruebas y
 recorrido de zona anterior correctos; menús y combate comprobados en Chromium.
+
+## Ampliación — fase 3 completada
+Selección de Remendadora (5 PV,170 px/s,radio4), Portador (6,150,5) y Mensajera
+(4,190,3), armas y pasivas propias. Guardado v2 migra v1 sin perder ecos ni opciones.
+Se desbloquean jugando/reuniendo ecos o venciendo al jefe. 12 pruebas pasan.
