@@ -9,4 +9,5 @@ export const weapons = {
  orbit:{id:'orbit',name:'Astrolabio roto',mode:'orbit',damage:2.2,interval:1.5,speed:0,range:10000,count:3,spread:6.283185307,orbitRadius:48,duration:1.45,rarity:'epic',source:'cofre / jefe',special:'Tres sellos orbitales. Exige combatir muy cerca.',tone:660,shape:6},
  area:{id:'area',name:'Tinta de la balanza',mode:'area',damage:5.5,interval:1.2,speed:0,range:270,count:1,spread:0,radius:46,delay:0.55,rarity:'rare',source:'cofre',special:'Sello en el cursor; estalla tras 0,55 s.',tone:170,shape:7},
  charge:{id:'charge',name:'Sol en una vasija',mode:'charge',damage:5.6,interval:1.1,speed:520,range:620,count:1,spread:0,radius:6,pierce:1,rarity:'epic',source:'cofre / jefe',special:'Carga luminosa; automático carga y suelta, manual al soltar clic.',tone:220,shape:8},
+ boomerang:{id:'boomerang',name:'Media luna del retorno',mode:'boomerang',damage:1.5,interval:0.55,speed:280,range:1000,count:1,spread:0,pierce:2,rarity:'common',source:'cofre',special:'Regresa y puede golpear otra vez durante el retorno.',tone:350,shape:9},
 };
