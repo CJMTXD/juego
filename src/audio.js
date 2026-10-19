@@ -1,7 +1,7 @@
 // Síntesis original: sin descargas de audio. La música no usa el azar de la partida.
 export function createAudio(getPreferences){
  let context,master,ambient,filter,nextBeat=0,beat=0,zoneId=null,active=false;
- const notes={evolve:[1046,0.35,'sine',0.05],shoot:[280,0.025,'square',0.012],hit:[120,0.04,'triangle',0.035],hurt:[70,0.17,'sawtooth',0.045],kill:[180,0.08,'triangle',0.035],reward:[660,0.16,'sine',0.045],win:[880,0.5,'sine',0.05],death:[45,0.6,'sawtooth',0.035],dash:[400,0.06,'sine',0.02],heal:[520,0.2,'sine',0.035],attack:[100,0.06,'triangle',0.015],warning:[480,0.05,'sine',0.012],phase:[320,0.2,'triangle',0.03]};
+ const notes={combo:[780,0.25,'triangle',0.04],super:[1320,0.6,'sine',0.05],evolve:[1046,0.35,'sine',0.05],shoot:[280,0.025,'square',0.012],hit:[120,0.04,'triangle',0.035],hurt:[70,0.17,'sawtooth',0.045],kill:[180,0.08,'triangle',0.035],reward:[660,0.16,'sine',0.045],win:[880,0.5,'sine',0.05],death:[45,0.6,'sawtooth',0.035],dash:[400,0.06,'sine',0.02],heal:[520,0.2,'sine',0.035],attack:[100,0.06,'triangle',0.015],warning:[480,0.05,'sine',0.012],phase:[320,0.2,'triangle',0.03]};
  function tone(hz,duration,wave,volume){
   if(!context||context.state!=='running')return;
   const osc=context.createOscillator(),gain=context.createGain(),now=context.currentTime;

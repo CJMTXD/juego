@@ -1,3 +1,4 @@
+import {newItems} from './data/relics.js';
 import { balance as B } from './data/balance.js';
 export const settings = Object.freeze({ width:640, height:360, wall:20, playerSpeed:B.player.speed, playerSize:32, hitRadius:B.player.hitRadius, bulletSpeed:B.projectiles.speed, fireInterval:B.projectiles.interval, bulletCapacity:B.projectiles.allyCapacity, enemyCapacity:B.projectiles.enemyCapacity, step:1/120 });
 export const colors = Object.freeze({ outline:'#17151C', shadow:'#27232D', floor:'#38343F', stone:'#514B56', lightStone:'#716976', dust:'#948995', earth:'#44352F', earthLight:'#665044', bone:'#D3C3A1', white:'#EEE1BF', skin:'#A97663', cloth:'#49394F', clothLight:'#70556E', green:'#66705A', cyanDark:'#3F7F92', cyan:'#A2E1E8', red:'#FF385D', orange:'#FF922E', yellow:'#FFE34B' });
@@ -32,11 +33,12 @@ export const upgrades = Object.freeze([
  {id:'pulse', name:'Pulso prestado', rarity:'common', max:4, text:'Disparas un 12% más rápido por nivel.'},
  {id:'step', name:'Suela de humo', rarity:'common', max:3, text:'+12% de velocidad por nivel.'},
  {id:'heart', name:'Vasija remendada', rarity:'rare', max:2, text:'+1 de vida máxima y recupera 1.'},
- {id:'fork', name:'Eco partido', rarity:'rare', max:2, text:'Añade dos balas laterales. Cada bala lateral hace 55% de daño.'},
+ {id:'fork', name:'Eco partido', rarity:'rare', max:2, text:'Añade dos balas laterales. Cada bala lateral hace 25% de daño.'},
  {id:'pierce', name:'Aguja del umbral', rarity:'rare', max:2, text:'Tus balas atraviesan un enemigo adicional por nivel.'},
  {id:'mercy', name:'Agua olvidada', rarity:'common', max:9, text:'Recupera 2 de vida. Una opción segura para continuar.'},
  {id:'halo', name:'Memoria incandescente', rarity:'epic', max:1, text:'+50% de daño. Con Brasa cautiva: otro +35% de daño.'},
  {id:'lens', name:'Lente del retorno', rarity:'rare', max:2, unlock:1, text:'+30% de velocidad de proyectil y +10% de daño.'},
+ ...newItems,
  {id:'veil', name:'Velo del guardián', rarity:'epic', max:1, unlock:2, text:'La invulnerabilidad tras recibir daño dura 0,5 s más.'},
 ]);
 export const roomNames = ['Atrio de las promesas','Archivo hundido','Patio de ceniza','Galería de ecos','Foso de los nombres','Almacén de juramentos','Cripta de las cartas','Escalera rota','Compuerta del olvido'];

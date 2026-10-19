@@ -122,3 +122,9 @@ préstamos declarados si faltan alternativas). 40 formas, 100/250/500 bajas por 
 contadores conservados al cambiar. La selección personal garantiza su arma sin abrir
 el botín global. scripts/weapon-balance.mjs imprime la tabla de daño.
 Las formas conservan un disparo centrado: una evolución no debe crear un hueco al apuntar.
+
+## Profundidad — fase 3
+20 ítems, 5 recetas automáticas y 5 sets con bonos acumulativos a 2/3/4 piezas.
+Cinco superítems con condición, coste y límite de uno; compras habilitan el catálogo,
+no omiten la condición de obtención. Descubrimientos registrados en el códice.
+Las recetas activan efectos sin consumir piezas; así no se rompen sets al fusionar.

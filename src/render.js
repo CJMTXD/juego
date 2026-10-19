@@ -89,6 +89,8 @@ export function createRenderer(canvas){
  if(!preferences.reducedEffects)for(const p of world.particles)if(p.active){ctx.fillStyle=p.life>0.12?c.bone:c.dust;ctx.fillRect(Math.round(p.x),Math.round(p.y),2,2);}
  ctx.save();ctx.translate(x+Math.cos(p.angle)*12,y+Math.sin(p.angle)*12);ctx.rotate(p.angle+Math.PI/4);ctx.drawImage(weaponImage,-8,-8);ctx.restore();
  if(world.character.kind==='aura'){ctx.strokeStyle=c.clothLight;ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,72,0,Math.PI*2);ctx.stroke();}
+ if(world.trail.timer>0){ctx.strokeStyle=c.clothLight;ctx.lineWidth=2;ctx.strokeRect(world.trail.x-30,world.trail.y-30,60,60);}
+ if(world.superItem){ctx.strokeStyle=c.bone;ctx.lineWidth=world.superPulse>0?3:1;ctx.beginPath();ctx.arc(x,y,22+(world.superPulse||0)*18,0,Math.PI*2);ctx.stroke();}
  if(world.evolutionPulse>0){ctx.strokeStyle=c.bone;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,25+world.evolutionPulse*12,0,Math.PI*2);ctx.stroke();}
  if(gun.mode==='charge'&&world.charge>0){ctx.strokeStyle=c.cyan;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,20,-Math.PI/2,-Math.PI/2+Math.PI*2*world.charge/gun.interval);ctx.stroke();}
  ctx.strokeStyle=c.cyanDark;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+Math.cos(p.angle)*21,y+Math.sin(p.angle)*21);ctx.stroke();

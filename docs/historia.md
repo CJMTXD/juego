@@ -119,3 +119,8 @@ que conserva recuerdos y presta equipo. Todavía no hay interfaz de santuario.
 Ilar presta lo que el alma todavía no posee. Comprar un recuerdo en la antesala lo
 incorpora al botín de futuras partidas. Cada arma recuerda sus propias bajas y
 muestra runas al ascender; las formas finales añaden efectos propios.
+
+## Confirmado — memorias enlazadas
+Ceniza viva, Balanza compartida, Hilo del retorno, Coro del juramento y Luz sin dueño
+son recetas automáticas. Manto, Balanza invertida, Telar, Corona y Lente de nadie
+son superítems: cada uno exige un logro en la partida y cambia el modo de combatir.
