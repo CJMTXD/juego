@@ -7,6 +7,7 @@ import webbrowser
 
 
 class Handler(SimpleHTTPRequestHandler):
+    extensions_map = {**SimpleHTTPRequestHandler.extensions_map, '.webmanifest': 'application/manifest+json', '.js': 'text/javascript', '.svg': 'image/svg+xml'}
     def do_GET(self):
         from urllib.parse import unquote, urlsplit
         if any(part.startswith('.') for part in unquote(urlsplit(self.path).path).split('/') if part):
@@ -18,16 +19,23 @@ class Handler(SimpleHTTPRequestHandler):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--open', action='store_true')
+    parser.add_argument('--lan', action='store_true', help='Permitir acceso desde la misma red local')
     parser.add_argument('--port', type=int, default=8000)
     args = parser.parse_args()
     handler = partial(Handler, directory=str(Path(__file__).resolve().parent))
     try:
-        server = ThreadingHTTPServer(('127.0.0.1', args.port), handler)
+        server = ThreadingHTTPServer(('0.0.0.0' if args.lan else '127.0.0.1', args.port), handler)
     except OSError as error:
         print(f'No se pudo iniciar el servidor: {error}. Cierra el servidor anterior o libera el puerto.')
         raise SystemExit(1) from error
     url = f'http://127.0.0.1:{args.port}'
     print(f'Juego disponible en {url}. Cierra con Ctrl+C.')
+    if args.lan:
+        import socket
+        addresses = {result[4][0] for result in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET)}
+        for address in sorted(addresses):
+            if not address.startswith('127.'):
+                print(f'Celular en la misma Wi-Fi: http://{address}:{args.port}')
     if args.open:
         webbrowser.open(url)
     try:

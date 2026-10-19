@@ -1,0 +1,25 @@
+{
+  "name": "El umbral — El ascenso",
+  "short_name": "El umbral",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#17151C",
+  "theme_color": "#17151C",
+  "description": "Un viaje del infierno al cielo. Juego original de esquiva y recuerdos.",
+  "icons": [
+    {
+      "src": "assets/icons/app-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/app-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

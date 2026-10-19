@@ -22,3 +22,14 @@ No publiques ni hagas push salvo autorización explícita; el usuario autorizó 
 la ampliación actual a CJMTXD/juego al terminar las comprobaciones.
 Cierra brevemente con qué cambió, ejecución y comprobación, y "Siguiente paso recomendado"
 con una sola acción concreta.
+
+
+Rediseño UI: solo fases 1–5 completadas; detenerse para prueba del usuario antes de
+6–8. Leer docs/diseno-ui.md y docs/pruebas-ui.md. No convertir toques en reglas nuevas:
+la simulación sigue 640×360/120 Hz; UI/input/bitmap DPR van aparte. Preferencias UI
+opcionales dentro de v3, nunca borrar meta/progreso. Para interfaz ejecutar también
+ui-layout.cjs, ui-flow.cjs, ui-screens.cjs y mobile-browser.cjs (GAME_URL permite
+otro puerto). mobile-browser por defecto usa 8040; ajustar GAME_URL a servidor activo.
+Antes de publicar, subir la versión CACHE en sw.js si cambian recursos y ejecutar
+node scripts/check-pwa.mjs. GitHub Pages usa .github/workflows/pages.yml; solo publica
+index, estilos, manifiesto, service worker, src y assets. No cargar secretos ni tests.

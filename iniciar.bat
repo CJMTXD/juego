@@ -17,13 +17,13 @@ echo Instala Python 3 desde python.org y activa Add Python to PATH, o instala No
 pause
 exit /b 1
 :pythonlauncher
-py -3 server.py --open
+py -3 server.py --open --lan
  goto end
 :python
-python server.py --open
+python server.py --open --lan
  goto end
 :node
-node server.cjs --open
+node server.cjs --open --lan
 :end
 if errorlevel 1 echo No se pudo iniciar. Comprueba si el puerto 8000 esta ocupado.
 pause

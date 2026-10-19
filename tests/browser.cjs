@@ -1,3 +1,4 @@
+const BASE=process.env.GAME_URL||'http://127.0.0.1:8000';
 // Prueba opcional de interfaz. Requiere Playwright y Chromium en el equipo de desarrollo.
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
@@ -7,7 +8,7 @@ const fs=require('node:fs');
  try{
   const page=await browser.newPage({viewport:{width:1450,height:1000}}),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  assert.equal((await page.goto('http://127.0.0.1:8000/?debug=1')).status(),200);
+  assert.equal((await page.goto(BASE+'/?debug=1')).status(),200);
   await page.locator('[data-action="characters"]').click();assert.equal(await page.locator('[data-character]').count(),5);assert.equal(await page.locator('[data-character]:disabled').count(),4);
   await page.locator('[data-action="title"]').click();await page.locator('[data-action="arsenal"]').click();assert.equal(await page.locator('[data-weapon-icon]').count(),10);await page.locator('[data-action="back"]').click();
   await page.evaluate(()=>{const data=JSON.parse(localStorage.getItem('ascenso-debug-v3')||'null')||{version:2};data.progress={echoes:20,runs:3,wins:1,unlocks:2,totalEchoes:20,worlds:6,bossMask:63,characters:['remender','hollow','courier','weaver','witness']};localStorage.setItem('ascenso-debug-v3',JSON.stringify(data));});

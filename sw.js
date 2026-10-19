@@ -1,0 +1,53 @@
+// Subir CACHE al publicar cambios: una versión completa, sin activar durante el combate.
+const CACHE='el-umbral-mobile-1';
+const FILES=[
+ "./",
+ "index.html",
+ "styles.css",
+ "manifest.webmanifest",
+ "assets/icons/app.svg",
+ "assets/icons/app-192.png",
+ "assets/icons/app-512.png",
+ "src/audio.js",
+ "src/data/balance.js",
+ "src/data/characters.js",
+ "src/data/depth.js",
+ "src/data/evolutions.js",
+ "src/data/extras.js",
+ "src/data/relics.js",
+ "src/data/weapon-balance.js",
+ "src/data/weapons.js",
+ "src/data/worlds.js",
+ "src/data.js",
+ "src/depth-views.js",
+ "src/evolution.js",
+ "src/extras-views.js",
+ "src/extras.js",
+ "src/hazards.js",
+ "src/input.js",
+ "src/lore-views.js",
+ "src/main.js",
+ "src/map.js",
+ "src/meta-game.js",
+ "src/profile.js",
+ "src/projectiles.js",
+ "src/relics.js",
+ "src/render.js",
+ "src/rules.js",
+ "src/simulation.js",
+ "src/storage.js",
+ "src/ui/config.js",
+ "src/ui/hud.js",
+ "src/ui/icons.js",
+ "src/ui/mobile-settings.js",
+ "src/ui/platform.js",
+ "src/ui/preferences.js",
+ "src/ui/screens.js",
+ "src/ui/title.js",
+ "src/ui/touch.js",
+ "src/weapons.js"
+];
+self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES))));
+self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('el-umbral-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('message',event=>{if(event.data==='ACTIVATE_UPDATE')self.skipWaiting();});
+self.addEventListener('fetch',event=>{if(event.request.method!=='GET'||new URL(event.request.url).origin!==self.location.origin)return;event.respondWith(caches.open(CACHE).then(async cache=>{const hit=event.request.mode==='navigate'?await cache.match('index.html'):await cache.match(event.request,{ignoreSearch:true});return hit||fetch(event.request);}));});

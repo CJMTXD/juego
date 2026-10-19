@@ -5,6 +5,24 @@ para jugar. Seis mundos del infierno al cielo, 18 enemigos, seis jefes, cinco pe
 diez armas con cuarenta formas, veinte ítems, recetas, cinco superítems, cinco dificultades,
 santuario y desbloqueos guardados en el navegador.
 
+## Jugar desde la web o el celular
+
+Abre [El umbral en GitHub Pages](https://cjmtxd.github.io/juego/).
+**Jugar → Comenzar** usa tus selecciones anteriores; puedes cambiarlas en la preparación.
+En celular, arrastra en la zona de movimiento y usa Esquiva, Poder y Cambiar. Dispara
+automáticamente hacia el enemigo más cercano. En Opciones puedes activar joystick
+derecho, modo zurdo, tamaño, opacidad, margen y ahorro de rendimiento.
+
+Mapa y Mochila pausan la partida; cerrar vuelve al combate. Rotar o perder foco
+pausa y requiere reanudar manualmente. El modo móvil no cambia tus teclas ni la opción
+de disparo del ratón. Mando queda pendiente.
+
+Para instalar: menú del navegador → Instalar aplicación; en iPhone, Compartir →
+Añadir a inicio. Espera la primera carga completa con conexión para disponer de
+caché offline. Instalación, pantalla completa y pantalla encendida dependen del
+navegador. Opciones → Buscar actualización aplica una versión nueva sin interrumpir
+el combate. Cada navegador/dirección tiene su propio guardado; no hay nube compartida.
+
 ## Jugar en Windows
 
 Descarga [el ZIP del juego](https://github.com/CJMTXD/juego/archive/refs/heads/main.zip),
@@ -17,6 +35,10 @@ Desde PowerShell en esta carpeta:
 
 Necesitas **Python 3** (activa Add Python to PATH al instalar) o **Node.js LTS**.
 El lanzador detecta cualquiera y abre el navegador cuando el servidor está enlazado.
+También muestra `Celular en la misma Wi-Fi: http://...:8000`: abre esa dirección en
+el teléfono conectado a la misma red. Si Windows solicita permiso, permite la red
+privada para este servidor. La dirección Wi-Fi HTTP permite jugar; para instalar y
+usar funciones que exigen HTTPS, utiliza GitHub Pages.
 Mantén abierta su terminal. Para terminar, pulsa Ctrl+C. Si el puerto 8000 está ocupado,
 cierra el servidor anterior. Si no abre navegador, entra en http://127.0.0.1:8000.
 No abras index.html directamente: los módulos necesitan HTTP.
@@ -58,7 +80,7 @@ la descarta: no hay guardado a mitad del combate. Se migra el guardado de la pri
 Con Node 22+:
 
 ```powershell
-node --test tests/game.test.mjs tests/depth.test.mjs
+node --test tests/game.test.mjs tests/depth.test.mjs tests/ui.test.mjs
 ```
 
 Prueba opcional de interfaz con Playwright y Chromium ya instalados:
@@ -66,11 +88,16 @@ Prueba opcional de interfaz con Playwright y Chromium ya instalados:
 ```powershell
 node tests/browser.cjs
 node tests/depth-browser.cjs
+node tests/ui-layout.cjs
+node tests/ui-flow.cjs
+node tests/ui-screens.cjs
+node tests/mobile-browser.cjs
 ```
 
 Herramientas de balance (sin paquetes):
 
 ```powershell
+node scripts/check-pwa.mjs
 node scripts/weapon-balance.mjs
 node scripts/campaign-balance.mjs
 ```
@@ -84,3 +111,10 @@ GDD.md resume el estado; docs/balance.md contiene valores y curva; docs/historia
 lo implementado de las propuestas. El objetivo de 15–25 minutos necesita medición humana;
 las pruebas automáticas completas usan invulnerabilidad y apuntado perfecto para aislar el flujo.
 El .bat está revisado, pero no se ejecutó nativamente en Windows desde el entorno Linux.
+
+
+## Estado del rediseño
+Entrega hasta la fase 5, lista para prueba del usuario. Quedan fases 6–8: diseño
+completo de tarjetas secundarias, pulido final y rendimiento en teléfonos reales.
+La campaña y las reglas existentes no se modificaron. Diseño y glosario en
+[docs/diseno-ui.md](docs/diseno-ui.md); validación en [docs/pruebas-ui.md](docs/pruebas-ui.md).

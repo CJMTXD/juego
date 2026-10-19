@@ -33,8 +33,9 @@ El guardado v3 debe conservarse: nuevas preferencias son opcionales y validadas.
 src/input.js traduce teclado/ratón. src/ui/touch.js traduce punteros independientes
 a las mismas teclas/acciones y coordenadas de apuntado. simulation.js y render.js
 conservan su resolución lógica y reglas. src/ui/ controla pantallas, HUD, dibujos e
-integraciones del navegador. Escala CSS conserva 16:9; backing de 640×360 conserva
-píxeles nativos y evita cambiar el tamaño de simulación según DPR. Los menús son DOM.
+integraciones del navegador. Escala CSS conserva 16:9; simulación siempre 640×360. El bitmap se adapta al DPR
+(hasta ×2) y al detalle elegido (×1/×0,5); no cambia coordenadas, hitboxes ni velocidad.
+Los menús son DOM.
 Sin body scroll en combate; una sola zona de scroll por pantalla de menú; paneles
 largos no se anidan en el campo. Cambiar pantalla y orientación limpia entradas/reloj.
 
@@ -83,7 +84,7 @@ Wi-Fi HTTP permite jugar; instalación y Wake Lock pueden no estar disponibles a
 | Ecos | Moneda permanente, se gasta entre partidas en el Santuario |
 | Fichas | Moneda temporal de tiendas; se pierde al terminar |
 | Esquiva | Desplazamiento rápido con invulnerabilidad breve (antes «impulso») |
-| Habilidad | Poder del personaje; se carga pasando cerca de balas sin recibir daño |
+| Habilidad (Poder en el botón táctil) | Poder del personaje; se carga pasando cerca de balas sin recibir daño |
 | Roce | Pasar cerca de una bala; cada bala carga una sola vez |
 | Hitbox | Punto central que recibe impactos, menor que el dibujo del personaje |
 | Evolución | Cambio de comportamiento del arma al sumar bajas propias |
@@ -101,3 +102,26 @@ Sintaxis, HTTP, pruebas de lógica conservadas y navegador sin errores. Capturas
 selecciones persistentes, guardado antiguo, movimiento multitoque, acciones simultáneas,
 rotación, cancelación de puntero, vuelta de foco y base /juego/ de GitHub Pages.
 La emulación no sustituye pruebas de iOS/Android reales ni acredita FPS en esos equipos.
+
+
+## Estado al terminar fase 5
+Implementados: pantallas separadas, título animado, preparación persistente, HUD,
+mapa/mochila pausados, controles táctiles independientes, autoapuntado o joystick de
+apuntado, modo zurdo, escala/opacidad/margen, pausa por orientación/foco, fullscreen,
+Wake Lock y vibración opcionales, modo ahorro, manifiesto/caché e inicio LAN.
+Joystick de movimiento: ocho direcciones digitales normalizadas por la simulación
+existente. Se conserva exactamente su velocidad; no se añadió aceleración analógica.
+El modo táctil automático respeta el puntero principal de equipos híbridos; ratón y
+teclado mantienen sus preferencias. También se puede forzar Siempre/Nunca.
+
+La opacidad mínima es 0,65 y los controles nunca bajan de 44 px. Las zonas táctiles
+quedan fuera del rectángulo del canvas. En horizontal reservan carriles; en vertical
+se sitúan debajo. Las preferencias solo amplían el esquema v3 existente.
+Ahorro: dibujo 30 FPS (simulación 120 Hz), menos efectos; detalle normal o mitad.
+Automático usa memoria/CPU reportadas, cuando están disponibles. No se promete una
+medición física a partir de emulación. Pantalla completa/instalación/Wake Lock varían
+por navegador; gestos reservados por el sistema no se pueden garantizar bloqueados.
+
+Pendientes por la pausa solicitada: fase 6 tarjetas/filtros completos de pantallas
+secundarias; fase 7 arte y pulido finales; fase 8 perfilado en Android/iOS reales y
+validación de legibilidad/rendimiento. Mando opcional queda para esa revisión.

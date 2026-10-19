@@ -1,6 +1,9 @@
 # El umbral — título de trabajo
 
 ## Visión y estado
+**Estado de interfaz:** fases 1–5 terminadas; se detiene para prueba del usuario.
+Las fases 6–8 de interfaz están pendientes. La campaña y el balance se conservan.
+
 Bullet hell roguelike cenital original para PC: Canvas + módulos JavaScript + CSS,
 sin motor ni dependencias para jugar. Ascenso del infierno al cielo, inspirado en
 estructuras míticas, con un único más allá fragmentado por el ciclo de los recuerdos.
@@ -156,3 +159,37 @@ Mochila con iconos/cantidades y detalle por toque/foco/cursor, efectos y recetas
 Acento por región, mensajes breves y ayuda inicial que deja de ocupar espacio.
 Capturas HUD/mapa en cuatro tamaños; pruebas de navegador recorren seis mundos,
 desvíos y final sin errores. No se cambiaron simulación, estadísticas ni guardado.
+
+
+## Rediseño de interfaz — fase 5
+Controles táctiles con captura por dedo: joystick flotante de ocho direcciones,
+esquiva/habilidad/cambio simultáneos y autoapuntado al enemigo más cercano. Opción
+joystick derecho, zurdo, tamaño 0,85/1/1,2, opacidad 0,65–1 y margen 0–24 px. En
+horizontal, carriles fuera del campo; en vertical, controles debajo. Objetivos ≥44 px.
+Disparo táctil automático sin sobrescribir la opción del ratón. Entrada limpia en
+cancelación, menús, foco, pagehide y rotación. Se reanuda manualmente sin saltos.
+
+PWA local: iconos originales, manifiesto y precaché de todos los módulos; funciona
+bajo /juego/ y sin conexión después de una carga completa. Nueva versión en espera
+se aplica desde Opciones; no reinicia una partida en curso. No hay sincronización
+entre navegadores. Mantiene guardado local v3 con preferencias nuevas validadas y
+consejos descartados persistentes. Pantalla completa, Wake Lock y vibración son
+opcionales según plataforma; para instalar/Wake Lock se necesita HTTPS compatible.
+
+Modo ahorro: dibujo a 30 FPS, efectos reducidos y bitmap opcional a media resolución;
+simulación sigue a 120 Hz. Modo normal hasta 60 FPS, DPR limitado a 2. Detección de
+recursos orientativa; el usuario puede cambiarla. No se tocó simulation.js, render.js,
+configuraciones de combate, enemigos, armas, patrones, economía ni guardado de progreso.
+
+iniciar.bat pasa --lan al servidor elegido; Python/Node imprimen la dirección Wi-Fi.
+MIME del manifiesto/iconos corregidos en ambos. GitHub Actions publica solo archivos
+del juego, con rutas relativas. No se requieren frameworks ni paquetes para jugar.
+
+Verificación: 47 pruebas de lógica/migración; dos recorridos de combate completos;
+UI/título/preparación/HUD/mapa y cinco pantallas secundarias en 390×844, 844×390,
+768×1024 y 1920×1080; capturas revisadas. Multitáctil Chromium real emulado, acciones
+simultáneas, apuntado, zurdo, tamaño grande, márgenes, cancelación, foco/rotación y
+PWA offline bajo /juego/ comprobados. Node y Python LAN responden HTTP 200.
+La emulación no sustituye un teléfono real; rendimiento físico y .bat nativo pendientes.
+Se detiene aquí, conforme a la fase 5: fases 6–8 y mando opcional quedan planeados.
+Próxima tarea: probar una partida en escritorio y celular antes de continuar el rediseño.

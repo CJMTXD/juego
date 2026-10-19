@@ -1,3 +1,8 @@
+import {createTouch} from './ui/touch.js';
+import {mobileSettings,helpCard} from './ui/mobile-settings.js';
+import {createPlatform} from './ui/platform.js';
+import {validateUi} from './ui/preferences.js';
+import {uiConfig as U} from './ui/config.js';
 import {createHud,showItem,fillLegend,roomLabels} from './ui/hud.js';
 import {titleScreen,preparationScreen,screenHeader} from './ui/screens.js';
 import {drawTitle} from './ui/title.js';
@@ -33,11 +38,12 @@ let saveError=loaded.error,world=createWorld(1,save.progress.unlocks),mode='titl
 let debug=debugTools,fps=60,preparation={tab:'summary',weapon:'needle',initial:'ember'},navigation=[];
 const audio=createAudio(()=>save.preferences);
 const input=createInput(canvas,()=>save.preferences.bindings,()=>togglePause());
-const render=createRenderer(canvas),updateGameHud=createHud();fillLegend();
+const render=createRenderer(canvas),updateGameHud=createHud();const effectivePreferences={...save.preferences};const platform=createPlatform(()=>save.preferences);const touch=createTouch(input,()=>world,()=>save.preferences,()=>mode==='playing'&&world.status==='playing');let lastDraw=0,drawScale=1;
+function lowPerformance(){return save.preferences.ui.performance==='low'||save.preferences.ui.performance==='auto'&&((navigator.deviceMemory||8)<=4||(navigator.hardwareConcurrency||8)<=4);}fillLegend();
 $('map-button').innerHTML=icon('map')+'<span>Mapa</span>';$('items-button').innerHTML=icon('bag')+'<span>Mochila</span>';$('menu-button').innerHTML=icon('pause');$('swap-button').innerHTML=icon('weapon')+'<span id="alternate-weapon">Cambiar</span>';$('fullscreen-button').innerHTML=icon('fullscreen');
 const keyName=code=>({ArrowUp:'Flecha arriba',ArrowDown:'Flecha abajo',ArrowLeft:'Flecha izquierda',ArrowRight:'Flecha derecha',Space:'Espacio',ShiftLeft:'Shift izq.',ShiftRight:'Shift der.'}[code]||code.replace('Key','').replace('Digit',''));
 const timeText=value=>`${String(Math.floor(value/60)).padStart(2,'0')}:${String(Math.floor(value%60)).padStart(2,'0')}`;
-function applyPreferences(){document.documentElement.dataset.reduced=String(save.preferences.reducedEffects||save.preferences.disableFlash);}
+function applyPreferences(){document.documentElement.dataset.reduced=String(save.preferences.reducedEffects||save.preferences.disableFlash);Object.assign(effectivePreferences,save.preferences);}
 applyPreferences();
 function saveNow(){applyPreferences();saveError=!persist(save,debugTools);}
 function resetClock(){previous=performance.now();accumulator=0;input.clear();}
@@ -56,9 +62,9 @@ function startRun(){if(mode!=='prepare')return;const u=save.preferences.ui;
 }
 function settle(){if(!settleRun(world,save))return;refreshCharacters(save.progress);saveNow();resetClock();lastPanel='';}
 function titlePanel(){return titleScreen(save);}
-function settingsPanel(){const b=save.preferences.bindings;return `<h2>Opciones</h2><p>Los cambios se guardan solo en este navegador.</p><div class="settings">${[['up','Arriba'],['down','Abajo'],['left','Izquierda'],['right','Derecha'],['dash','Esquiva'],['swap','Cambiar arma'],['special','Habilidad de roce']].map(([id,label])=>`<div class="setting"><span>${label}</span><button data-bind="${id}">${waitingKey===id?'Pulsa una tecla…':keyName(b[id])}</button></div>`).join('')}<label class="setting wide">Disparo automático<input type="checkbox" data-pref="autoFire" ${save.preferences.autoFire?'checked':''}></label><label class="setting wide">Silenciar audio<input type="checkbox" data-pref="muted" ${save.preferences.muted?'checked':''}></label><label class="setting wide">Música y ambiente<input type="checkbox" data-pref="music" ${save.preferences.music?'checked':''}></label><label class="setting wide">Reducir efectos y sacudida<input type="checkbox" data-pref="reducedEffects" ${save.preferences.reducedEffects?'checked':''}></label>${[['colorblind','Paleta alternativa'],['highlightBullets','Resaltar balas enemigas'],['disableFlash','Desactivar destellos y parpadeo'],['disableShake','Desactivar sacudida'],['damageNumbers','Números de daño'],['tutorial','Consejos integrados']].map(([id,label])=>`<label class="setting wide">${label}<input type="checkbox" data-pref="${id}" ${save.preferences[id]?'checked':''}></label>`).join('')}<label class="setting wide">Tamaño visual de hitbox (colisión sin cambios)<select data-hitbox>${D.accessibility.hitboxSizes.map(n=>`<option value="${n}" ${save.preferences.hitboxScale===n?'selected':''}>×${n}</option>`).join('')}</select></label></div><p id="binding-message" role="status">Pulsa un control para reasignarlo. Esc cancela. Sin disparo automático, mantén clic izquierdo.</p><div class="actions"><button data-action="reset-controls">Restaurar controles</button><button class="primary" data-action="back">Volver</button></div>`;}
+function settingsPanel(){const b=save.preferences.bindings;return `<h2>Opciones</h2><p>Los cambios se guardan solo en este navegador.</p><div class="settings">${[['up','Arriba'],['down','Abajo'],['left','Izquierda'],['right','Derecha'],['dash','Esquiva'],['swap','Cambiar arma'],['special','Habilidad de roce']].map(([id,label])=>`<div class="setting"><span>${label}</span><button data-bind="${id}">${waitingKey===id?'Pulsa una tecla…':keyName(b[id])}</button></div>`).join('')}<label class="setting wide">Disparo automático<input type="checkbox" data-pref="autoFire" ${save.preferences.autoFire?'checked':''}></label><label class="setting wide">Silenciar audio<input type="checkbox" data-pref="muted" ${save.preferences.muted?'checked':''}></label><label class="setting wide">Música y ambiente<input type="checkbox" data-pref="music" ${save.preferences.music?'checked':''}></label><label class="setting wide">Reducir efectos y sacudida<input type="checkbox" data-pref="reducedEffects" ${save.preferences.reducedEffects?'checked':''}></label>${[['colorblind','Paleta alternativa'],['highlightBullets','Resaltar balas enemigas'],['disableFlash','Desactivar destellos y parpadeo'],['disableShake','Desactivar sacudida'],['damageNumbers','Números de daño'],['tutorial','Consejos integrados']].map(([id,label])=>`<label class="setting wide">${label}<input type="checkbox" data-pref="${id}" ${save.preferences[id]?'checked':''}></label>`).join('')}<label class="setting wide">Tamaño visual de hitbox (colisión sin cambios)<select data-hitbox>${D.accessibility.hitboxSizes.map(n=>`<option value="${n}" ${save.preferences.hitboxScale===n?'selected':''}>×${n}</option>`).join('')}</select></label></div>${mobileSettings(save.preferences.ui)}<p id="binding-message" role="status">Pulsa un control para reasignarlo. Esc cancela. Sin disparo automático, mantén clic izquierdo.</p><div class="actions"><button data-action="reset-controls">Restaurar controles</button><button class="primary" data-action="back">Volver</button></div>`;}
 function updatePanel(){
- let screen=mode==='playing'?world.status:mode;document.body.dataset.screen=screen;$('app').inert=screen!=='playing';
+ let screen=mode==='playing'?world.status:mode;if(document.body.dataset.screen!==screen){document.body.dataset.screen=screen;$('app').inert=screen!=='playing';}
  if(screen==='playing'){panel.hidden=true;lastPanel='';return;}
  const signature=screen+waitingKey+save.progress.echoes+save.progress.unlocks+world.roomId+saveError;
  if(signature===lastPanel)return;lastPanel=signature;panel.hidden=false;
@@ -77,6 +83,9 @@ function updatePanel(){
  else if(screen==='abandon')html='<h2>¿Terminar esta partida?</h2><p>Las mejoras temporales se perderán. Conservarás los ecos de las salas completadas.</p><div class="actions"><button data-action="resume">Seguir jugando</button><button data-action="confirm-abandon">Terminar</button></div>';
  else if(screen==='reward')html=`<span class="eyebrow">SALA SUPERADA</span><h2>Conserva un fragmento</h2><p>${world.zone.lore[Math.min(2,Math.floor(world.rooms[world.roomId].depth/3))]}</p><div class="cards">${world.options.map(u=>`<button class="upgrade ${u.rarity}" data-upgrade="${u.id}"><span class="rarity">${{common:'COMÚN',rare:'RARA',epic:'ÉPICA'}[u.rarity]}</span><strong>${u.name}</strong><span>${u.text}</span><small>Nivel ${world.inventory[u.id]||0} / ${u.max}</small></button>`).join('')}</div><div class="actions">${world.weaponOffer?`<button data-upgrade="weapon">Arma: ${world.weaponOffer.name} · ${world.weaponOffer.damage} daño · ${world.weaponOffer.interval} s · ${world.weaponOffer.special}</button>`:""}</div><p>Elige una mejora o el arma. Dos ranuras; Q alterna.</p>`;
  else if(screen==='dead'||screen==='won')html=`<span class="eyebrow">${screen==='won'?'ASCENSO COMPLETADO':'LA MEMORIA PERSISTE'}</span><h2>${screen==='won'?'El ciclo vuelve a girar':'Tu viaje termina aquí'}</h2><p>${screen==='won'?'Devuelves los recuerdos al ciclo. Las alturas ya no pueden olvidar a quienes sostienen su paz. Los seis guardianes han caído; cada memoria vuelve a tener un lugar.':'El depósito conserva tus ecos, pero las mejoras de esta partida se desvanecen. Cada patrón puede aprenderse.'}</p><div class="stats"><span>${timeText(world.time)}</span><span>${world.kills} enemigos</span><span>+${world.earned||0} ecos</span></div><p>Semilla: ${world.seed}</p><div class="actions"><button class="primary" data-action="restart">Nueva partida</button><button data-action="title">Inicio y desbloqueos</button></div>`;
+ if(screen==='paused')html+=helpCard('skill','Pasa cerca de las balas sin tocarlas para cargar la habilidad. Úsala cuando la barra esté llena.',save);
+ if(screen==='title')html+=helpCard('ecos','Los ecos se conservan al terminar. Úsalos en el Santuario para desbloquear equipo.',save);
+ if(screen==='map')html+=helpCard('rooms','El marco claro es tu sala. Elige una conectada después de superar el combate.',save);
  if(debugTools&&screen==='paused')html+=debugPanel();
  if(screen==='reward'||screen==='transition')html+=superButtons(world);if(screen==='reward')html+=`<button data-reroll="item" ${save.meta.rerolls>0&&!world.dailyKey?'':'disabled'}>Cambiar opciones · ${save.meta.rerolls} reintentos</button>`;
  for(const id of ['map-card','items-card'])$('ui-storage').append($(id));
@@ -88,7 +97,7 @@ function updatePanel(){
  (panel.querySelector('[data-action="begin"],[data-action="start"]')||panel.querySelector('button:not(:disabled)'))?.focus({preventScroll:true});
 }
 function updateHud(){
- const p=world.player,room=world.rooms[world.roomId];$('health').textContent='● '.repeat(p.hp)+'○ '.repeat(Math.max(0,p.maxHp-p.hp));$('dash-meter').max=p.dashRecharge||B.player.dashCooldown;$('dash-meter').value=$('dash-meter').max-p.dashCooldown;$('ability-meter').value=world.abilityCharge;$('ability-name').textContent=abilities[world.character.id].name+(world.abilityTime>0?' · activa':world.abilityCharge>=D.graze.maximum?' · lista':'');$('timer').textContent=timeText(world.time);$('room-name').textContent=`${world.zone.name} · ${room.name}`;$('weapon-name').textContent=`${currentWeapon(world).name} N${world.weaponProgress[currentWeapon(world).id].level} · ${world.weaponProgress[currentWeapon(world).id].kills}${D.evolution.thresholds[world.weaponProgress[currentWeapon(world).id].level-1]?" / "+D.evolution.thresholds[world.weaponProgress[currentWeapon(world).id].level-1]:""} bajas · ${keyName(save.preferences.bindings.swap)}: alternar · ${world.weaponSlots.map(id=>weapons[id].name).join(' / ')}`;$('world-heading').textContent=world.zone.region.split(' · ')[0];$('map-title').textContent=world.zone.name;
+ const p=world.player,room=world.rooms[world.roomId];$('dash-meter').max=p.dashRecharge||B.player.dashCooldown;$('dash-meter').value=$('dash-meter').max-p.dashCooldown;$('ability-meter').value=world.abilityCharge;$('ability-name').textContent=abilities[world.character.id].name+(world.abilityTime>0?' · activa':world.abilityCharge>=D.graze.maximum?' · lista':'');$('timer').textContent=timeText(world.time);$('room-name').textContent=`${world.zone.name} · ${room.name}`;$('world-heading').textContent=world.zone.region.split(' · ')[0];$('map-title').textContent=world.zone.name;
  $('wave').textContent=room.kind==='boss'?'Jefe':room.cleared?'Salidas abiertas':`Oleada ${Math.max(1,world.wave)} / ${room.waves}`;
  $('notice').textContent=room.cleared?(room.kind==='rest'?'Refugio: recuperas 2 de vida la primera vez.':room.kind==='start'?'Elige la primera sala en el mapa. Las puertas claras indican salidas.':world.zone.lore[Math.min(2,Math.floor(room.depth/3))]):'Esquiva los rombos. Los anillos y las líneas naranjas anuncian el próximo ataque.';
  const boss=world.enemies.find(e=>e.active&&e.type==='boss');$('boss-hud').hidden=!boss;
@@ -117,13 +126,14 @@ function updateHud(){
 }
 $('map').addEventListener('click',e=>{const button=e.target.closest('[data-room]');if(button&&!button.disabled&&travel(world,Number(button.dataset.room))){audio.play('reward');if(mode==='map')setMode('playing');input.clear();canvas.focus({preventScroll:true});updateHud();}});
 $('map-button').addEventListener('click',()=>{audio.unlock();setMode('map');updateHud();});$('items-button').addEventListener('click',()=>{audio.unlock();setMode('items');updateHud();});$('swap-button').addEventListener('click',()=>{input.swap=true;canvas.focus({preventScroll:true});});
-$('fullscreen-button').addEventListener('click',()=>{document.documentElement.requestFullscreen?.().catch(()=>{});});
+$('fullscreen-button').addEventListener('click',()=>platform.fullscreen());
 $('menu-button').addEventListener('click',()=>{audio.unlock();togglePause();});
 panel.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;audio.unlock();audio.play(target.dataset.action==='nav-back'?'uiBack':target.dataset.action==='begin'?'uiConfirm':'uiSelect');
+ if(target.dataset.dismissHelp){save.preferences.ui.dismissedHelp.push(target.dataset.dismissHelp);saveNow();lastPanel='';updatePanel();return;}
  if(target.dataset.itemDetail){showItem(world,target.dataset.itemDetail);return;}
  if(target.dataset.prepTab){preparation.tab=target.dataset.prepTab;lastPanel='';updatePanel();return;}
- if(target.dataset.prepInitial){preparation.initial=target.dataset.prepInitial;lastPanel='';updatePanel();return;}
+ if(target.dataset.prepInitial){preparation.initial=target.dataset.prepInitial;if(!world.dailyKey){save.preferences.ui.lastInitial=preparation.initial;saveNow();}lastPanel='';updatePanel();return;}
  if(target.dataset.prepCharacter){if(canSelect(save.progress,characters[target.dataset.prepCharacter])&&!world.dailyKey){save.preferences.character=target.dataset.prepCharacter;save.preferences.skin='base';save.preferences.ui.lastWeapon=characters[target.dataset.prepCharacter].weapon;saveNow();prepareRun(false,true);}return;}
  if(target.dataset.debug){if(debugTools)runDebug(target.dataset.debug);return;}
  if(target.dataset.roomAction){if(useRoom(world,target.dataset.roomAction,recalculate)){lastPanel='';lastMap='';resetClock();updatePanel();updateHud();canvas.focus({preventScroll:true});}return;}
@@ -131,7 +141,7 @@ panel.addEventListener('click',e=>{
  if(target.dataset.reroll){if(save.meta.rerolls>0&&!world.dailyKey){save.meta.rerolls--;saveNow();if(world.status==='draft'){prepareDraft(world,save);preparation.weapon=world.draft.some(g=>g.id===preparation.weapon)?preparation.weapon:world.draft[0].id;}else{const old=world.status;offerUpgrades(world);world.status=old;}lastPanel='';updatePanel();}return;}
  if(target.dataset.skin){if(!canSelect(save.progress,characters[target.dataset.skin]))return;save.preferences.character=target.dataset.skin;save.preferences.skin=target.dataset.skinStyle||'memory';saveNow();setMode('title');return;}
  if(target.dataset.super){if(claimSuper(world,target.dataset.super)){recalculate(world);if(world.status==='reward'){world.rooms[world.roomId].rewardTaken=true;world.status='playing';}lastPanel='';updatePanel();updateHud();canvas.focus({preventScroll:true});}return;}
- if(target.dataset.startWeapon&&mode==='prepare'){preparation.weapon=target.dataset.startWeapon;save.preferences.ui.lastWeapon=target.dataset.startWeapon;saveNow();lastPanel='';updatePanel();return;}
+ if(target.dataset.startWeapon&&mode==='prepare'){preparation.weapon=target.dataset.startWeapon;if(!world.dailyKey){save.preferences.ui.lastWeapon=target.dataset.startWeapon;saveNow();}lastPanel='';updatePanel();return;}
  if(target.dataset.startWeapon){if(selectStartingWeapon(world,target.dataset.startWeapon)){offerUpgrades(world);world.status='keepsake';resetClock();lastPanel='';updatePanel();updateHud();canvas.focus({preventScroll:true});}return;}
  if(target.dataset.buy){const [category,id]=target.dataset.buy.split(':');if(purchase(save,category,id)){saveNow();lastPanel='';updatePanel();}else if($('meta-message'))$('meta-message').textContent='No hay ecos suficientes o ya lo tienes.';return;}
  if(target.dataset.bossWeapon){if(world.status==='transition'&&world.bossWeapon?.id===target.dataset.bossWeapon){equipWeapon(world,target.dataset.bossWeapon);advanceWorld(world);resetClock();lastPanel='';lastMap='';updatePanel();updateHud();canvas.focus({preventScroll:true});}return;}
@@ -140,6 +150,8 @@ panel.addEventListener('click',e=>{
  if(target.dataset.bind){waitingKey=target.dataset.bind;lastPanel='';updatePanel();return;}
  if(['codex','sanctuary','arsenal','characters','settings'].includes(target.dataset.action))navigation.push(mode==='playing'?'paused':mode);
  switch(target.dataset.action){
+  case 'install-app':platform.install();break;
+  case 'update-app':platform.update();break;
   case 'codex':setMode('codex');break;
   case 'sanctuary':setMode('sanctuary');break;
   case 'arsenal':settingsReturn=mode;setMode('arsenal');break;
@@ -164,7 +176,7 @@ panel.addEventListener('click',e=>{
  updateHud();
 });
 panel.addEventListener('pointerover',e=>{if(e.pointerType==='mouse'){const b=e.target.closest('[data-item-detail]');if(b)showItem(world,b.dataset.itemDetail);}});panel.addEventListener('focusin',e=>{const b=e.target.closest('[data-item-detail]');if(b)showItem(world,b.dataset.itemDetail);});
-panel.addEventListener('change',e=>{if(mode==='prepare'&&!world.dailyKey){const u=save.preferences.ui;if(e.target.id==='difficulty-input')u.difficulty=Number(e.target.value);else if(e.target.id==='start-world')u.startWorld=Number(e.target.value);else if(e.target.dataset.pact)u.pacts=[...panel.querySelectorAll('[data-pact]:checked')].map(x=>x.dataset.pact);else if(e.target.id==='seed-input')return;else return;saveNow();prepareRun(false,true);return;}if(e.target.hasAttribute('data-hitbox')){save.preferences.hitboxScale=Number(e.target.value);saveNow();return;}const key=e.target.dataset.pref;if(key){save.preferences[key]=e.target.checked;saveNow();updateHud();}});
+panel.addEventListener('change',e=>{if(e.target.dataset.uiPref){const key=e.target.dataset.uiPref,value=e.target.type==='checkbox'?e.target.checked:e.target.type==='range'||['controlScale','resolution'].includes(key)?Number(e.target.value):e.target.value;save.preferences.ui=validateUi({...save.preferences.ui,[key]:value});saveNow();input.clear();touch.update();return;}if(mode==='prepare'&&!world.dailyKey){const u=save.preferences.ui;if(e.target.id==='difficulty-input')u.difficulty=Number(e.target.value);else if(e.target.id==='start-world')u.startWorld=Number(e.target.value);else if(e.target.dataset.pact)u.pacts=[...panel.querySelectorAll('[data-pact]:checked')].map(x=>x.dataset.pact);else if(e.target.id==='seed-input')return;else return;saveNow();prepareRun(false,true);return;}if(e.target.hasAttribute('data-hitbox')){save.preferences.hitboxScale=Number(e.target.value);saveNow();return;}const key=e.target.dataset.pref;if(key){save.preferences[key]=e.target.checked;saveNow();updateHud();}});
 window.addEventListener('keydown',e=>{
  if(mode!=='settings'||!waitingKey)return;e.preventDefault();e.stopImmediatePropagation();
  if(e.code==='Escape'){waitingKey=null;lastPanel='';updatePanel();return;}
@@ -173,11 +185,11 @@ window.addEventListener('keydown',e=>{
  save.preferences.bindings[waitingKey]=e.code;waitingKey=null;saveNow();lastPanel='';updatePanel();updateHud();
 },true);
 function autoPause(){if(mode==='playing'&&world.status==='playing')setMode('paused');input.clear();}
-window.addEventListener('blur',autoPause);document.addEventListener('visibilitychange',()=>{if(document.hidden)autoPause();});
+window.addEventListener('pagehide',autoPause);window.addEventListener('blur',autoPause);screen.orientation?.addEventListener('change',autoPause);window.addEventListener('orientationchange',autoPause);let landscape=matchMedia('(orientation: landscape)').matches;window.addEventListener('resize',()=>{const next=matchMedia('(orientation: landscape)').matches;if(next!==landscape){landscape=next;autoPause();}});document.addEventListener('visibilitychange',()=>{if(document.hidden)autoPause();});
 function resize(){const r=$('stage').getBoundingClientRect();if(!r.width||!r.height)return;const scale=Math.min(r.width/settings.width,r.height/settings.height);canvas.style.width=`${Math.floor(settings.width*scale)}px`;canvas.style.height=`${Math.floor(settings.height*scale)}px`;}
 new ResizeObserver(resize).observe($('stage'));window.addEventListener('resize',resize);resize();
 window.addEventListener('keydown',e=>{if(e.code==='F3'){e.preventDefault();debug=!debug;updateHud();}});
-if(debugTools)window.gameDiagnostics=()=>({mode,status:world.status,room:world.roomId,world:world.worldIndex,character:world.character.id,health:world.player.hp,weapon:currentWeapon(world).id,time:world.time,damage:world.damageDealt,fps,audio:audio.diagnostics()});
+if(debugTools)window.gameDiagnostics=()=>({mode,status:world.status,room:world.roomId,world:world.worldIndex,character:world.character.id,health:world.player.hp,weapon:currentWeapon(world).id,time:world.time,damage:world.damageDealt,fps,touch:touch.diagnostics(),platform:platform.diagnostics(),audio:audio.diagnostics()});
 function runDebug(action,value){
  if(!debugTools)return false;world.cheated=true;
  if(action==='echoes'){save.progress.echoes=Math.min(D.economy.maxCurrency,save.progress.echoes+D.debug.currency);saveNow();}
@@ -191,16 +203,17 @@ function runDebug(action,value){
 }
 if(debugTools)window.gameDebug={command:runDebug,world:()=>world};
 const repeatButton=document.createElement('button');repeatButton.id='repeat-challenge';repeatButton.textContent='Repetir desafío · cuesta 1 vida';repeatButton.hidden=true;canvas.parentElement.append(repeatButton);repeatButton.addEventListener('click',()=>{if(repeatChallenge(world)){lastMap='';updateHud();canvas.focus({preventScroll:true});}});
-function frame(now){const raw=(now-previous)/1000;if(raw>0&&raw<1)fps=fps*0.9+0.1/raw;const elapsed=Math.min(Math.max((now-previous)/1000,0),0.05);previous=now;
+function frame(now){touch.update();const low=lowPerformance();effectivePreferences.autoFire=input.touchActive||save.preferences.autoFire;effectivePreferences.reducedEffects=save.preferences.reducedEffects||low;const elapsed=Math.min(Math.max((now-previous)/1000,0),0.05);previous=now;
  if(mode==='playing'&&world.status==='playing'){
-  accumulator+=elapsed;while(accumulator>=settings.step){updateWorld(world,input,settings.step,save.preferences);accumulator-=settings.step;if(world.status!=='playing'){accumulator=0;break;}}
+  accumulator+=elapsed;while(accumulator>=settings.step){updateWorld(world,input,settings.step,effectivePreferences);accumulator-=settings.step;if(world.status!=='playing'){accumulator=0;break;}}
  }
  if(world.status!=='playing')world.defeat.timer=Math.max(0,world.defeat.timer-elapsed);
  // Un sonido de cada tipo por fotograma evita ráfagas de nodos de audio.
+ platform.feedback(world.events);
  for(let i=0;i<world.events.length;i++)if(world.events.indexOf(world.events[i])===i)audio.play(world.events[i],world.events[i]==='shoot'?currentWeapon(world):null);world.events.length=0;
  if(world.pendingWorld>0&&!(save.progress.bossMask&(1<<(world.pendingWorld-1)))){save.progress.bossMask|=1<<(world.pendingWorld-1);save.progress.worlds=Math.max(save.progress.worlds,Math.min(worlds.length,world.pendingWorld+1));refreshCharacters(save.progress);saveNow();}
- audio.update(world,mode==='playing'&&world.status==='playing');
+ audio.update(world,mode==='playing'&&world.status==='playing');platform.setActive(mode==='playing'&&world.status==='playing');
  if(syncDiscoveries(world,save))saveNow();
- settle();if(mode==='title')drawTitle($('title-scene'),now,save.preferences.reducedEffects||save.preferences.disableFlash);render(world,input,save.preferences);updatePanel();if(now-lastHud>150){updateHud();lastHud=now;}requestAnimationFrame(frame);
+ settle();if(now-lastDraw>=1000/(low?U.lowFps:U.normalFps)-1){const raw=(now-lastDraw)/1000;if(lastDraw&&raw>0&&raw<1)fps=fps*.9+.1/raw;lastDraw=now;if(mode==='title')drawTitle($('title-scene'),now,save.preferences.reducedEffects||save.preferences.disableFlash||low);const scale=save.preferences.ui.resolution*(low?1:Math.min(U.maxDpr,Math.max(1,Math.floor(devicePixelRatio||1))));if(scale!==drawScale){drawScale=scale;canvas.width=Math.round(settings.width*scale);canvas.height=Math.round(settings.height*scale);}canvas.getContext('2d').setTransform(scale,0,0,scale,0,0);render(world,input,effectivePreferences);}updatePanel();if(now-lastHud>150){updateHud();lastHud=now;}requestAnimationFrame(frame);
 }
-updatePanel();updateHud();requestAnimationFrame(frame);
+touch.update();updatePanel();updateHud();requestAnimationFrame(frame);

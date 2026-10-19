@@ -7,9 +7,9 @@ import {currentWeapon} from '../weapons.js';
 import {makeWeaponSprite} from '../render.js';
 const $=id=>document.getElementById(id);
 export const roomLabels={start:'Inicio',combat:'Combate',boss:'Jefe',rest:'Refugio',shop:'Tienda',altar:'Altar',judgment:'Juicio',secret:'Secreto',challenge:'Desafío',miniboss:'Minijefe'};
-export function createHud(){let itemKey='',weaponKey='',roomKey='',roomNoticeUntil=0;
+export function createHud(){let healthKey='',itemKey='',weaponKey='',roomKey='',roomNoticeUntil=0;
  return function update(w,prefs,keyName,touch=false){const p=w.player,gun=currentWeapon(w),record=w.weaponProgress[gun.id],target=D.evolution.thresholds[record.level-1],previous=D.evolution.thresholds[record.level-2]||0;
- const health=$('health');health.innerHTML=Array.from({length:p.maxHp},(_,i)=>`<span class="${i<p.hp?'heart-full':'heart-empty'}">${icon('heart',14)}</span>`).join('');health.setAttribute('aria-label',`${p.hp} de ${p.maxHp} de vida`);
+ const health=$('health');if(healthKey!==p.hp+':'+p.maxHp){healthKey=p.hp+':'+p.maxHp;health.innerHTML=Array.from({length:p.maxHp},(_,i)=>`<span class="${i<p.hp?'heart-full':'heart-empty'}">${icon('heart',14)}</span>`).join('');health.setAttribute('aria-label',`${p.hp} de ${p.maxHp} de vida`);}
  $('weapon-name').textContent=gun.name;$('weapon-name').title=gun.name;$('evolution-meter').max=target?target-previous:1;$('evolution-meter').value=target?record.kills-previous:1;$('evolution-label').textContent=target?`Nivel ${record.level} · ${record.kills}/${target} bajas`:'Nivel 4 · Forma final';
  const next=w.weaponSlots.find(id=>id!==gun.id);$('alternate-weapon').textContent=next?(touch?'Cambiar':keyName(prefs.bindings.swap))+': '+weapons[next].name:'Sin otra arma';$('swap-button').disabled=!next;$('swap-button').title=next?'Cambiar a '+weapons[next].name:'No tienes otra arma';$('swap-button').setAttribute('aria-label',$('swap-button').title);
  $('ability-label').textContent=w.abilityTime>0?'Habilidad activa':w.abilityCharge>=D.graze.maximum?'Habilidad lista':'Habilidad · roza balas';$('ability-meter').classList.toggle('ready',w.abilityCharge>=D.graze.maximum);

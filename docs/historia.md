@@ -157,3 +157,10 @@ tradición y las condiciones de los cinco superítems. El recuerdo de cada viaje
 en el historial; sus marcas no son poder infinito. La pantalla del final distingue
 el ciclo reparado de su apertura verdadera. No se añadieron regiones posteriores,
 cinemáticas largas ni nuevas mitologías aisladas en esta entrega.
+
+
+## Presentación confirmada — interfaz hasta fase 5
+La escena de título muestra una escalera de ceniza hacia una abertura de luz, con
+brasas en movimiento. Es arte original de interfaz, no una región ni un final nuevos.
+El acento acompaña infierno/purgatorio/paraíso. Los nombres y el relato de los seis
+mundos no cambian; «Esquiva» y «Habilidad» aclaran controles, no añaden poderes.
