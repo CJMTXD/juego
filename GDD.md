@@ -136,3 +136,6 @@ Resumen de muerte/victoria desglosa bajas, jefes, mundos, dificultad, pactos y p
 La derrota concede al menos 1 eco solo si hubo una baja o roce; esperar quieto no paga.
 Historial de 30 partidas, códice, estadísticas y liquidación única. Las mejoras de
 árbol suman como máximo +1 vida, +6% velocidad, +6 peso raro y -10% en precios.
+
+### Ampliación, fase 5 — dificultades y pactos (implementada)
+Cinco dificultades secuenciales: Brasa tenue, Juramento, Terraza del juicio, Esfera severa y Memoria absoluta. Vida enemiga ×1/1,12/1,24/1,38/1,55; velocidad de bala ×1/1,04/1,08/1,12/1,16; ecos ×1/1,35/1,7/2,1/2,6. Curación ×1/0,9/0,8/0,7/0,6 con conservación de fracciones. Élites hasta 40%; las dos últimas fases adicionales conservan avisos y descansos. Máximo cuatro enemigos simultáneos. Cinco pactos voluntarios combinables, +15–20% de ecos cada uno. Ganar desde el primer mundo abre la siguiente dificultad y marca al personaje; desde la tercera concede su aspecto Ascendente. Las dificultades superiores no acortan la señal previa. Pruebas: 32 casos de lógica y navegador sin errores en seis mundos; HTTP 200.

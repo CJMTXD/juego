@@ -74,6 +74,7 @@ export function createRenderer(canvas){
    if(e.pattern==='fan'){ctx.save();ctx.translate(e.x,e.y);ctx.rotate(e.angle);ctx.strokeStyle=c.orange;ctx.beginPath();ctx.moveTo(40*Math.cos(-Math.PI/6),40*Math.sin(-Math.PI/6));ctx.lineTo(160*Math.cos(-Math.PI/6),160*Math.sin(-Math.PI/6));ctx.moveTo(40*Math.cos(Math.PI/6),40*Math.sin(Math.PI/6));ctx.lineTo(160*Math.cos(Math.PI/6),160*Math.sin(Math.PI/6));ctx.stroke();ctx.restore();}
   }
   const size=e.type==='boss'?64:32;ctx.drawImage(sprites[e.type],Math.round(e.x-size/2),Math.round(e.y-size/2));
+  if(e.elite){ctx.strokeStyle=c.orange;ctx.lineWidth=2;ctx.strokeRect(e.x-17,e.y-17,34,34);}
   if(e.flash>0&&!preferences.reducedEffects){ctx.strokeStyle=c.white;ctx.strokeRect(Math.round(e.x-size/2),Math.round(e.y-size/2),size,size);}
   if(e.type==='boss'){ctx.fillStyle=c.orange;ctx.fillRect(e.x-24,e.y-32,8,8);ctx.fillRect(e.x+16,e.y-32,8,8);}
   else {ctx.fillStyle=c.outline;ctx.fillRect(e.x-14,e.y-23,28,3);ctx.fillStyle=c.bone;ctx.fillRect(e.x-14,e.y-23,28*Math.max(0,e.hp/e.maxHp),3);}
@@ -85,7 +86,7 @@ export function createRenderer(canvas){
  ctx.fillStyle=c.cyanDark;ctx.fillRect(x-4,y-4,8,8);ctx.fillStyle=c.cyan;ctx.fillRect(x-2,y-2,4,4);}
  for(const b of world.hostiles){if(!b.active)continue;const x=Math.round(b.x),y=Math.round(b.y);diamond(x,y,6,c.outline);diamond(x,y,5,b.shape?c.orange:c.red);diamond(x-1,y-1,2,c.yellow);}
  const p=world.player,x=Math.round(p.x),y=Math.round(p.y);
- if(p.invulnerable<=0||Math.floor(world.time*18)%2===0){ctx.drawImage(sprites.player,x-16,y-16);ctx.fillStyle=world.skin==='memory'?c.bone:c[world.character.color];ctx.fillRect(x-11,y+5,22,7);if(world.character.look===1){ctx.fillStyle=c.outline;ctx.fillRect(x-5,y-10,10,8);}if(world.character.look===2){ctx.fillStyle=c.cyan;ctx.fillRect(x-10,y-15,20,3);}}
+ if(p.invulnerable<=0||Math.floor(world.time*18)%2===0){ctx.drawImage(sprites.player,x-16,y-16);ctx.fillStyle=world.skin==='ascendant'?c.white:world.skin==='memory'?c.bone:c[world.character.color];ctx.fillRect(x-11,y+5,22,7);if(world.character.look===1){ctx.fillStyle=c.outline;ctx.fillRect(x-5,y-10,10,8);}if(world.character.look===2){ctx.fillStyle=c.cyan;ctx.fillRect(x-10,y-15,20,3);}}
  if(!preferences.reducedEffects)for(const p of world.particles)if(p.active){ctx.fillStyle=p.life>0.12?c.bone:c.dust;ctx.fillRect(Math.round(p.x),Math.round(p.y),2,2);}
  ctx.save();ctx.translate(x+Math.cos(p.angle)*12,y+Math.sin(p.angle)*12);ctx.rotate(p.angle+Math.PI/4);ctx.drawImage(weaponImage,-8,-8);ctx.restore();
  if(world.character.kind==='aura'){ctx.strokeStyle=c.clothLight;ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,72,0,Math.PI*2);ctx.stroke();}

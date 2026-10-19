@@ -129,3 +129,6 @@ son superítems: cada uno exige un logro en la partida y cambia el modo de comba
 Ilar devuelve posibilidades, no destinos. Las cuatro ramas del árbol son Vasija
 firme, Paso recordado, Estrella discreta y Mano del guía. Comprar fragmentos permite
 comprender que el ciclo puede abrirse en ambas direcciones; será una condición del final verdadero.
+
+### Confirmado — juramentos del ascenso
+Las dificultades son Brasa tenue, Juramento, Terraza del juicio, Esfera severa y Memoria absoluta. Los pactos del guía entregan ecos por aceptar una deuda voluntaria; ninguna deuda elimina el aviso de un ataque. Una memoria que vence desde el fondo queda marcada en el códice. Un ascenso desde Terraza del juicio o superior concede su vestimenta Ascendente.

@@ -9,7 +9,7 @@ export function validateSave(raw) {
  if (!raw || ![1,2,3].includes(raw.version)) return save;
  save.meta=validateMeta(raw.meta);
  const pref=raw.preferences;
- if(['base','memory'].includes(pref?.skin))save.preferences.skin=pref.skin;
+ if(['base','memory','ascendant'].includes(pref?.skin))save.preferences.skin=pref.skin;
  if(typeof pref?.character==='string'&&Object.hasOwn(characters,pref.character))save.preferences.character=pref.character;
  if(pref && typeof pref==='object') {
   for(const k of ['autoFire','muted','music','reducedEffects']) if(typeof pref[k]==='boolean')save.preferences[k]=pref[k];
