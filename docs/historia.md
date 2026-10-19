@@ -110,3 +110,7 @@ reconocer a quienes sostienen su paz. La campaña tiene un final real tras seis 
 Título definitivo: Lo que cae del cielo / La deuda de las alturas / Los peldaños del olvido.
 Ampliar consecuencias narrativas y finales alternativos; diálogos entre almas.
 No hay cinemáticas largas, nuevas regiones posteriores ni personajes míticos copiados.
+
+## Ampliación de profundidad — fase 1
+Propuesto: una antesala común al ascenso, custodiada por el guía original Ilar,
+que conserva recuerdos y presta equipo. Todavía no hay interfaz de santuario.

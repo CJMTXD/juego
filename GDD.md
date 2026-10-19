@@ -108,3 +108,10 @@ Servidores HTTP y sintaxis comprobados; ejecución nativa del .bat en Windows pe
 
 ## Próxima tarea
 Jugar una campaña completa en el PC del usuario para calibrar dificultad y duración real.
+
+## Profundidad — fase 1
+Respaldo c1f4d66. Configuración de progresión, dificultades, economía y límites en
+src/data/depth.js. Guardado v3 migra v1/v2 conservando monedas, opciones y desbloqueos.
+Interpretación: cuando no haya dos armas compradas, el guía prestará dos alternativas
+solo para la selección inicial; no las añade al botín ni al desbloqueo permanente.
+El arma personal también puede prestarse al personaje; su compra abre el botín global.

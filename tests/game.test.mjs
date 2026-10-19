@@ -97,7 +97,7 @@ test('personajes, habilidades y migración del guardado antiguo',async()=>{
  const {characters,canSelect,refreshCharacters}=await import('../src/data/characters.js');const progress=freshSave().progress;assert(!canSelect(progress,characters.hollow));progress.runs=3;refreshCharacters(progress);assert(progress.characters.includes('hollow'));
  const tank=createWorld(1,0,'hollow');assert.equal(tank.player.hp,6);assert.equal(damagePlayer(tank),true);assert.equal(tank.player.hp,6);tank.player.invulnerable=0;damagePlayer(tank);assert.equal(tank.player.hp,5);
  const fast=createWorld(1,0,'courier'),i=input();i.dash=true;updateWorld(fast,i,1/120,preferences());assert.equal(fast.player.radius,3);assert.equal(fast.player.dashCooldown,1.1);
- const migrated=validateSave({version:1,preferences:{autoFire:false,bindings:{up:'KeyW',down:'KeyS',left:'KeyA',right:'KeyD',dash:'Space'}},progress:{echoes:12,wins:1}});assert.equal(migrated.version,2);assert.equal(migrated.progress.echoes,12);assert.equal(migrated.preferences.autoFire,false);assert.equal(migrated.preferences.bindings.swap,'KeyQ');
+ const migrated=validateSave({version:1,preferences:{autoFire:false,bindings:{up:'KeyW',down:'KeyS',left:'KeyA',right:'KeyD',dash:'Space'}},progress:{echoes:12,wins:1}});assert.equal(migrated.version,3);assert.equal(migrated.progress.echoes,12);assert.equal(migrated.preferences.autoFire,false);assert.equal(migrated.preferences.bindings.swap,'KeyQ');
 });
 
 export function finishZone(w){
