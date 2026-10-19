@@ -146,3 +146,13 @@ empezar. No se consume partida ni se paga nada al salir de la preparación. La d
 no sobrescribe las selecciones normales. Sonidos suaves respetan silencio.
 44 pruebas de lógica y recorridos de navegador anteriores adaptados al flujo nuevo;
 título y preparación capturados en cuatro tamaños, título sin scroll ni errores.
+
+## Rediseño de interfaz — fase 4
+Campo sin columnas: HUD de vida/esquiva/habilidad, arma con icono, nivel y progreso
+separados, alternativa y botones Mapa/Mochila. Mapa e inventario abren pantalla pausada;
+viajar desde mapa y volver reanudan sin acumular tiempo. Mapa 5×5 grande, iconos
+originales, estado visitado/actual, leyenda plegable y explicación del contador.
+Mochila con iconos/cantidades y detalle por toque/foco/cursor, efectos y recetas.
+Acento por región, mensajes breves y ayuda inicial que deja de ocupar espacio.
+Capturas HUD/mapa en cuatro tamaños; pruebas de navegador recorren seis mundos,
+desvíos y final sin errores. No se cambiaron simulación, estadísticas ni guardado.
