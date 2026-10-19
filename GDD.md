@@ -136,3 +136,13 @@ segura; se conservan 640×360 lógicos. Tipografía de 16 px, apoyo ≥14 y foco
 Se reemplazó la hoja de estilos de interfaz conservando todos los identificadores
 que consume el controlador. Capturas de cuatro tamaños y navegador sin errores;
 servidor HTTP 200. El título y HUD completos se rediseñan en las siguientes fases.
+
+## Rediseño de interfaz — fase 3
+Título con escena pixel art original animada, Jugar principal, Diaria secundaria y
+navegación etiquetada. Preparación por pasos (personaje/arma/reglas) con Comenzar y
+Atrás fijos; recuerda selecciones válidas en preferencias UI v3. Dos toques Jugar →
+Comenzar conservan la mejora inicial: aparece preseleccionada y es editable antes de
+empezar. No se consume partida ni se paga nada al salir de la preparación. La diaria
+no sobrescribe las selecciones normales. Sonidos suaves respetan silencio.
+44 pruebas de lógica y recorridos de navegador anteriores adaptados al flujo nuevo;
+título y preparación capturados en cuatro tamaños, título sin scroll ni errores.
