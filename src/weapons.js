@@ -14,6 +14,7 @@ export function equipWeapon(world,id){
 export function swapWeapon(world){if(world.weaponSlots.length>1){world.weaponIndex=1-world.weaponIndex;world.fireTimer=0;world.burstLeft=0;world.charge=0;world.events.push('reward');}}
 export function currentWeapon(world){const id=world.weaponSlots[world.weaponIndex];return world.weaponForms?.[id]?.[(world.weaponProgress[id]?.level||1)-1]||weapons[id]||weapons.needle;}
 function projectile(world,gun,angle,damage){
+ if(gun.mode==='orbit'){let count=0;for(const b of world.allies)if(b.active&&b.mode==='orbit')count++;if(count>=B.weapons.maxOrbitals)return false;}
  const p=world.player;
  const bullet=emit(world.allies,p.x+Math.cos(angle)*18,p.y+Math.sin(angle)*18,angle,gun.speed*world.stats.bulletSpeed/B.projectiles.speed,gun.radius||3,damage,world.stats.pierce+(gun.pierce||0),gun.shape);
  if(bullet){bullet.weaponId=gun.id;bullet.finalEffect=gun.finalEffect||'';bullet.mode=gun.projectileMode||gun.mode;bullet.range=gun.range*(1+R.rangePerLevel*(world.inventory.reed||0))*(world.superItem==='crown'?R.crownRange:1);bullet.bounces=gun.bounces||0;if(world.superItem==='furnace'&&!['area','orbit','beam'].includes(gun.mode)){bullet.mode='bounce';bullet.bounces=R.furnaceBounces;bullet.vx*=R.furnaceSpeed;bullet.vy*=R.furnaceSpeed;bullet.radius+=R.furnaceRadius;}bullet.life=Math.min(8,bullet.range/Math.max(1,gun.speed)+0.2);bullet.turn=gun.turn||0;

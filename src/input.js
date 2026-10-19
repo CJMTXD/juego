@@ -10,7 +10,7 @@ export function createInput(canvas, getBindings, onPause) {
  });
  window.addEventListener('keyup',e=>keys.delete(e.code));
  canvas.addEventListener('pointermove',e=>{const r=canvas.getBoundingClientRect();input.mouseX=(e.clientX-r.left)*canvas.width/r.width;input.mouseY=(e.clientY-r.top)*canvas.height/r.height;});
- canvas.addEventListener('pointerdown',e=>{if(e.button===0){input.shoot=true;canvas.focus();}});
+ canvas.addEventListener('pointerdown',e=>{if(e.button===0){input.shoot=true;canvas.focus({preventScroll:true});}});
  window.addEventListener('pointerup',()=>input.shoot=false);
  canvas.addEventListener('contextmenu',e=>e.preventDefault());
  return input;

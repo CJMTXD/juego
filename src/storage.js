@@ -1,6 +1,6 @@
 import {metaDefaults,validateMeta} from './profile.js';
 import {characters} from './data/characters.js';
-import { defaults } from './data.js';
+import { defaults,upgrades } from './data.js';
 const KEY='ascenso-save-v1';
 export function freshSave() { return {version:3,meta:metaDefaults(), preferences:{character:'remender',skin:'base',bindings:{...defaults},autoFire:true, muted:false,music:true,reducedEffects:false,colorblind:false,highlightBullets:false,disableFlash:false,disableShake:false,damageNumbers:false,tutorial:true,hitboxScale:1},progress:{echoes:0,runs:0,wins:0,unlocks:0,totalEchoes:0,worlds:1,bossMask:0,characters:['remender']}}; }
 const validKey = key => typeof key==='string' && /^(Key[A-Z]|Digit[0-9]|Arrow(Up|Down|Left|Right)|Space|ShiftLeft|ShiftRight)$/.test(key);
@@ -28,6 +28,7 @@ export function validateSave(raw) {
  if(raw.version===1&&save.progress.wins>0){save.progress.bossMask|=1;save.progress.worlds=Math.max(2,save.progress.worlds);}
  save.progress.worlds=Math.max(1,Math.min(6,save.progress.worlds));save.progress.bossMask&=63;for(let i=0;i<6;i++)if(save.progress.bossMask&(1<<i))save.progress.worlds=Math.max(save.progress.worlds,Math.min(6,i+2));
  save.progress.unlocks=Math.min(2,save.progress.unlocks);
+ for(const u of upgrades)if(u.unlock&&save.progress.unlocks>=u.unlock&&!save.meta.items.includes(u.id))save.meta.items.push(u.id);
  return save;
 }
 export function loadSave(sandbox=false) { try {return {save:validateSave(JSON.parse(localStorage.getItem(sandbox?'ascenso-debug-v3':KEY))),error:false};}catch{return {save:freshSave(),error:true};} }

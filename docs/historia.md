@@ -149,3 +149,11 @@ La Memoria incandescente acompaña, no sustituye las demás elecciones. Los cat�
 de Ilar solo abren posibilidades: ni una compra concede automáticamente un superítem
 ni una vestimenta permite a un alma saltarse su desbloqueo. El Vigía y los juicios
 son desvíos voluntarios; la historia completa no exige repetir una cámara.
+
+
+### Confirmado — códice y cierre de esta ampliación
+El códice muestra las recetas descubiertas con sus ingredientes, los bonos de cada
+tradición y las condiciones de los cinco superítems. El recuerdo de cada viaje queda
+en el historial; sus marcas no son poder infinito. La pantalla del final distingue
+el ciclo reparado de su apertura verdadera. No se añadieron regiones posteriores,
+cinemáticas largas ni nuevas mitologías aisladas en esta entrega.

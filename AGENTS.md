@@ -11,9 +11,12 @@ sola zona. Respeta datos configurables, pools, arte en matrices y paleta de 24 c
 Mantén apuntado al ratón, opciones, progresión y migración de guardado.
 No presentes duración humana ni rendimiento de otros equipos como comprobados.
 
-Para cambios de combate/mapa/armas/guardado: node --test tests/game.test.mjs.
+Para cambios de combate/mapa/armas/guardado: node --test tests/game.test.mjs tests/depth.test.mjs.
 Comprueba sintaxis y respuesta HTTP; para interfaz: node tests/browser.cjs si están
-Playwright y Chromium disponibles. Actualiza GDD e historia después de cada fase;
+Playwright y Chromium disponibles; también node tests/depth-browser.cjs.
+Laboratorio ?debug=1 usa perfil aparte. Mantén los efectos de generación secundaria
+acotados, las compras antiguas al migrar y los límites configurables. Para balance:
+node scripts/weapon-balance.mjs y node scripts/campaign-balance.mjs. Actualiza GDD e historia después de cada fase;
 haz commit local por tarea con mensaje en español. Usa comandos PowerShell al usuario.
 No publiques ni hagas push salvo autorización explícita; el usuario autorizó subir
 la ampliación actual a CJMTXD/juego al terminar las comprobaciones.
