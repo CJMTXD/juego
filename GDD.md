@@ -193,3 +193,7 @@ PWA offline bajo /juego/ comprobados. Node y Python LAN responden HTTP 200.
 La emulación no sustituye un teléfono real; rendimiento físico y .bat nativo pendientes.
 Se detiene aquí, conforme a la fase 5: fases 6–8 y mando opcional quedan planeados.
 Próxima tarea: probar una partida en escritorio y celular antes de continuar el rediseño.
+
+Publicación: se integra la acción static.yml creada por el usuario durante el trabajo.
+Se conserva su configuración de Pages; se limita el artefacto a archivos del juego
+para evitar despliegues duplicados y publicar únicamente los recursos necesarios.

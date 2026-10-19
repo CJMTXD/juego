@@ -31,5 +31,5 @@ opcionales dentro de v3, nunca borrar meta/progreso. Para interfaz ejecutar tamb
 ui-layout.cjs, ui-flow.cjs, ui-screens.cjs y mobile-browser.cjs (GAME_URL permite
 otro puerto). mobile-browser por defecto usa 8040; ajustar GAME_URL a servidor activo.
 Antes de publicar, subir la versión CACHE en sw.js si cambian recursos y ejecutar
-node scripts/check-pwa.mjs. GitHub Pages usa .github/workflows/pages.yml; solo publica
+node scripts/check-pwa.mjs. GitHub Pages usa .github/workflows/static.yml; solo publica
 index, estilos, manifiesto, service worker, src y assets. No cargar secretos ni tests.
