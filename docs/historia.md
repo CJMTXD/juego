@@ -114,3 +114,8 @@ No hay cinemáticas largas, nuevas regiones posteriores ni personajes míticos c
 ## Ampliación de profundidad — fase 1
 Propuesto: una antesala común al ascenso, custodiada por el guía original Ilar,
 que conserva recuerdos y presta equipo. Todavía no hay interfaz de santuario.
+
+## Confirmado — equipo de Ilar
+Ilar presta lo que el alma todavía no posee. Comprar un recuerdo en la antesala lo
+incorpora al botín de futuras partidas. Cada arma recuerda sus propias bajas y
+muestra runas al ascender; las formas finales añaden efectos propios.

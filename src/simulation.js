@@ -1,3 +1,4 @@
+import {initEvolution,creditWeaponKill,projectileEffect} from './evolution.js';
 import {worlds} from './data/worlds.js';
 import {resetHazard,updateHazard} from './hazards.js';
 import {characters} from './data/characters.js';
@@ -13,9 +14,9 @@ export function createWorld(seed=Date.now()>>>0, unlocks=0, characterId='remende
  const zone=worlds[Math.max(0,Math.min(worlds.length-1,startWorld))];
  const rooms=generateMap(seed);for(const r of rooms)if(zone.rooms?.[r.id])r.name=zone.rooms[r.id];
  const character=Object.hasOwn(characters,characterId)?characters[characterId]:characters.remender;
- return {checkpointBoost:startWorld>0,zone,worldIndex:Math.max(0,Math.min(worlds.length-1,startWorld)),pendingWorld:0,zoneCleared:0,roomTime:0,hazardClock:0,hazardPhase:0,environmentSlow:1,mirrorPositions:[200,440],hazardPositions:[[210,120],[430,240]],mark:{active:false,x:0,y:0,radius:38,timer:0},character,shield:character.kind==='shield',seed,random:seededRandom(seed^0x12345678),unlocks,rooms,roomId:0,player:{x:320,y:180,radius:character.radius,angle:0,hp:character.health,maxHp:character.health,invulnerable:0,dashTime:0,dashCooldown:0,dx:1,dy:0},
+ const world={checkpointBoost:startWorld>0,zone,worldIndex:Math.max(0,Math.min(worlds.length-1,startWorld)),pendingWorld:0,zoneCleared:0,roomTime:0,hazardClock:0,hazardPhase:0,environmentSlow:1,mirrorPositions:[200,440],hazardPositions:[[210,120],[430,240]],mark:{active:false,x:0,y:0,radius:38,timer:0},character,shield:character.kind==='shield',seed,random:seededRandom(seed^0x12345678),unlocks,rooms,roomId:0,player:{x:320,y:180,radius:character.radius,angle:0,hp:character.health,maxHp:character.health,invulnerable:0,dashTime:0,dashCooldown:0,dx:1,dy:0},
   allies:createBulletPool(s.bulletCapacity),hostiles:createBulletPool(s.enemyCapacity),enemies:Array.from({length:B.campaign.enemyPool},(_,id)=>({id,active:false,type:'keeper',x:0,y:0,radius:12,hp:0,maxHp:0,timer:0,warning:false,destX:0,destY:0,pattern:'ring',angle:0,offset:0,phase:0,flash:0,behavior:'stay',speed:0,charge:0,targetX:0,targetY:0})),inventory:{},weaponSlots:[character.weapon],weaponIndex:0,cooldowns:Object.fromEntries(Object.keys(weapons).map(id=>[id,0])),weaponOffer:null,burstLeft:0,burstTimer:0,charge:0,stats:{speed:character.speed,damage:character.damage*(1+startWorld*B.campaign.checkpointDamage),interval:B.projectiles.interval,bulletSpeed:B.projectiles.speed,pierce:0,side:0},
-  hitStop:0,effectsEnabled:true,particles:Array.from({length:B.campaign.particlePool},()=>({active:false,x:0,y:0,vx:0,vy:0,life:0})),damageBuckets:new Float64Array(B.campaign.metricsWindow),damageSecond:0,damageDealt:0,status:'playing',time:0,kills:0,cleared:0,wave:0,spawnTimer:0,fireTimer:0,enemyId:0,options:[],events:[],shake:0,settled:false,exitLock:0.5,bossPhase:0};
+  hitStop:0,effectsEnabled:true,particles:Array.from({length:B.campaign.particlePool},()=>({active:false,x:0,y:0,vx:0,vy:0,life:0})),damageBuckets:new Float64Array(B.campaign.metricsWindow),damageSecond:0,damageDealt:0,status:'playing',time:0,kills:0,cleared:0,wave:0,spawnTimer:0,fireTimer:0,enemyId:0,options:[],events:[],shake:0,settled:false,exitLock:0.5,bossPhase:0};initEvolution(world);return world;
 }
 export function recalculate(world) {
  const i=world.inventory,character=world.character;
@@ -76,7 +77,7 @@ function spawnWave(world){
   const pos=choices[Math.floor(world.random()*choices.length)],data=world.zone.enemies[Math.floor(world.random()*world.zone.enemies.length)],boss=room.kind==='boss';
   const e=world.enemies.find(e=>!e.active);if(!e)break;
   const hp=boss?world.zone.boss.health:(data.health+Math.floor(room.depth/B.encounters.healthDepth))*world.zone.health;
-  e.active=true;e.id=world.enemies.indexOf(e);for(const b of world.allies)b.hits&=~(1<<e.id);e.type=boss?'boss':data.id;e.x=pos[0];e.y=pos[1];e.radius=boss?24:data.radius;e.hp=hp;e.maxHp=hp;e.timer=B.encounters.initialAttack+i*B.encounters.attackStagger;e.warning=false;e.pattern=boss?world.zone.boss.patterns[0]:data.pattern;e.angle=0;e.offset=world.random()*Math.PI*2;e.phase=0;e.flash=0;e.behavior=boss?(world.zone.boss.behavior||'stay'):data.behavior;e.speed=boss?(world.zone.boss.speed||0):data.speed;e.charge=0;e.targetX=p.x;e.targetY=p.y;e.destX=0;e.destY=0;
+  e.active=true;e.id=world.enemies.indexOf(e);for(const b of world.allies)b.hits&=~(1<<e.id);e.type=boss?'boss':data.id;e.x=pos[0];e.y=pos[1];e.radius=boss?24:data.radius;e.hp=hp;e.maxHp=hp;e.timer=B.encounters.initialAttack+i*B.encounters.attackStagger;e.warning=false;e.pattern=boss?world.zone.boss.patterns[0]:data.pattern;e.angle=0;e.offset=world.random()*Math.PI*2;e.phase=0;e.flash=0;e.slowTime=0;e.behavior=boss?(world.zone.boss.behavior||'stay'):data.behavior;e.speed=boss?(world.zone.boss.speed||0):data.speed;e.charge=0;e.targetX=p.x;e.targetY=p.y;e.destX=0;e.destY=0;
  }
  world.events.push('spawn');
 }
@@ -118,6 +119,7 @@ function attack(world,e){
 }
 function updateEnemy(world,e,dt){
  if(!e.active)return;
+ e.slowTime=Math.max(0,(e.slowTime||0)-dt);const moveDt=e.slowTime>0?dt*0.6:dt;
  const p=world.player;e.flash=Math.max(0,e.flash-dt);
  if(e.type==='boss'){
   const phase=e.hp/e.maxHp>B.encounters.phaseThresholds[0]?0:e.hp/e.maxHp>B.encounters.phaseThresholds[1]?1:2;
@@ -130,16 +132,17 @@ function updateEnemy(world,e,dt){
   if(pattern.mode==='sweep')e.angle+=Math.sin(e.offset)*0.25;
   if(world.zone.boss.mechanic==='teleport'||e.behavior==='blink'){e.destX=e.x<320?512:128;e.destY=e.y<180?270:90;}}
  if(e.timer<=0){attack(world,e);e.warning=false;e.timer=pattern.interval;}
- if(e.behavior==='seek'&&!e.warning){const angle=Math.atan2(p.y-e.y,p.x-e.x);const distance=Math.hypot(p.x-e.x,p.y-e.y);if(distance>165){e.x+=Math.cos(angle)*e.speed*dt;e.y+=Math.sin(angle)*e.speed*dt;}}
- if(!e.warning&&e.behavior==='strafe'){e.x=clamp(e.x+Math.cos(world.time+e.id)*e.speed*dt,60,580);}
- if(!e.warning&&e.behavior==='flee'&&Math.hypot(p.x-e.x,p.y-e.y)<180){const a=Math.atan2(e.y-p.y,e.x-p.x);e.x=clamp(e.x+Math.cos(a)*e.speed*dt,60,580);e.y=clamp(e.y+Math.sin(a)*e.speed*dt,60,300);}
- if(!e.warning&&e.behavior==='orbit'){const a=Math.atan2(e.y-p.y,e.x-p.x)+Math.PI/2;e.x=clamp(e.x+Math.cos(a)*e.speed*dt,60,580);e.y=clamp(e.y+Math.sin(a)*e.speed*dt,60,300);}
+ if(e.behavior==='seek'&&!e.warning){const angle=Math.atan2(p.y-e.y,p.x-e.x);const distance=Math.hypot(p.x-e.x,p.y-e.y);if(distance>165){e.x+=Math.cos(angle)*e.speed*moveDt;e.y+=Math.sin(angle)*e.speed*moveDt;}}
+ if(!e.warning&&e.behavior==='strafe'){e.x=clamp(e.x+Math.cos(world.time+e.id)*e.speed*moveDt,60,580);}
+ if(!e.warning&&e.behavior==='flee'&&Math.hypot(p.x-e.x,p.y-e.y)<180){const a=Math.atan2(e.y-p.y,e.x-p.x);e.x=clamp(e.x+Math.cos(a)*e.speed*moveDt,60,580);e.y=clamp(e.y+Math.sin(a)*e.speed*moveDt,60,300);}
+ if(!e.warning&&e.behavior==='orbit'){const a=Math.atan2(e.y-p.y,e.x-p.x)+Math.PI/2;e.x=clamp(e.x+Math.cos(a)*e.speed*moveDt,60,580);e.y=clamp(e.y+Math.sin(a)*e.speed*moveDt,60,300);}
  if(!e.warning&&e.behavior==='blink'&&e.timer>patterns[e.pattern].interval-0.1&&Math.hypot(e.destX-p.x,e.destY-p.y)>140){e.x=e.destX;e.y=e.destY;e.destX=e.x;e.destY=e.y;}
  if(e.type==='boss'&&e.charge>0){e.charge-=dt;e.x=clamp(e.x+Math.cos(e.angle)*210*dt,55,585);e.y=clamp(e.y+Math.sin(e.angle)*210*dt,55,305);}
  if(e.type==='boss'&&world.zone.boss.mechanic==='tide'&&!e.warning){e.x=clamp(e.x+Math.cos(world.time*0.8)*25*dt,100,540);}
  if(Math.hypot(p.x-e.x,p.y-e.y)<p.radius+e.radius)damagePlayer(world);
 }
-function killEnemy(world,e){
+function killEnemy(world,e,weaponId=null){
+ creditWeaponKill(world,weaponId);
  e.active=false;world.kills++;world.events.push('kill');
  if(world.effectsEnabled){world.hitStop=0.025;let count=0;for(const p of world.particles){if(!p.active){p.active=true;p.x=e.x;p.y=e.y;p.vx=Math.cos(count*2.4)*55;p.vy=Math.sin(count*2.4)*55;p.life=0.25;if(++count===4)break;}}}
  if(!world.enemies.some(item=>item.active))world.spawnTimer=B.encounters.waveDelay;
@@ -147,14 +150,15 @@ function killEnemy(world,e){
 }
 function moveBullets(world,bullets,dt,allied){
  for(const b of bullets){
-  if(!b.active)continue;b.age+=dt;b.delay=Math.max(0,b.delay-dt);
+  if(!b.active)continue;b.age+=dt;b.pulseTimer-=dt;if(b.finalEffect==='quake'&&b.delay<=0&&b.pulseTimer<=0){b.hits=0;b.pierce=15;b.pulseTimer=0.2;}b.delay=Math.max(0,b.delay-dt);
   if(allied&&b.mode==='homing'){let target=null,distance=Infinity;for(const e of world.enemies)if(e.active){const d=(e.x-b.x)**2+(e.y-b.y)**2;if(d<distance){distance=d;target=e;}}if(target){const aim=Math.atan2(target.y-b.y,target.x-b.x),angle=Math.atan2(b.vy,b.vx),difference=Math.atan2(Math.sin(aim-angle),Math.cos(aim-angle)),next=angle+clamp(difference,-b.turn*dt,b.turn*dt),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(next)*speed;b.vy=Math.sin(next)*speed;}}
-  if(allied&&b.mode==='boomerang'&&b.age>B.weapons.returnDelay){if(!b.returned){b.hits=0;b.returned=true;}const angle=Math.atan2(world.player.y-b.y,world.player.x-b.x),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(angle)*speed;b.vy=Math.sin(angle)*speed;if(Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.weapons.returnCatch)b.active=false;}
+  if(allied&&b.mode==='boomerang'&&b.age>B.weapons.returnDelay){if(!b.returned){b.hits=0;b.returned=true;}const angle=Math.atan2(world.player.y-b.y,world.player.x-b.x),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(angle)*speed;b.vy=Math.sin(angle)*speed;if(Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.weapons.returnCatch){if(b.finalEffect==='moon'){b.mode='orbit';b.finalEffect='';b.orbitRadius=40;b.life=0.7;b.vx=0;b.vy=0;b.hits=0;b.pierce=2;}else b.active=false;}}
   if(b.mode==='curve'){const a=Math.atan2(b.vy,b.vx)+b.turn*dt,speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;}
   b.px=b.x;b.py=b.y;b.x+=b.vx*dt*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.characters.auraRadius?B.characters.auraFactor:1);b.y+=b.vy*dt*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.characters.auraRadius?B.characters.auraFactor:1);b.life-=dt;if(allied&&b.mode==='orbit'){b.orbit+=B.weapons.orbitSpeed*dt;b.x=world.player.x+Math.cos(b.orbit)*b.orbitRadius;b.y=world.player.y+Math.sin(b.orbit)*b.orbitRadius;}
+  if(allied&&b.finalEffect==='reflect'&&world.reflectCooldown<=0){for(const hostile of world.hostiles)if(hostile.active&&Math.hypot(hostile.x-b.x,hostile.y-b.y)<12){hostile.active=false;world.reflectCooldown=0.2;const reflected=emit(world.allies,b.x,b.y,world.player.angle,340,3,b.damage*0.3);if(reflected){reflected.weaponId=b.weaponId;reflected.generation=1;}break;}}
   if(b.mode==='sine'){b.x+=Math.cos(b.turn+Math.PI/2)*Math.sin((8-b.life)*5)*32*dt;b.y+=Math.sin(b.turn+Math.PI/2)*Math.sin((8-b.life)*5)*32*dt;}
   b.distance+=Math.hypot(b.vx,b.vy)*dt;
-  if(b.mode==='bounce'&&b.bounces>0&&(b.x<24||b.x>616||b.y<24||b.y>336)){if(b.x<24||b.x>616){b.vx=-b.vx;b.x=clamp(b.x,24,616);}if(b.y<24||b.y>336){b.vy=-b.vy;b.y=clamp(b.y,24,336);}b.bounces--;}
+  if(b.mode==='bounce'&&b.bounces>0&&(b.x<24||b.x>616||b.y<24||b.y>336)){if(b.x<24||b.x>616){b.vx=-b.vx;b.x=clamp(b.x,24,616);}if(b.y<24||b.y>336){b.vy=-b.vy;b.y=clamp(b.y,24,336);}b.bounces--;if(!b.bounces&&b.finalEffect==='return'){b.mode='boomerang';b.age=0.66;}}
   if(b.distance>b.range){const length=Math.hypot(b.x-b.px,b.y-b.py),ratio=length?Math.max(0,(b.range-(b.distance-length))/length):0;b.x=b.px+(b.x-b.px)*ratio;b.y=b.py+(b.y-b.py)*ratio;b.life=0;}if(!b.active||b.delay>0)continue;
   if(!allied&&world.zone.hazard==='mirrors'&&world.hazardPhase===2&&!b.reflected&&b.y>70&&b.y<290){for(const x of world.mirrorPositions)if((b.px-x)*(b.x-x)<0){b.vx=-b.vx;b.x=b.px;b.reflected=true;break;}}
   if(allied){
@@ -163,7 +167,7 @@ function moveBullets(world,bullets,dt,allied){
     const bit=1<<(e.id%30);
     if(!e.active||(b.hits&bit)||!sweptHit(b.px,b.py,b.x,b.y,e.x,e.y,e.radius+b.radius))continue;
     const dealt=b.damage*(world.character.kind==='light'&&world.player.hp===world.player.maxHp?B.characters.fullHealthDamage:1);world.damageDealt+=Math.min(e.hp,dealt);world.damageBuckets[Math.floor(world.time)%B.campaign.metricsWindow]+=Math.min(e.hp,dealt);e.hp-=dealt;e.flash=0.08;b.hits|=bit;world.events.push('hit');
-    if(e.hp<=0)killEnemy(world,e);
+    projectileEffect(world,b,e);if(e.hp<=0)killEnemy(world,e,b.weaponId);
     if(b.pierce<=0){b.active=false;break;}b.pierce--;
    }
   }else{const p=world.player;if(sweptHit(b.px,b.py,b.x,b.y,p.x,p.y,p.radius+b.radius)&&damagePlayer(world,b.damage))b.active=false;}
@@ -172,7 +176,7 @@ function moveBullets(world,bullets,dt,allied){
 }
 export function updateWorld(world,input,dt,preferences){
  if(world.status!=='playing')return;
- world.effectsEnabled=!preferences.reducedEffects;
+ world.effectsEnabled=!preferences.reducedEffects;world.evolutionPulse=Math.max(0,world.evolutionPulse-dt);world.reflectCooldown=Math.max(0,world.reflectCooldown-dt);
  if(world.hitStop>0){world.hitStop=Math.max(0,world.hitStop-dt);return;}
  const second=Math.floor(world.time);if(second!==world.damageSecond){world.damageBuckets[second%B.campaign.metricsWindow]=0;world.damageSecond=second;}
  for(const p of world.particles)if(p.active){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;if(p.life<=0)p.active=false;}

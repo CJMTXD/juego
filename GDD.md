@@ -115,3 +115,10 @@ src/data/depth.js. Guardado v3 migra v1/v2 conservando monedas, opciones y desbl
 Interpretación: cuando no haya dos armas compradas, el guía prestará dos alternativas
 solo para la selección inicial; no las añade al botín ni al desbloqueo permanente.
 El arma personal también puede prestarse al personaje; su compra abre el botín global.
+
+## Profundidad — fase 2
+Armas comprables con ecos, botín limitado a compras y selección de tres (incluye
+préstamos declarados si faltan alternativas). 40 formas, 100/250/500 bajas por arma;
+contadores conservados al cambiar. La selección personal garantiza su arma sin abrir
+el botín global. scripts/weapon-balance.mjs imprime la tabla de daño.
+Las formas conservan un disparo centrado: una evolución no debe crear un hueco al apuntar.

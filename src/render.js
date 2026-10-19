@@ -37,7 +37,7 @@ const weaponMasks=[
  ['...XX...','.X.XX.X.','..XXXX..','XXXXXXXX','XXXXXXXX','..XXXX..','.X.XX.X.','...XX...'],
  ['...XXXX.','..XX....','.XX.....','XX......','.XX.....','..XX....','...XXXX.','........']
 ];
-export function makeWeaponSprite(gun){const image=document.createElement('canvas');image.width=16;image.height=16;const ctx=image.getContext('2d'),mask=weaponMasks[gun.shape%weaponMasks.length];for(let y=0;y<8;y++)for(let x=0;x<8;x++)if(mask[y][x]==='X'){ctx.fillStyle=c.outline;ctx.fillRect(x*2-1,y*2-1,4,4);}for(let y=0;y<8;y++)for(let x=0;x<8;x++)if(mask[y][x]==='X'){ctx.fillStyle=(x+y)%3?c.cyan:c.bone;ctx.fillRect(x*2,y*2,2,2);}return image;}
+export function makeWeaponSprite(gun){const image=document.createElement('canvas');image.width=16;image.height=16;const ctx=image.getContext('2d'),mask=weaponMasks[gun.shape%weaponMasks.length];for(let y=0;y<8;y++)for(let x=0;x<8;x++)if(mask[y][x]==='X'){ctx.fillStyle=c.outline;ctx.fillRect(x*2-1,y*2-1,4,4);}for(let y=0;y<8;y++)for(let x=0;x<8;x++)if(mask[y][x]==='X'){ctx.fillStyle=(x+y)%3?c.cyan:c.bone;ctx.fillRect(x*2,y*2,2,2);}if(gun.level>1){ctx.fillStyle=c.bone;for(let n=0;n<gun.level;n++)ctx.fillRect(n*4,14,2,2);if(gun.level===4){ctx.strokeStyle=c.cyan;ctx.strokeRect(0.5,0.5,15,15);}}return image;}
 export function makeEnemySprite(worldIndex,kind,boss=false){return sprite(creatureRows(kind,worldIndex),boss?64:32);}
 export function drawPortrait(canvas,character){canvas.width=32;canvas.height=32;const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.drawImage(sprite(characterRows(character)),0,0);ctx.fillStyle=c[character.color];ctx.fillRect(5,21,22,7);}
 export function createRenderer(canvas){
@@ -53,7 +53,7 @@ export function createRenderer(canvas){
  if(loadedZone!==world.zone.id){loadedZone=world.zone.id;f.lineWidth=1;f.fillStyle=world.zone.floor;f.fillRect(20,20,600,320);for(let y=20;y<340;y+=16)for(let x=20;x<620;x+=16){f.strokeStyle=world.zone.detail;f.strokeRect(x+0.5,y+0.5,16,16);if(world.zone.tile===1&&(x+y)%32===8){f.fillStyle=world.zone.accent;f.fillRect(x+3,y+7,8,2);}}f.strokeStyle=c.lightStone;f.lineWidth=3;f.strokeRect(18.5,18.5,603,323);for(const key of Object.keys(sprites))if(!['player','keeper','mourner','boss'].includes(key))delete sprites[key];for(let i=0;i<world.zone.enemies.length;i++){sprites[world.zone.enemies[i].id]=sprite(creatureRows(i,world.worldIndex));}sprites.boss=sprite(creatureRows(3,world.worldIndex),64);
  for(let y=36;y<325;y+=32)for(let x=36;x<605;x+=32){f.fillStyle=world.zone.accent;const tile=world.zone.tile;if(tile===2){f.fillRect(x,y,12,2);f.fillRect(x+5,y-4,2,10);}if(tile===3){f.fillRect(x,y,2,10);f.fillRect(x-3,y+3,8,2);}if(tile===4){f.strokeStyle=world.zone.detail;f.strokeRect(x,y,10,10);}if(tile===5){f.fillRect(x,y,2,6);f.fillRect(x-2,y+2,6,2);}}}
  if(loadedCharacter!==world.character.id){loadedCharacter=world.character.id;sprites.player=sprite(characterRows(world.character));}
- const gun=currentWeapon(world);if(loadedWeapon!==gun.id){loadedWeapon=gun.id;weaponImage=makeWeaponSprite(gun);}
+ const gun=currentWeapon(world);if(loadedWeapon!==gun.id+':'+gun.level){loadedWeapon=gun.id+':'+gun.level;weaponImage=makeWeaponSprite(gun);}
  ctx.imageSmoothingEnabled=false;ctx.save();
  if(world.shake>0&&!preferences.reducedEffects)ctx.translate(Math.round(Math.sin(world.time*160)*2),Math.round(Math.cos(world.time*140)*2));
  ctx.drawImage(floor,0,0);
@@ -89,6 +89,7 @@ export function createRenderer(canvas){
  if(!preferences.reducedEffects)for(const p of world.particles)if(p.active){ctx.fillStyle=p.life>0.12?c.bone:c.dust;ctx.fillRect(Math.round(p.x),Math.round(p.y),2,2);}
  ctx.save();ctx.translate(x+Math.cos(p.angle)*12,y+Math.sin(p.angle)*12);ctx.rotate(p.angle+Math.PI/4);ctx.drawImage(weaponImage,-8,-8);ctx.restore();
  if(world.character.kind==='aura'){ctx.strokeStyle=c.clothLight;ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,72,0,Math.PI*2);ctx.stroke();}
+ if(world.evolutionPulse>0){ctx.strokeStyle=c.bone;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,25+world.evolutionPulse*12,0,Math.PI*2);ctx.stroke();}
  if(gun.mode==='charge'&&world.charge>0){ctx.strokeStyle=c.cyan;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,20,-Math.PI/2,-Math.PI/2+Math.PI*2*world.charge/gun.interval);ctx.stroke();}
  ctx.strokeStyle=c.cyanDark;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+Math.cos(p.angle)*21,y+Math.sin(p.angle)*21);ctx.stroke();
  ctx.fillStyle=c.outline;ctx.beginPath();ctx.arc(x,y,p.radius+2,0,Math.PI*2);ctx.fill();ctx.fillStyle=c.white;ctx.beginPath();ctx.arc(x,y,p.radius,0,Math.PI*2);ctx.fill();

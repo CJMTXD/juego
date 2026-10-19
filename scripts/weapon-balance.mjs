@@ -1,0 +1,3 @@
+import {weapons} from '../src/data/weapons.js';
+import {buildForms} from '../src/evolution.js';
+const rows=[];for(const g of Object.values(weapons))for(const f of buildForms(g.id)){const returns=f.mode==='boomerang'?2:1;rows.push({arma:g.name,nivel:f.level,daño:+f.damage.toFixed(2),cantidad:f.count,intervalo:f.interval,alcance:f.range,DPS_ideal:+(f.damage*f.count/f.interval*returns).toFixed(2),riesgo:['orbit','scatter'].includes(g.mode)?'cercano':g.mode==='area'?'retardado':'distancia'});}console.table(rows);console.log('DPS ideal por ciclo: ignora fallos, penetración y efectos finales secundarios. No equivale a DPS real.');
