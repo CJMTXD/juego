@@ -9,7 +9,7 @@ export function price(save,category,id){let base=Infinity;const m=save.meta;
  if(category==='tree'&&Object.hasOwn(D.tree,id))base=D.tree[id].base*D.tree[id].growth**m.tree[id];
  if(Object.hasOwn(D.purchases,category))base=D.purchases[category];
  if(category==='bestiary')base=D.purchases.lore;
- return Math.ceil(base*(1-0.05*m.tree.discount));
+ return Math.ceil(base*(1-D.stats.discount*m.tree.discount));
 }
 export function purchase(save,category,id){const m=save.meta;let target=null;
  if(category==='weapon'&&Object.hasOwn(weapons,id))target=m.weapons;

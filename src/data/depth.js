@@ -5,7 +5,10 @@ export const depth = {
  weaponCosts:{needle:0,scatter:8,boomerang:10,burst:12,ricochet:12,homing:16,beam:18,area:18,orbit:22,charge:24},
  tree:{vitality:{name:'Vasija firme',base:18,growth:2,max:1,text:'+1 vida inicial.'},stride:{name:'Paso recordado',base:10,growth:2,max:2,text:'+3% velocidad por nivel.'},luck:{name:'Estrella discreta',base:12,growth:2,max:3,text:'+2 puntos de peso raro por nivel.'},discount:{name:'Mano del guía',base:14,growth:2,max:2,text:'-5% en compras de santuario por nivel.'}},
  purchases:{character:24,item:10,super:30,lore:3,skin:12,reroll:4},
- caps:{damage:4.2,speed:260,cadence:0.065,healingSteal:12,sets:4,super:1,pacts:5},
+ stats:{permanentSpeed:0.03,discount:0.05,luckWeight:2},
+ // Pactos/élites cambian presión y recompensa, nunca suprimen avisos.
+ pactStats:{move:1.2,health:1.15,heal:0.75,eliteHealth:1.35,eliteMove:1.15,eliteInterval:0.9,extraAngle:0.45,extraSpeed:80,minimumAttackRest:0.35},
+ caps:{health:8,pierce:6,minDash:0.8,damage:4.2,speed:260,cadence:0.065,healingSteal:12,sets:4,super:1,pacts:5},
  graze:{margin:15,charge:4,maximum:100,abilitySeconds:4,cooldown:0.12,specialKey:'KeyE'},
  rooms:{shopCost:6,altarHeal:2,altarCost:1,challengeWaves:4,challengeRepeatHealth:1,secretGraze:12,minibossHealth:80,judgmentDamage:0.15,judgmentHealthCost:1},
  accessibility:{hitboxSizes:[1,1.5,2],normal:['#FF385D','#FF922E','#FFE34B'],alternative:['#EEE1BF','#D3C3A1','#A2E1E8']},

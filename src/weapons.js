@@ -1,3 +1,5 @@
+import {relicBalance as R} from './data/relics.js';
+import {evolutionEffects as E} from './data/evolutions.js';
 import {weapons} from './data/weapons.js';
 import {emit} from './projectiles.js';
 import {balance as B} from './data/balance.js';
@@ -14,19 +16,20 @@ export function currentWeapon(world){const id=world.weaponSlots[world.weaponInde
 function projectile(world,gun,angle,damage){
  const p=world.player;
  const bullet=emit(world.allies,p.x+Math.cos(angle)*18,p.y+Math.sin(angle)*18,angle,gun.speed*world.stats.bulletSpeed/B.projectiles.speed,gun.radius||3,damage,world.stats.pierce+(gun.pierce||0),gun.shape);
- if(bullet){bullet.weaponId=gun.id;bullet.finalEffect=gun.finalEffect||'';bullet.mode=gun.projectileMode||gun.mode;bullet.range=gun.range*(1+0.1*(world.inventory.reed||0))*(world.superItem==='crown'?0.5:1);if(world.superItem==='furnace'&&!['area','orbit','beam'].includes(gun.mode)){bullet.mode='bounce';bullet.bounces=2;bullet.vx*=0.7;bullet.vy*=0.7;bullet.radius+=2;}bullet.bounces=gun.bounces||0;bullet.life=Math.min(8,bullet.range/Math.max(1,gun.speed)+0.2);bullet.turn=gun.turn||0;
+ if(bullet){bullet.weaponId=gun.id;bullet.finalEffect=gun.finalEffect||'';bullet.mode=gun.projectileMode||gun.mode;bullet.range=gun.range*(1+R.rangePerLevel*(world.inventory.reed||0))*(world.superItem==='crown'?R.crownRange:1);bullet.bounces=gun.bounces||0;if(world.superItem==='furnace'&&!['area','orbit','beam'].includes(gun.mode)){bullet.mode='bounce';bullet.bounces=R.furnaceBounces;bullet.vx*=R.furnaceSpeed;bullet.vy*=R.furnaceSpeed;bullet.radius+=R.furnaceRadius;}bullet.life=Math.min(8,bullet.range/Math.max(1,gun.speed)+0.2);bullet.turn=gun.turn||0;
  if(gun.mode==='beam'){bullet.life=0.06;bullet.pierce=15;}
- if(gun.mode==='orbit'){bullet.life=gun.duration;bullet.orbit=angle;bullet.orbitRadius=gun.orbitRadius;bullet.pierce=15;bullet.range=10000;bullet.vx=0;bullet.vy=0;}
- if(gun.mode==='area'){const a=Math.atan2(world.aimY-p.y,world.aimX-p.x),distance=Math.min(gun.range,Math.hypot(world.aimX-p.x,world.aimY-p.y));bullet.x=p.x+Math.cos(a)*distance;bullet.y=p.y+Math.sin(a)*distance;bullet.px=bullet.x;bullet.py=bullet.y;bullet.vx=0;bullet.vy=0;bullet.delay=gun.delay;bullet.life=gun.delay+0.18;bullet.radius=gun.radius;bullet.pierce=15;}
- if(gun.mode==='boomerang')bullet.life=2.2;if(gun.finalEffect==='quake')bullet.life=gun.delay+0.75;
+ if(gun.mode==='orbit'){bullet.life=gun.duration;bullet.orbit=angle;bullet.orbitRadius=gun.orbitRadius*(1+R.rangePerLevel*(world.inventory.reed||0))*(world.superItem==='crown'?R.crownRange:1);bullet.pierce=15;bullet.range=10000;bullet.vx=0;bullet.vy=0;}
+ if(gun.mode==='area'){const a=Math.atan2(world.aimY-p.y,world.aimX-p.x),distance=Math.min(bullet.range,Math.hypot(world.aimX-p.x,world.aimY-p.y));bullet.x=p.x+Math.cos(a)*distance;bullet.y=p.y+Math.sin(a)*distance;bullet.px=bullet.x;bullet.py=bullet.y;bullet.vx=0;bullet.vy=0;bullet.delay=gun.delay;bullet.life=gun.delay+0.18;bullet.radius=gun.radius;bullet.pierce=15;}
+ if(gun.mode==='boomerang')bullet.life=2.2;if(gun.finalEffect==='quake')bullet.life=gun.delay+E.quakeLife;
  if(world.weaponSlots.includes('ricochet')&&world.weaponSlots.includes('orbit'))bullet.bounces=Math.min(3,bullet.bounces+1);
  if(world.weaponSlots.includes('beam')&&world.weaponSlots.includes('needle'))bullet.pierce=Math.min(15,bullet.pierce+1);}
  return bullet;
 }
 function discharge(world,gun,damageScale=1,withSides=true){
- if(world.inventory.laurel&&world.weaponProgress[gun.id].shots%5===4)damageScale*=1.15;
+ if(world.inventory.laurel&&world.weaponProgress[gun.id].shots%R.laurelEvery===R.laurelEvery-1)damageScale*=R.laurelDamage;
  if(gun.mode==='orbit'||gun.mode==='area')damageScale*=1+world.stats.side*B.weapons.sideUtility;
  if(['orbit','area','beam'].includes(gun.mode))damageScale*=1+world.stats.pierce*B.weapons.pierceUtility;
+ if(gun.mode==='beam'&&world.inventory.prism)damageScale*=1+R.prismBeamDamage;
  const p=world.player;
  const count=gun.mode==='burst'?1:gun.count;
  const spread=world.weaponSlots.includes('scatter')&&world.weaponSlots.includes('burst')?gun.spread*0.8:gun.spread;
@@ -37,8 +40,8 @@ function discharge(world,gun,damageScale=1,withSides=true){
  // Ecos laterales limitados: no multiplican toda la escopeta o cada bala de la ráfaga.
  if(withSides&&gun.mode!=='orbit'&&gun.mode!=='area')for(let i=1;i<=world.stats.side;i++)for(const sign of [-1,1])projectile(world,gun,p.angle+sign*B.upgrades.sideAngle*i,gun.damage*world.stats.damage*Math.min(B.upgrades.sideDamage,gun.mode==='beam'?0.2:0.55)/Math.max(1,gun.count));
  if(world.weaponProgress[gun.id])world.weaponProgress[gun.id].shots++;
- if(gun.finalEffect==='backfan'&&withSides)for(let i=-1;i<=1;i++)projectile(world,gun,p.angle+Math.PI+i*0.18,gun.damage*world.stats.damage*0.18);
- if(world.combos.includes('echo_oath')&&world.weaponProgress[gun.id].shots%5===0)for(let n=-1;n<=1;n++)projectile(world,gun,p.angle+Math.PI+n*0.3,gun.damage*world.stats.damage*0.16);
+ if(gun.finalEffect==='backfan'&&withSides)for(let i=-1;i<=1;i++)projectile(world,gun,p.angle+Math.PI+i*E.backAngle,gun.damage*world.stats.damage*E.backDamage);
+ if(world.combos.includes('echo_oath')&&world.weaponProgress[gun.id].shots%R.rearEvery===0)for(let n=-1;n<=1;n++)projectile(world,gun,p.angle+Math.PI+n*R.rearAngle,gun.damage*world.stats.damage*R.rearDamage);
  world.events.push('shoot');
 }
 export function updateWeapon(world,input,dt,preferences){

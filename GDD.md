@@ -147,3 +147,18 @@ Cinco dificultades secuenciales: Brasa tenue, Juramento, Terraza del juicio, Esf
 - Historial, estadísticas y siete logros; paleta alternativa, resaltar balas, desactivar parpadeo/sacudida, números opcionales y escala visual de hitbox (no cambia colisión). Siete acciones reasignables. Música añade una capa con jefes/tres enemigos. Consejos integrados para las primeras tres partidas.
 - F3 solo muestra métricas. ?debug=1 habilita laboratorio con armas, ítems, ecos, carga, salto a mundo/jefe y API de pruebas; guardado separado `ascenso-debug-v3`. Una partida con trucos no concede recompensas ni logros.
 Pruebas: 39 casos de lógica; interfaz ampliada completa (compras, migración, diaria repetible, seis desvíos, seis jefes y final), sin errores de navegador y perfil normal intacto. Estrés mantiene pools 128/512/16/64; p95 ~10,5 ms en este entorno. No es una medición de un PC Windows ni de duración humana.
+
+
+## Profundidad — fase 7 (verificada)
+Tabla reproducible de las 40 formas y simulador de campaña en scripts/. Memoria baja
+de ×1,5 a ×1,25; su sinergia con Brasa baja de ×1,35 a ×1,15 para reducir dependencia.
+Quemadura baja a 8% por tick. Se corrigieron rebotes del Manto sobrescritos, nombres
+de bonos de tienda/duración de sets y utilidad de Junco/Prisma para orbital/rayo.
+Se centralizaron los parámetros de efectos finales, pactos, élites y superítems.
+El teletransporte común ocurre exclusivamente después de su aviso; se eliminó una
+condición que podía enviar élites a (0,0) y bloquear la campaña.
+Campañas favorables, semillas 42/123/2026: 12,65/12,29/13,01 min base; dificultad máxima
+42: 21,97 min. No representan duración humana: objetivo 15–25 min sigue pendiente.
+43 pruebas de lógica, incluidas 40 formas con daño real y teletransporte seguro;
+recorridos de interfaz, seis jefes y final comprobados. Valores y límites actuales
+quedan en docs/balance.md. Paleta sin cambios.

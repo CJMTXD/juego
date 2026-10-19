@@ -36,7 +36,7 @@ export const upgrades = Object.freeze([
  {id:'fork', name:'Eco partido', rarity:'rare', max:2, text:'Añade dos balas laterales. Cada bala lateral hace 25% de daño.'},
  {id:'pierce', name:'Aguja del umbral', rarity:'rare', max:2, text:'Tus balas atraviesan un enemigo adicional por nivel.'},
  {id:'mercy', name:'Agua olvidada', rarity:'common', max:9, text:'Recupera 2 de vida. Una opción segura para continuar.'},
- {id:'halo', name:'Memoria incandescente', rarity:'epic', max:1, text:'+50% de daño. Con Brasa cautiva: otro +35% de daño.'},
+ {id:'halo', name:'Memoria incandescente', rarity:'epic', max:1, text:'+25% de daño. Con Brasa cautiva: otro +15% de daño.'},
  {id:'lens', name:'Lente del retorno', rarity:'rare', max:2, unlock:1, text:'+30% de velocidad de proyectil y +10% de daño.'},
  ...newItems,
  {id:'veil', name:'Velo del guardián', rarity:'epic', max:1, unlock:2, text:'La invulnerabilidad tras recibir daño dura 0,5 s más.'},

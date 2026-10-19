@@ -2,12 +2,12 @@
 export const mythologies={inferno:'Infierno',river:'Egipcia',threads:'Nórdica',olympus:'Olimpo',dawn:'Alba'};
 export const itemGroups={ember:'inferno',halo:'inferno',cinder:'inferno',ash:'inferno',heart:'river',mercy:'river',scale:'river',reed:'river',step:'threads',veil:'threads',knot:'threads',rune:'threads',pulse:'olympus',fork:'olympus',laurel:'olympus',oath:'olympus',lens:'dawn',pierce:'dawn',prism:'dawn',dawn:'dawn'};
 export const newItems=[
- {id:'cinder',name:'Carbón fiel',rarity:'common',max:2,text:'La quemadura de la receta dura más.'},
- {id:'ash',name:'Ceniza del regreso',rarity:'rare',max:1,shopUnlock:true,text:'El impulso recarga un 8% antes.'},
- {id:'scale',name:'Pesa vacía',rarity:'rare',max:1,shopUnlock:true,text:'Más óbolos de sala al vencer enemigos.'},
+ {id:'cinder',name:'Carbón fiel',rarity:'common',max:2,text:'Los impactos queman; cada nivel prolonga la quemadura 0,15 s.'},
+ {id:'ash',name:'Ceniza del regreso',rarity:'rare',max:1,shopUnlock:true,text:'El impulso recarga 0,12 s antes.'},
+ {id:'scale',name:'Pesa vacía',rarity:'rare',max:1,shopUnlock:true,text:'Una ficha adicional cada tres bajas.'},
  {id:'reed',name:'Junco inscrito',rarity:'common',max:2,text:'+10% al alcance de las armas por nivel.'},
  {id:'knot',name:'Nudo del paso',rarity:'common',max:1,text:'Cada roce carga un punto adicional de habilidad.'},
- {id:'rune',name:'Runa de la vuelta',rarity:'rare',max:1,shopUnlock:true,text:'El impulso recarga un 8% antes.'},
+ {id:'rune',name:'Runa de la vuelta',rarity:'rare',max:1,shopUnlock:true,text:'El impulso recarga 0,12 s antes.'},
  {id:'laurel',name:'Laurel incompleto',rarity:'common',max:1,text:'Cada quinta descarga hace un 15% más de daño.'},
  {id:'oath',name:'Juramento audible',rarity:'rare',max:1,shopUnlock:true,text:'La habilidad cargada dura un segundo más.'},
  {id:'prism',name:'Prisma sin dueño',rarity:'common',max:1,text:'+10% de velocidad de proyectiles.'},
@@ -23,10 +23,10 @@ export const recipes=[
 // Los niveles 2/3/4 se suman. Los topes globales se aplican después.
 export const sets={
  inferno:[{pieces:2,bulletSpeed:0.05},{pieces:3,burn:0.08},{pieces:4,damage:0.05}],
- river:[{pieces:2,health:1},{pieces:3,heal:0.1},{pieces:4,discount:0.1}],
+ river:[{pieces:2,health:1},{pieces:3,heal:0.1},{pieces:4,shopDiscount:0.1}],
  threads:[{pieces:2,speed:0.04},{pieces:3,dash:0.1},{pieces:4,graze:1}],
  olympus:[{pieces:2,cadence:0.03},{pieces:3,pierce:1},{pieces:4,damage:0.05}],
- dawn:[{pieces:2,bulletSpeed:0.08},{pieces:3,damage:0.04},{pieces:4,ability:0.5}],
+ dawn:[{pieces:2,bulletSpeed:0.08},{pieces:3,damage:0.04},{pieces:4,abilityDuration:0.5}],
 };
 export const superItems=[
  {id:'furnace',name:'Manto de la brasa',myth:'inferno',recipe:'living_ash',kills:100,healthCost:0,speed:0.8,damage:1.15,text:'Disparos sólidos rebotan y se ensanchan. Movimiento -20%.',shopUnlock:false,effect:'furnace'},
@@ -35,4 +35,5 @@ export const superItems=[
  {id:'crown',name:'Corona sin voz',myth:'olympus',boss:4,healthCost:1,speed:1,damage:1,text:'Invoca órbitas de protección, pero reduce el alcance de tu arma a la mitad. -1 vida.',shopUnlock:true,effect:'orbits'},
  {id:'nobody',name:'Lente de nadie',myth:'dawn',recipe:'ownerless_light',graze:80,difficulty:2,healthCost:0,speed:1,damage:1.25,text:'Tiempo enemigo al 65%. Tu vida máxima queda en 1.',shopUnlock:true,effect:'time'},
 ];
-export const relicBalance={burnSeconds:0.8,burnFraction:0.16,burnStep:0.2,mercyKills:20,mercyCap:6,vampireKills:12,trailSeconds:0.9,trailRadius:55,prismCooldown:0.7,prismDamage:0.22,prismSpeed:360,superOrbitSeconds:1.5,superOrbitDamage:1.6,superOrbitRadius:70,superOrbitLife:1.2,teleport:100,loomRecharge:2};
+// Emisiones secundarias no vuelven a activar la receta; todas respetan los pools.
+export const relicBalance={rangePerLevel:0.1,prismSpeedBonus:0.1,prismBeamDamage:0.08,cinderDuration:0.15,laurelEvery:5,laurelDamage:1.15,rearEvery:5,rearAngle:0.3,rearDamage:0.16,rearCount:3,ashRecharge:0.12,runeRecharge:0.12,slowFactor:0.6,trailSlowSeconds:0.4,furnaceBounces:2,furnaceSpeed:0.7,furnaceRadius:2,crownRange:0.5,timeFactor:0.65,superOrbitCount:3,superOrbitCap:6,superHealthHeal:1,burnSeconds:0.8,burnFraction:0.08,burnStep:0.2,mercyKills:20,mercyCap:6,vampireKills:12,trailSeconds:0.9,trailRadius:55,prismCooldown:0.7,prismDamage:0.22,prismSpeed:360,superOrbitSeconds:1.5,superOrbitDamage:1.6,superOrbitRadius:70,superOrbitLife:1.2,teleport:100,loomRecharge:2};

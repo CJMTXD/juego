@@ -142,3 +142,10 @@ Final verdadero implementado: vencer desde el fondo en Terraza del juicio o supe
 conocer tres fragmentos y visitar el archivo secreto. Se abre el ciclo en ambas
 direcciones, para que las almas elijan dónde descansar. La diaria es un recuerdo
 compartido: la misma fecha UTC recrea la misma oportunidad para todas las almas.
+
+
+### Confirmado — límites de la memoria
+La Memoria incandescente acompaña, no sustituye las demás elecciones. Los catálogos
+de Ilar solo abren posibilidades: ni una compra concede automáticamente un superítem
+ni una vestimenta permite a un alma saltarse su desbloqueo. El Vigía y los juicios
+son desvíos voluntarios; la historia completa no exige repetir una cámara.

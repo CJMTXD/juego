@@ -45,7 +45,7 @@ test('primera oleada segura, aviso antes de balas y cierre de puertas',()=>{
 
 test('recompensas sin duplicados, límites, sinergias y acceso por desbloqueo',()=>{
  const w=createWorld(4);offerUpgrades(w);assert.equal(new Set(w.options.map(u=>u.id)).size,w.options.length);assert(!w.options.some(u=>u.unlock));assert(!chooseUpgrade(w,'inventada'));assert(chooseUpgrade(w,w.options[0].id));assert(!chooseUpgrade(w,w.options[0]?.id));
- w.inventory={ember:2,halo:1,pulse:1,heart:1};recalculate(w);assert(Math.abs(w.stats.damage-3.0375)<1e-6);assert.equal(w.player.maxHp,6);const damage=w.stats.damage;recalculate(w);assert.equal(w.stats.damage,damage);
+ w.inventory={ember:2,halo:1,pulse:1,heart:1};recalculate(w);assert(Math.abs(w.stats.damage-2.15625)<1e-6);assert.equal(w.player.maxHp,6);const damage=w.stats.damage;recalculate(w);assert.equal(w.stats.damage,damage);
  for(const u of upgrades)w.inventory[u.id]=u.max;offerUpgrades(w);assert(w.options.length>0);
 });
 

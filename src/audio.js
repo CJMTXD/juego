@@ -32,7 +32,8 @@ export function createAudio(getPreferences){
    if(now>=nextBeat){
     const sequence=[0,2,1,3,2,0,3,1],index=sequence[beat%sequence.length],hz=world.zone.music[index];
     tone(hz*(world.worldIndex>=4?2:1),world.zone.tempo*0.85,world.worldIndex%2?'sine':'triangle',0.013);
-    if(world.enemies.some(e=>e.active&&e.type==='boss')||world.enemies.filter(e=>e.active).length>=3)tone(hz*2,world.zone.tempo*0.25,'triangle',0.008);
+    let activeEnemies=0,bossActive=false;for(const e of world.enemies)if(e.active){activeEnemies++;bossActive||=e.type==='boss';}
+    if(bossActive||activeEnemies>=3)tone(hz*2,world.zone.tempo*0.25,'triangle',0.008);
     if(beat%4===0)tone(world.zone.music[0]/2,world.zone.tempo*1.8,'sine',0.015);
     beat++;nextBeat=now+world.zone.tempo;
    }

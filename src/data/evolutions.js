@@ -11,3 +11,6 @@ export const forms={
  charge:[{}, {interval:0.95,damageFactor:0.9}, {count:3,spread:0.16,damageFactor:1,sideFactor:0.18}, {finalEffect:'sunfall'}],
  boomerang:[{}, {pierce:3}, {count:2,spread:0.35,damageFactor:1,sideFactor:0.3}, {finalEffect:'moon'}],
 };
+
+// Efectos finales acotados: hijos de generación 1 no generan más hijos.
+export const evolutionEffects={pulse:0.8,childSpeed:340,childRadius:3,splitAngle:0.6,splitDamage:0.22,chainDamage:0.35,frostSeconds:0.6,sunfallDamage:0.3,sunfallRadius:30,sunfallDelay:0.2,sunfallLife:0.38,backAngle:0.18,backDamage:0.18,quakeLife:0.75,quakeInterval:0.2,reflectRange:12,reflectCooldown:0.2,reflectDamage:0.3,moonRadius:40,moonLife:0.7,moonPierce:2};

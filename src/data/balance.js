@@ -9,5 +9,5 @@ export const balance = Object.freeze({
  projectiles:{allyCapacity:128,enemyCapacity:512,life:8,allyRadius:3,enemyRadius:4,speed:360,interval:0.2},
  encounters:{spawnDelay:1.4,waveDelay:1.3,spawnDistance:125,enemySpacing:80,enemyCap:3,initialAttack:1,attackStagger:0.7,healthDepth:3,bossHealth:180,bossRadius:24,phaseThresholds:[0.66,0.33],bossSpeedStep:5,bossRest:1.5},
  progression:{bossWeights:{common:0,rare:65,epic:35},weights:{common:70,rare:25,epic:5},unlockCosts:[5,10],winEchoes:6,restHeal:2,entryGrace:1.5,exitLock:0.7},
- upgrades:{step:0.12,ember:0.25,lensDamage:0.1,lensSpeed:0.3,pulse:0.12,halo:1.5,synergy:1.35,veil:0.5,sideDamage:0.25,sideAngle:0.13},
+ upgrades:{step:0.12,ember:0.25,lensDamage:0.1,lensSpeed:0.3,pulse:0.12,halo:1.25,synergy:1.15,veil:0.5,sideDamage:0.25,sideAngle:0.13},
 });
