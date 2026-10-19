@@ -10,7 +10,7 @@ const fs=require('node:fs');
   assert.equal((await page.goto('http://127.0.0.1:8000/?debug=1')).status(),200);
   await page.locator('[data-action="characters"]').click();assert.equal(await page.locator('[data-character]').count(),5);assert.equal(await page.locator('[data-character]:disabled').count(),4);
   await page.locator('[data-action="title"]').click();await page.locator('[data-action="arsenal"]').click();assert.equal(await page.locator('[data-weapon-icon]').count(),10);await page.locator('[data-action="back"]').click();
-  await page.evaluate(()=>{const data=JSON.parse(localStorage.getItem('ascenso-save-v1')||'null')||{version:2};data.progress={echoes:20,runs:3,wins:1,unlocks:2,totalEchoes:20,worlds:6,bossMask:63,characters:['remender','hollow','courier','weaver','witness']};localStorage.setItem('ascenso-save-v1',JSON.stringify(data));});
+  await page.evaluate(()=>{const data=JSON.parse(localStorage.getItem('ascenso-debug-v3')||'null')||{version:2};data.progress={echoes:20,runs:3,wins:1,unlocks:2,totalEchoes:20,worlds:6,bossMask:63,characters:['remender','hollow','courier','weaver','witness']};localStorage.setItem('ascenso-debug-v3',JSON.stringify(data));});
   const characters=['remender','hollow','courier','weaver','witness'];
   for(let zone=0;zone<6;zone++){
    await page.reload();await page.locator('[data-action="characters"]').click();await page.locator(`[data-character="${characters[zone%5]}"]`).click();await page.locator('#start-world').selectOption(String(zone));await page.locator('#seed-input').fill('42');await page.locator('[data-action="start"]').click();await page.locator('[data-start-weapon]').first().click();await page.locator('[data-initial-item]').first().click();await page.waitForTimeout(200);

@@ -108,12 +108,9 @@ reconocer a quienes sostienen su paz. La campaña tiene un final real tras seis 
 
 ## Propuesto, no implementado ni confirmado
 Título definitivo: Lo que cae del cielo / La deuda de las alturas / Los peldaños del olvido.
-Ampliar consecuencias narrativas y finales alternativos; diálogos entre almas.
+Ampliar consecuencias narrativas y diálogos entre almas; no hay más finales implementados aparte del normal y verdadero.
 No hay cinemáticas largas, nuevas regiones posteriores ni personajes míticos copiados.
 
-## Ampliación de profundidad — fase 1
-Propuesto: una antesala común al ascenso, custodiada por el guía original Ilar,
-que conserva recuerdos y presta equipo. Todavía no hay interfaz de santuario.
 
 ## Confirmado — equipo de Ilar
 Ilar presta lo que el alma todavía no posee. Comprar un recuerdo en la antesala lo
@@ -128,7 +125,20 @@ son superítems: cada uno exige un logro en la partida y cambia el modo de comba
 ## Confirmado — la antesala
 Ilar devuelve posibilidades, no destinos. Las cuatro ramas del árbol son Vasija
 firme, Paso recordado, Estrella discreta y Mano del guía. Comprar fragmentos permite
-comprender que el ciclo puede abrirse en ambas direcciones; será una condición del final verdadero.
+comprender que el ciclo puede abrirse en ambas direcciones; es una condición del final verdadero.
 
 ### Confirmado — juramentos del ascenso
 Las dificultades son Brasa tenue, Juramento, Terraza del juicio, Esfera severa y Memoria absoluta. Los pactos del guía entregan ecos por aceptar una deuda voluntaria; ninguna deuda elimina el aviso de un ataque. Una memoria que vence desde el fondo queda marcada en el códice. Un ascenso desde Terraza del juicio o superior concede su vestimenta Ascendente.
+
+## Confirmado — el regreso compartido
+Las habilidades de roce evocan lo que cada alma sabe hacer: remendar, contener,
+llegar a tiempo, tejer intervalos y testificar. El Mercado de las voces vende recuerdos
+por fichas efímeras; un juicio deja escoger entre deuda y poder. La Cámara de la
+deuda permite volver a arriesgar vida; el Vigía protege el último umbral lateral.
+El Archivo sin nombre conserva esta frase: «No hay dioses distintos: hay nombres
+distintos para la misma memoria». Sus fragmentos unen los seis mundos.
+
+Final verdadero implementado: vencer desde el fondo en Terraza del juicio o superior,
+conocer tres fragmentos y visitar el archivo secreto. Se abre el ciclo en ambas
+direcciones, para que las almas elijan dónde descansar. La diaria es un recuerdo
+compartido: la misma fecha UTC recrea la misma oportunidad para todas las almas.

@@ -2,7 +2,7 @@ import {metaDefaults,validateMeta} from './profile.js';
 import {characters} from './data/characters.js';
 import { defaults } from './data.js';
 const KEY='ascenso-save-v1';
-export function freshSave() { return {version:3,meta:metaDefaults(), preferences:{character:'remender',skin:'base',bindings:{...defaults},autoFire:true, muted:false,music:true,reducedEffects:false},progress:{echoes:0,runs:0,wins:0,unlocks:0,totalEchoes:0,worlds:1,bossMask:0,characters:['remender']}}; }
+export function freshSave() { return {version:3,meta:metaDefaults(), preferences:{character:'remender',skin:'base',bindings:{...defaults},autoFire:true, muted:false,music:true,reducedEffects:false,colorblind:false,highlightBullets:false,disableFlash:false,disableShake:false,damageNumbers:false,tutorial:true,hitboxScale:1},progress:{echoes:0,runs:0,wins:0,unlocks:0,totalEchoes:0,worlds:1,bossMask:0,characters:['remender']}}; }
 const validKey = key => typeof key==='string' && /^(Key[A-Z]|Digit[0-9]|Arrow(Up|Down|Left|Right)|Space|ShiftLeft|ShiftRight)$/.test(key);
 export function validateSave(raw) {
  const save=freshSave();
@@ -12,9 +12,11 @@ export function validateSave(raw) {
  if(['base','memory','ascendant'].includes(pref?.skin))save.preferences.skin=pref.skin;
  if(typeof pref?.character==='string'&&Object.hasOwn(characters,pref.character))save.preferences.character=pref.character;
  if(pref && typeof pref==='object') {
-  for(const k of ['autoFire','muted','music','reducedEffects']) if(typeof pref[k]==='boolean')save.preferences[k]=pref[k];
+  for(const k of ['autoFire','muted','music','reducedEffects','colorblind','highlightBullets','disableFlash','disableShake','damageNumbers','tutorial']) if(typeof pref[k]==='boolean')save.preferences[k]=pref[k];
+  if([1,1.5,2].includes(pref.hitboxScale))save.preferences.hitboxScale=pref.hitboxScale;
   const b={...defaults,...pref.bindings};
   if(pref.bindings&&!pref.bindings.swap)b.swap=['KeyQ','KeyE','KeyR','KeyX','KeyZ','KeyC'].find(key=>!Object.values(pref.bindings).includes(key))||'KeyQ';
+  if(pref.bindings&&!pref.bindings.special)b.special=['KeyE','KeyR','KeyX','KeyZ','KeyC','KeyT'].find(key=>!Object.entries(b).some(([id,value])=>id!=='special'&&value===key))||'KeyE';
   if(b && Object.keys(defaults).every(k=>validKey(b[k])) && new Set(Object.keys(defaults).map(k=>b[k])).size===Object.keys(defaults).length) save.preferences.bindings=Object.fromEntries(Object.keys(defaults).map(k=>[k,b[k]]));
  }
  for(const key of ['echoes','runs','wins','unlocks','totalEchoes','worlds','bossMask']) {
@@ -28,6 +30,6 @@ export function validateSave(raw) {
  save.progress.unlocks=Math.min(2,save.progress.unlocks);
  return save;
 }
-export function loadSave() { try {return {save:validateSave(JSON.parse(localStorage.getItem(KEY))),error:false};}catch{return {save:freshSave(),error:true};} }
-export function persist(save) { try {localStorage.setItem(KEY,JSON.stringify(save));return true;}catch{return false;} }
+export function loadSave(sandbox=false) { try {return {save:validateSave(JSON.parse(localStorage.getItem(sandbox?'ascenso-debug-v3':KEY))),error:false};}catch{return {save:freshSave(),error:true};} }
+export function persist(save,sandbox=false) { try {localStorage.setItem(sandbox?'ascenso-debug-v3':KEY,JSON.stringify(save));return true;}catch{return false;} }
 export { validKey };

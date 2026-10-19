@@ -1,3 +1,8 @@
+import {roomPanel,debugPanel} from './extras-views.js';
+import {useRoom,repeatChallenge,tutorialText,canEnterRoom} from './extras.js';
+import {dailyIdentity,abilities,extras as X} from './data/extras.js';
+import {depth as D} from './data/depth.js';
+import {superItems} from './data/relics.js';
 import {initRules} from './rules.js';
 import {difficulties,pacts} from './data/depth.js';
 import {claimSuper} from './relics.js';
@@ -14,31 +19,33 @@ import {settings,defaults,upgrades,lore} from './data.js';
 import {createWorld,updateWorld,chooseUpgrade,travel,advanceWorld} from './simulation.js';
 import {createInput} from './input.js';
 import {createRenderer,drawPortrait,makeWeaponSprite} from './render.js';
-import {loadSave,persist,validKey} from './storage.js';
+import {loadSave,persist,validKey,freshSave} from './storage.js';
 import {createAudio} from './audio.js';
 const $=id=>document.getElementById(id),canvas=$('game'),panel=$('panel');
-const loaded=loadSave();const save=loaded.save;refreshCharacters(save.progress);if(!canSelect(save.progress,characters[save.preferences.character]))save.preferences.character='remender';
+const debugTools=new URLSearchParams(location.search).get('debug')==='1';
+const loaded=loadSave(debugTools);const save=loaded.save;refreshCharacters(save.progress);if(!canSelect(save.progress,characters[save.preferences.character]))save.preferences.character='remender';
 let saveError=loaded.error,world=createWorld(1,save.progress.unlocks),mode='title',settingsReturn='title',waitingKey=null,previous=0,accumulator=0,lastHud=0,lastPanel='',lastMap='';
-let debug=new URLSearchParams(location.search).get('debug')==='1',fps=60;
+let debug=debugTools,fps=60;
 const audio=createAudio(()=>save.preferences);
 const input=createInput(canvas,()=>save.preferences.bindings,()=>togglePause());
 const render=createRenderer(canvas);
 const keyName=code=>({ArrowUp:'Flecha arriba',ArrowDown:'Flecha abajo',ArrowLeft:'Flecha izquierda',ArrowRight:'Flecha derecha',Space:'Espacio',ShiftLeft:'Shift izq.',ShiftRight:'Shift der.'}[code]||code.replace('Key','').replace('Digit',''));
 const timeText=value=>`${String(Math.floor(value/60)).padStart(2,'0')}:${String(Math.floor(value%60)).padStart(2,'0')}`;
-function saveNow(){saveError=!persist(save);}
+function saveNow(){saveError=!persist(save,debugTools);}
 function resetClock(){previous=performance.now();accumulator=0;input.clear();}
 function setMode(value){mode=value;waitingKey=null;resetClock();lastPanel='';updatePanel();if(value==='playing'&&world.status==='playing')canvas.focus();}
 function togglePause(){if(mode==='playing'&&world.status==='playing')setMode('paused');else if(mode==='paused')setMode('playing');else if(mode==='settings'||mode==='arsenal')setMode(settingsReturn);}
-function startRun(){
- const text=$('seed-input')?.value.trim();let seed;
+function startRun(daily=false){
+ const day=dailyIdentity();const text=daily?String(day.seed):$('seed-input')?.value.trim();let seed;
  if(text){if(!/^\d{1,10}$/.test(text)||Number(text)>4294967295){$('seed-error').textContent='Usa un entero entre 0 y 4294967295.';return;}seed=Number(text);}
  else {const values=new Uint32Array(1);crypto.getRandomValues(values);seed=values[0];}
- const startIndex=Number($('start-world')?.value||0);
- world=createWorld(seed,save.progress.unlocks,save.preferences.character,startIndex<save.progress.worlds?startIndex:0);prepareProfile(world,save);const difficulty=Number($('difficulty-input')?.value||0);initRules(world,difficulty<=save.meta.difficulty?difficulty:0,[...panel.querySelectorAll('[data-pact]:checked')].map(e=>e.dataset.pact));prepareDraft(world,save);recalculate(world);world.player.hp=world.player.maxHp;save.progress.runs++;saveNow();audio.unlock();setMode('playing');updateHud();
+ const startIndex=daily?0:Number($('start-world')?.value||0);
+ const profile=daily?freshSave():save;if(daily){profile.meta.weapons=Object.keys(weapons);profile.meta.supers=superItems.map(s=>s.id);profile.meta.items=upgrades.map(u=>u.id);profile.progress.unlocks=2;}
+ world=createWorld(seed,profile.progress.unlocks,daily?X.daily.character:save.preferences.character,startIndex<save.progress.worlds?startIndex:0);prepareProfile(world,profile);const difficulty=daily?X.daily.difficulty:Number($('difficulty-input')?.value||0);initRules(world,difficulty<=save.meta.difficulty?difficulty:0,daily?[]:[...panel.querySelectorAll('[data-pact]:checked')].map(e=>e.dataset.pact));prepareDraft(world,profile);world.dailyKey=daily?day.key:'';recalculate(world);world.player.hp=world.player.maxHp;save.progress.runs++;saveNow();audio.unlock();setMode('playing');updateHud();
 }
 function settle(){if(!settleRun(world,save))return;refreshCharacters(save.progress);saveNow();resetClock();lastPanel='';}
-function titlePanel(){return `<span class="eyebrow">EL DEPÓSITO DE LAS PROMESAS</span><h2>Lo que cae desde arriba</h2><p>Las alturas arrojan sus recuerdos al fondo. Cruza seis mundos del infierno al cielo y devuelve los recuerdos al ciclo. ${worlds.length} mundos para recorrer en un mismo ascenso.</p><div class="stats"><span>${save.progress.echoes} ecos</span><span>${save.progress.wins} victorias</span><span>${save.progress.unlocks}/2 desbloqueos</span></div><div class="actions"><button class="primary" data-action="start">Comenzar partida</button><button data-action="settings">Opciones</button><button data-action="codex">Códice</button><button data-action="sanctuary">Santuario</button><button data-action="arsenal">Armería</button><button data-action="characters">Personajes · ${characters[save.preferences.character].name}</button></div><label>Dificultad <select id="difficulty-input">${difficulties.map((d,i)=>`<option value="${i}" ${i>save.meta.difficulty?"disabled":""}>${d.name}${i>save.meta.difficulty?" · bloqueada":""}</option>`).join("")}</select></label><p>Completa el ascenso desde el fondo para abrir la siguiente dificultad.</p><details><summary>Pactos voluntarios (máximo 5)</summary>${pacts.map(p=>`<label class="setting"><span>${p.name} · +${Math.round(p.echoes*100)}% ecos<br><small>${p.text}</small></span><input type="checkbox" data-pact="${p.id}"></label>`).join("")}</details><label>Mundo inicial <select id="start-world">${worlds.map((w,i)=>`<option value="${i}" ${i>=save.progress.worlds?"disabled":""}>${i+1}. ${w.name}${i>=save.progress.worlds?" · bloqueado":""}</option>`).join("")}</select></label><br><label>Semilla opcional <input id="seed-input" type="text" inputmode="numeric" maxlength="10" placeholder="Aleatoria" aria-describedby="seed-error"></label><p id="seed-error" role="status"></p><p>WASD · ratón · Espacio para un impulso invulnerable breve. Esc para pausar.<br>Las mejoras son temporales; los ecos se conservan al terminar.</p>`;}
-function settingsPanel(){const b=save.preferences.bindings;return `<h2>Opciones</h2><p>Los cambios se guardan solo en este navegador.</p><div class="settings">${[['up','Arriba'],['down','Abajo'],['left','Izquierda'],['right','Derecha'],['dash','Impulso'],['swap','Cambiar arma']].map(([id,label])=>`<div class="setting"><span>${label}</span><button data-bind="${id}">${waitingKey===id?'Pulsa una tecla…':keyName(b[id])}</button></div>`).join('')}<label class="setting wide">Disparo automático<input type="checkbox" data-pref="autoFire" ${save.preferences.autoFire?'checked':''}></label><label class="setting wide">Silenciar audio<input type="checkbox" data-pref="muted" ${save.preferences.muted?'checked':''}></label><label class="setting wide">Música y ambiente<input type="checkbox" data-pref="music" ${save.preferences.music?'checked':''}></label><label class="setting wide">Reducir efectos y sacudida<input type="checkbox" data-pref="reducedEffects" ${save.preferences.reducedEffects?'checked':''}></label></div><p id="binding-message" role="status">Pulsa un control para reasignarlo. Esc cancela. Sin disparo automático, mantén clic izquierdo.</p><div class="actions"><button data-action="reset-controls">Restaurar controles</button><button class="primary" data-action="back">Volver</button></div>`;}
+function titlePanel(){return `<span class="eyebrow">EL DEPÓSITO DE LAS PROMESAS</span><h2>Lo que cae desde arriba</h2><p>Las alturas arrojan sus recuerdos al fondo. Cruza seis mundos del infierno al cielo y devuelve los recuerdos al ciclo. ${worlds.length} mundos para recorrer en un mismo ascenso.</p><div class="stats"><span>${save.progress.echoes} ecos</span><span>${save.progress.wins} victorias</span><span>${save.progress.unlocks}/2 desbloqueos</span></div><div class="actions"><button class="primary" data-action="start">Comenzar partida</button><button data-action="daily">Diaria UTC ${dailyIdentity().key}</button><button data-action="settings">Opciones</button><button data-action="codex">Códice</button><button data-action="sanctuary">Santuario</button><button data-action="arsenal">Armería</button><button data-action="characters">Personajes · ${characters[save.preferences.character].name}</button></div><label>Dificultad <select id="difficulty-input">${difficulties.map((d,i)=>`<option value="${i}" ${i>save.meta.difficulty?"disabled":""}>${d.name}${i>save.meta.difficulty?" · bloqueada":""}</option>`).join("")}</select></label><p>Completa el ascenso desde el fondo para abrir la siguiente dificultad.</p><details><summary>Pactos voluntarios (máximo 5)</summary>${pacts.map(p=>`<label class="setting"><span>${p.name} · +${Math.round(p.echoes*100)}% ecos<br><small>${p.text}</small></span><input type="checkbox" data-pact="${p.id}"></label>`).join("")}</details><label>Mundo inicial <select id="start-world">${worlds.map((w,i)=>`<option value="${i}" ${i>=save.progress.worlds?"disabled":""}>${i+1}. ${w.name}${i>=save.progress.worlds?" · bloqueado":""}</option>`).join("")}</select></label><br><label>Semilla opcional <input id="seed-input" type="text" inputmode="numeric" maxlength="10" placeholder="Aleatoria" aria-describedby="seed-error"></label><p id="seed-error" role="status"></p><p>WASD · ratón · Espacio para un impulso invulnerable breve. Esc para pausar.<br>Las mejoras son temporales; los ecos se conservan al terminar.</p>`;}
+function settingsPanel(){const b=save.preferences.bindings;return `<h2>Opciones</h2><p>Los cambios se guardan solo en este navegador.</p><div class="settings">${[['up','Arriba'],['down','Abajo'],['left','Izquierda'],['right','Derecha'],['dash','Impulso'],['swap','Cambiar arma'],['special','Habilidad de roce']].map(([id,label])=>`<div class="setting"><span>${label}</span><button data-bind="${id}">${waitingKey===id?'Pulsa una tecla…':keyName(b[id])}</button></div>`).join('')}<label class="setting wide">Disparo automático<input type="checkbox" data-pref="autoFire" ${save.preferences.autoFire?'checked':''}></label><label class="setting wide">Silenciar audio<input type="checkbox" data-pref="muted" ${save.preferences.muted?'checked':''}></label><label class="setting wide">Música y ambiente<input type="checkbox" data-pref="music" ${save.preferences.music?'checked':''}></label><label class="setting wide">Reducir efectos y sacudida<input type="checkbox" data-pref="reducedEffects" ${save.preferences.reducedEffects?'checked':''}></label>${[['colorblind','Paleta alternativa'],['highlightBullets','Resaltar balas enemigas'],['disableFlash','Desactivar destellos y parpadeo'],['disableShake','Desactivar sacudida'],['damageNumbers','Números de daño'],['tutorial','Consejos integrados']].map(([id,label])=>`<label class="setting wide">${label}<input type="checkbox" data-pref="${id}" ${save.preferences[id]?'checked':''}></label>`).join('')}<label class="setting wide">Tamaño visual de hitbox (colisión sin cambios)<select data-hitbox>${D.accessibility.hitboxSizes.map(n=>`<option value="${n}" ${save.preferences.hitboxScale===n?'selected':''}>×${n}</option>`).join('')}</select></label></div><p id="binding-message" role="status">Pulsa un control para reasignarlo. Esc cancela. Sin disparo automático, mantén clic izquierdo.</p><div class="actions"><button data-action="reset-controls">Restaurar controles</button><button class="primary" data-action="back">Volver</button></div>`;}
 function updatePanel(){
  let screen=mode==='playing'?world.status:mode;
  if(screen==='playing'){panel.hidden=true;lastPanel='';return;}
@@ -46,7 +53,8 @@ function updatePanel(){
  if(signature===lastPanel)return;lastPanel=signature;panel.hidden=false;
  let html='';
  const extra=extraPanel(screen,world,save);
- if(extra!==null)html=extra;
+ if(screen==='room')html=roomPanel(world);
+ else if(extra!==null)html=extra;
  else if(screen==='title')html=titlePanel();
  else if(screen==='transition')html=`<span class="eyebrow">MUNDO SUPERADO</span><h2>${world.zone.name}</h2><p>${world.zone.lore[2]}</p><p>«${world.zone.boss.quote}»</p><p>Siguiente: ${worlds[world.worldIndex+1].name}. Recuperas 2 de vida; conservas equipo y mejoras.</p>${world.bossWeapon?`<button data-boss-weapon="${world.bossWeapon.id}">Tomar ${world.bossWeapon.name} y ascender</button>`:""}<button class="primary" data-action="ascend">Ascender conservando equipo</button>`;
  else if(screen==='settings')html=settingsPanel();
@@ -56,6 +64,7 @@ function updatePanel(){
  else if(screen==='abandon')html='<h2>¿Terminar esta partida?</h2><p>Las mejoras temporales se perderán. Conservarás los ecos de las salas completadas.</p><div class="actions"><button data-action="resume">Seguir jugando</button><button data-action="confirm-abandon">Terminar</button></div>';
  else if(screen==='reward')html=`<span class="eyebrow">SALA SUPERADA</span><h2>Conserva un fragmento</h2><p>${world.zone.lore[Math.min(2,Math.floor(world.rooms[world.roomId].depth/3))]}</p><div class="cards">${world.options.map(u=>`<button class="upgrade ${u.rarity}" data-upgrade="${u.id}"><span class="rarity">${{common:'COMÚN',rare:'RARA',epic:'ÉPICA'}[u.rarity]}</span><strong>${u.name}</strong><span>${u.text}</span><small>Nivel ${world.inventory[u.id]||0} / ${u.max}</small></button>`).join('')}</div><div class="actions">${world.weaponOffer?`<button data-upgrade="weapon">Arma: ${world.weaponOffer.name} · ${world.weaponOffer.damage} daño · ${world.weaponOffer.interval} s · ${world.weaponOffer.special}</button>`:""}</div><p>Elige una mejora o el arma. Dos ranuras; Q alterna.</p>`;
  else if(screen==='dead'||screen==='won')html=`<span class="eyebrow">${screen==='won'?'ASCENSO COMPLETADO':'LA MEMORIA PERSISTE'}</span><h2>${screen==='won'?'El ciclo vuelve a girar':'Tu viaje termina aquí'}</h2><p>${screen==='won'?'Devuelves los recuerdos al ciclo. Las alturas ya no pueden olvidar a quienes sostienen su paz. Los seis guardianes han caído; cada memoria vuelve a tener un lugar.':'El depósito conserva tus ecos, pero las mejoras de esta partida se desvanecen. Cada patrón puede aprenderse.'}</p><div class="stats"><span>${timeText(world.time)}</span><span>${world.kills} enemigos</span><span>+${world.earned||0} ecos</span></div><p>Semilla: ${world.seed}</p><div class="actions"><button class="primary" data-action="restart">Nueva partida</button><button data-action="title">Inicio y desbloqueos</button></div>`;
+ if(debugTools&&screen==='paused')html+=debugPanel();
  if(screen==='reward'||screen==='transition')html+=superButtons(world);if(screen==='reward')html+=`<button data-reroll="item" ${save.meta.rerolls>0&&!world.dailyKey?'':'disabled'}>Cambiar opciones · ${save.meta.rerolls} reintentos</button>`;
  panel.innerHTML=`<div class="panel-content">${html}<p id="save-message">${saveError?'No se pudo leer o guardar el progreso. El juego funciona, pero comprueba que el navegador permite almacenamiento local.':''}</p></div>`;
  // El foco vuelve a un control visible al abrir un menú, sin secuestrar el teclado al jugar.
@@ -76,14 +85,18 @@ function updateHud(){
  $('debug').hidden=!debug;if(debug){let damage=0,allies=0,hostiles=0,enemies=0;for(const n of world.damageBuckets)damage+=n;for(const b of world.allies)if(b.active)allies++;for(const b of world.hostiles)if(b.active)hostiles++;for(const e of world.enemies)if(e.active)enemies++;$('debug').textContent=`FPS ${fps.toFixed(0)} · DPS (5 s) ${(damage/B.campaign.metricsWindow).toFixed(1)}\nBalas ${allies}/128 + ${hostiles}/512 · Enemigos ${enemies}/16\nSala ${world.roomTime.toFixed(1)} s · Mundo ${world.worldIndex+1} · Semilla ${world.seed}`;}
  if(world.comboTimer>0)$('notice').textContent=world.comboNotice;
  $('synergy').textContent+=' '+Object.entries(world.setCounts).map(([group,count])=>`${group} ${count}/4`).join(' · ')+(world.superItem?' · Súper: '+world.superItem:'');
- const mapKey=`${mode}:${world.status}:${world.roomId}:${world.rooms.filter(r=>r.visited).map(r=>r.id).join(',')}`;
+ if(world.rooms[world.roomId].kind==='challenge'&&room.cleared)$('notice').textContent='Cámara repetible: pulsa el botón para arriesgar 1 vida por nuevas oleadas.';
+ if(save.preferences.tutorial&&save.progress.runs<=X.tutorial.returningRuns&&world.comboTimer<=0&&!boss){const hint=tutorialText(world,save.preferences.bindings);if(hint)$('notice').textContent=hint;}
+ $('controls-help').textContent+=` · ${keyName(b.special)}: ${abilities[world.character.id].name} ${Math.floor(world.abilityCharge)}/100 · ${world.grazes} roces · ${world.roomCoins} fichas`;
+ const challengeButton=$('repeat-challenge');if(challengeButton)challengeButton.hidden=!(mode==='playing'&&world.status==='playing'&&room.kind==='challenge'&&room.cleared&&room.rewardTaken);
+ const mapKey=`${mode}:${world.status}:${world.roomId}:${world.rooms.filter(r=>r.visited).map(r=>r.id).join(',')}:${world.grazes>=D.rooms.secretGraze}:${world.combos.length}`;
  if(mapKey===lastMap)return;lastMap=mapKey;
  const map=$('map');map.replaceChildren();
  for(let y=0;y<5;y++)for(let x=0;x<5;x++){
   const r=world.rooms.find(r=>r.x===x&&r.y===y),button=document.createElement('button');button.type='button';
   if(!r){button.className='empty';button.disabled=true;button.tabIndex=-1;}else{
-   const visible=r.visited||r.links.some(id=>world.rooms[id].visited);button.textContent=visible?{start:'◇',combat:'○',boss:'♛',rest:'+'}[r.kind]:'·';button.className=[r.id===world.roomId?'current':'',r.cleared?'cleared':'',!visible?'unknown':''].join(' ');
-   button.disabled=mode!=='playing'||world.status!=='playing'||!room.cleared||!room.rewardTaken||!room.links.includes(r.id);button.dataset.room=r.id;button.title=visible?r.name:'Sala desconocida';button.setAttribute('aria-label',`${visible?r.name:'Sala desconocida'}${r.id===world.roomId?', ubicación actual':''}${r.cleared?', completada':''}`);if(r.id===world.roomId)button.setAttribute('aria-current','location');
+   const visible=(r.visited||r.links.some(id=>world.rooms[id].visited))&&canEnterRoom(world,r);button.textContent=visible?{start:'◇',combat:'○',boss:'♛',rest:'+',shop:'$',altar:'✚',judgment:'⚖',secret:'?',challenge:'!',miniboss:'◆'}[r.kind]:'·';button.className=[r.id===world.roomId?'current':'',r.cleared?'cleared':'',!visible?'unknown':''].join(' ');
+   button.disabled=mode!=='playing'||world.status!=='playing'||!room.cleared||!room.rewardTaken||!room.links.includes(r.id)||!canEnterRoom(world,r);button.dataset.room=r.id;button.title=visible?r.name:'Sala desconocida';button.setAttribute('aria-label',`${visible?r.name:'Sala desconocida'}${r.id===world.roomId?', ubicación actual':''}${r.cleared?', completada':''}`);if(r.id===world.roomId)button.setAttribute('aria-current','location');
   }map.append(button);
  }
 }
@@ -91,6 +104,8 @@ $('map').addEventListener('click',e=>{const button=e.target.closest('[data-room]
 $('menu-button').addEventListener('click',()=>{audio.unlock();togglePause();});
 panel.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;audio.unlock();
+ if(target.dataset.debug){if(debugTools)runDebug(target.dataset.debug);return;}
+ if(target.dataset.roomAction){if(useRoom(world,target.dataset.roomAction,recalculate)){lastPanel='';lastMap='';resetClock();updatePanel();updateHud();canvas.focus();}return;}
  if(target.dataset.initialItem){if(world.status==='keepsake'&&world.options.some(u=>u.id===target.dataset.initialItem)){world.status='reward';chooseUpgrade(world,target.dataset.initialItem);resetClock();lastPanel='';updatePanel();updateHud();canvas.focus();}return;}
  if(target.dataset.reroll){if(save.meta.rerolls>0&&!world.dailyKey){save.meta.rerolls--;saveNow();if(world.status==='draft')prepareDraft(world,save);else{const old=world.status;offerUpgrades(world);world.status=old;}lastPanel='';updatePanel();}return;}
  if(target.dataset.skin){save.preferences.character=target.dataset.skin;save.preferences.skin=target.dataset.skinStyle||'memory';saveNow();setMode('title');return;}
@@ -107,6 +122,7 @@ panel.addEventListener('click',e=>{
   case 'arsenal':settingsReturn=mode;setMode('arsenal');break;
   case 'characters':setMode('characters');break;
   case 'ascend':advanceWorld(world);resetClock();lastPanel='';lastMap='';updatePanel();canvas.focus();break;
+  case 'daily':startRun(true);break;
   case 'start':startRun();break;
   case 'resume':setMode('playing');break;
   case 'settings':settingsReturn=mode;setMode('settings');break;
@@ -120,7 +136,7 @@ panel.addEventListener('click',e=>{
  }
  updateHud();
 });
-panel.addEventListener('change',e=>{const key=e.target.dataset.pref;if(key){save.preferences[key]=e.target.checked;saveNow();updateHud();}});
+panel.addEventListener('change',e=>{if(e.target.hasAttribute('data-hitbox')){save.preferences.hitboxScale=Number(e.target.value);saveNow();return;}const key=e.target.dataset.pref;if(key){save.preferences[key]=e.target.checked;saveNow();updateHud();}});
 window.addEventListener('keydown',e=>{
  if(mode!=='settings'||!waitingKey)return;e.preventDefault();e.stopImmediatePropagation();
  if(e.code==='Escape'){waitingKey=null;lastPanel='';updatePanel();return;}
@@ -133,11 +149,25 @@ window.addEventListener('blur',autoPause);document.addEventListener('visibilityc
 function resize(){const available=Math.min(canvas.parentElement.clientWidth,window.innerHeight-240);const scale=available>=640?Math.max(1,Math.floor(available/640)):Math.min(1,canvas.parentElement.clientWidth/640);canvas.style.width=`${640*scale}px`;canvas.style.height=`${360*scale}px`;}
 window.addEventListener('resize',resize);resize();
 window.addEventListener('keydown',e=>{if(e.code==='F3'){e.preventDefault();debug=!debug;updateHud();}});
-if(debug)window.gameDiagnostics=()=>({mode,status:world.status,room:world.roomId,world:world.worldIndex,character:world.character.id,health:world.player.hp,weapon:currentWeapon(world).id,time:world.time,damage:world.damageDealt,fps,audio:audio.diagnostics()});
+if(debugTools)window.gameDiagnostics=()=>({mode,status:world.status,room:world.roomId,world:world.worldIndex,character:world.character.id,health:world.player.hp,weapon:currentWeapon(world).id,time:world.time,damage:world.damageDealt,fps,audio:audio.diagnostics()});
+function runDebug(action,value){
+ if(!debugTools)return false;world.cheated=true;
+ if(action==='echoes'){save.progress.echoes=Math.min(D.economy.maxCurrency,save.progress.echoes+D.debug.currency);saveNow();}
+ else if(action==='charge')world.abilityCharge=D.graze.maximum;
+ else if(action==='weapon'){const id=value||$('debug-weapon')?.value;if(!Object.hasOwn(weapons,id))return false;equipWeapon(world,id);}
+ else if(action==='item'){const id=value||$('debug-item')?.value;const u=upgrades.find(u=>u.id===id);if(!u)return false;world.inventory[id]=Math.min(u.max,(world.inventory[id]||0)+1);recalculate(world);}
+ else if(action==='warp'){const index=Number(value??$('debug-world')?.value);if(!Number.isInteger(index)||index<0||index>=worlds.length)return false;world=createWorld(world.seed,2,world.character.id,index);prepareProfile(world,save);world.allowedWeapons=Object.keys(weapons);world.itemUnlocks=null;world.superUnlocks=null;world.cheated=true;recalculate(world);world.player.hp=world.player.maxHp;}
+ else if(action==='boss'){world.status='playing';world.roomId=7;world.rooms[7].cleared=true;world.rooms[7].rewardTaken=true;travel(world,8);}
+ else return false;
+ lastPanel='';lastMap='';setMode('playing');updateHud();return true;
+}
+if(debugTools)window.gameDebug={command:runDebug,world:()=>world};
+const repeatButton=document.createElement('button');repeatButton.id='repeat-challenge';repeatButton.textContent='Repetir desafío · cuesta 1 vida';repeatButton.hidden=true;canvas.parentElement.append(repeatButton);repeatButton.addEventListener('click',()=>{if(repeatChallenge(world)){lastMap='';updateHud();canvas.focus();}});
 function frame(now){const raw=(now-previous)/1000;if(raw>0&&raw<1)fps=fps*0.9+0.1/raw;const elapsed=Math.min(Math.max((now-previous)/1000,0),0.05);previous=now;
  if(mode==='playing'&&world.status==='playing'){
   accumulator+=elapsed;while(accumulator>=settings.step){updateWorld(world,input,settings.step,save.preferences);accumulator-=settings.step;if(world.status!=='playing'){accumulator=0;break;}}
  }
+ if(world.status!=='playing')world.defeat.timer=Math.max(0,world.defeat.timer-elapsed);
  // Un sonido de cada tipo por fotograma evita ráfagas de nodos de audio.
  for(let i=0;i<world.events.length;i++)if(world.events.indexOf(world.events[i])===i)audio.play(world.events[i],world.events[i]==='shoot'?currentWeapon(world):null);world.events.length=0;
  if(world.pendingWorld>0&&!(save.progress.bossMask&(1<<(world.pendingWorld-1)))){save.progress.bossMask|=1<<(world.pendingWorld-1);save.progress.worlds=Math.max(save.progress.worlds,Math.min(worlds.length,world.pendingWorld+1));refreshCharacters(save.progress);saveNow();}

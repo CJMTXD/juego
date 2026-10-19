@@ -1,0 +1,12 @@
+import {depth as D} from './data/depth.js';
+import {worlds} from './data/worlds.js';
+import {weapons} from './data/weapons.js';
+import {upgrades} from './data.js';
+export function roomPanel(w){const r=w.rooms[w.roomId];let content='';
+ if(r.kind==='shop')content=`<p>Las fichas duran esta partida. ${w.shopOffer?.text||'No queda mercancía.'}</p><button data-room-action="buy" ${w.roomCoins>=Math.ceil(D.rooms.shopCost*(1-(w.itemBonuses.shopDiscount||0)))&&w.shopOffer?'':'disabled'}>${w.shopOffer?.name||'Sin existencias'} · ${Math.ceil(D.rooms.shopCost*(1-(w.itemBonuses.shopDiscount||0)))} fichas</button>`;
+ if(r.kind==='altar')content=`<p>Un descanso breve, sin borrar la deuda.</p><button data-room-action="rest" ${w.roomCoins>=D.rooms.altarCost?'':'disabled'}>Recuperar ${D.rooms.altarHeal} vida · ${D.rooms.altarCost} ficha</button>`;
+ if(r.kind==='judgment')content=`<p>«Toda altura tiene un peso. Escoge el tuyo».</p><div class="cards"><button data-room-action="power" ${w.player.maxHp>1?'':'disabled'}>Poder: +15% daño, -1 vida máxima hasta terminar</button><button data-room-action="debt" ${w.player.hp>1?'':'disabled'}>Deuda: recibe 1 daño y obtén 8 fichas</button></div>`;
+ if(r.kind==='secret')content='<p>«No hay dioses distintos: hay nombres distintos para la misma memoria». Has encontrado un fragmento y cuatro fichas.</p><button data-room-action="secret">Conservar fragmento y recuperar 1 vida</button>';
+ return `<h2>${r.name}</h2><p>${w.roomCoins} fichas de esta partida</p>${content}<button data-room-action="leave">Continuar sin aceptar</button>`;
+}
+export function debugPanel(){return `<details class="debug-tools"><summary>Laboratorio · guardado separado · sin recompensas</summary><label>Mundo <select id="debug-world">${worlds.map((w,i)=>`<option value="${i}">${w.name}</option>`).join('')}</select></label><button data-debug="warp">Ir al mundo</button><button data-debug="boss">Ir al jefe</button><label>Arma <select id="debug-weapon">${Object.values(weapons).map(w=>`<option value="${w.id}">${w.name}</option>`).join('')}</select></label><button data-debug="weapon">Dar arma</button><label>Ítem <select id="debug-item">${upgrades.map(u=>`<option value="${u.id}">${u.name}</option>`).join('')}</select></label><button data-debug="item">Dar ítem</button><button data-debug="echoes">Dar 1000 ecos al perfil de laboratorio</button><button data-debug="charge">Cargar habilidad</button></details>`;}
