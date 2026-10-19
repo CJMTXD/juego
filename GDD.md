@@ -128,3 +128,11 @@ No cambia simulación ni balance. Respaldo Git realizado antes de editar. Glosar
 Verificación inicial: 44 pruebas y ambos recorridos de navegador pasan. Se estabilizó
 el fixture de desafío (el viento podía llevar al jugador hasta una puerta antes del
 clic de repetir); no se cambió la regla de movimiento ni viaje del juego.
+
+## Rediseño de interfaz — fase 2
+Menús fuera de #stage, a pantalla completa, sin scroll del documento ni canvas que
+fuerce un ancho mínimo. Escala 16:9 mediante ResizeObserver y viewport dinámico/zona
+segura; se conservan 640×360 lógicos. Tipografía de 16 px, apoyo ≥14 y foco visible.
+Se reemplazó la hoja de estilos de interfaz conservando todos los identificadores
+que consume el controlador. Capturas de cuatro tamaños y navegador sin errores;
+servidor HTTP 200. El título y HUD completos se rediseñan en las siguientes fases.
