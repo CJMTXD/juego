@@ -85,7 +85,7 @@ export function createRenderer(canvas){
  ctx.fillStyle=c.cyanDark;ctx.fillRect(x-4,y-4,8,8);ctx.fillStyle=c.cyan;ctx.fillRect(x-2,y-2,4,4);}
  for(const b of world.hostiles){if(!b.active)continue;const x=Math.round(b.x),y=Math.round(b.y);diamond(x,y,6,c.outline);diamond(x,y,5,b.shape?c.orange:c.red);diamond(x-1,y-1,2,c.yellow);}
  const p=world.player,x=Math.round(p.x),y=Math.round(p.y);
- if(p.invulnerable<=0||Math.floor(world.time*18)%2===0){ctx.drawImage(sprites.player,x-16,y-16);ctx.fillStyle=c[world.character.color];ctx.fillRect(x-11,y+5,22,7);if(world.character.look===1){ctx.fillStyle=c.outline;ctx.fillRect(x-5,y-10,10,8);}if(world.character.look===2){ctx.fillStyle=c.cyan;ctx.fillRect(x-10,y-15,20,3);}}
+ if(p.invulnerable<=0||Math.floor(world.time*18)%2===0){ctx.drawImage(sprites.player,x-16,y-16);ctx.fillStyle=world.skin==='memory'?c.bone:c[world.character.color];ctx.fillRect(x-11,y+5,22,7);if(world.character.look===1){ctx.fillStyle=c.outline;ctx.fillRect(x-5,y-10,10,8);}if(world.character.look===2){ctx.fillStyle=c.cyan;ctx.fillRect(x-10,y-15,20,3);}}
  if(!preferences.reducedEffects)for(const p of world.particles)if(p.active){ctx.fillStyle=p.life>0.12?c.bone:c.dust;ctx.fillRect(Math.round(p.x),Math.round(p.y),2,2);}
  ctx.save();ctx.translate(x+Math.cos(p.angle)*12,y+Math.sin(p.angle)*12);ctx.rotate(p.angle+Math.PI/4);ctx.drawImage(weaponImage,-8,-8);ctx.restore();
  if(world.character.kind==='aura'){ctx.strokeStyle=c.clothLight;ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,72,0,Math.PI*2);ctx.stroke();}

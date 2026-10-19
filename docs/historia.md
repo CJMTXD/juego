@@ -124,3 +124,8 @@ muestra runas al ascender; las formas finales añaden efectos propios.
 Ceniza viva, Balanza compartida, Hilo del retorno, Coro del juramento y Luz sin dueño
 son recetas automáticas. Manto, Balanza invertida, Telar, Corona y Lente de nadie
 son superítems: cada uno exige un logro en la partida y cambia el modo de combatir.
+
+## Confirmado — la antesala
+Ilar devuelve posibilidades, no destinos. Las cuatro ramas del árbol son Vasija
+firme, Paso recordado, Estrella discreta y Mano del guía. Comprar fragmentos permite
+comprender que el ciclo puede abrirse en ambas direcciones; será una condición del final verdadero.

@@ -2,13 +2,14 @@ import {metaDefaults,validateMeta} from './profile.js';
 import {characters} from './data/characters.js';
 import { defaults } from './data.js';
 const KEY='ascenso-save-v1';
-export function freshSave() { return {version:3,meta:metaDefaults(), preferences:{character:'remender',bindings:{...defaults},autoFire:true, muted:false,music:true,reducedEffects:false},progress:{echoes:0,runs:0,wins:0,unlocks:0,totalEchoes:0,worlds:1,bossMask:0,characters:['remender']}}; }
+export function freshSave() { return {version:3,meta:metaDefaults(), preferences:{character:'remender',skin:'base',bindings:{...defaults},autoFire:true, muted:false,music:true,reducedEffects:false},progress:{echoes:0,runs:0,wins:0,unlocks:0,totalEchoes:0,worlds:1,bossMask:0,characters:['remender']}}; }
 const validKey = key => typeof key==='string' && /^(Key[A-Z]|Digit[0-9]|Arrow(Up|Down|Left|Right)|Space|ShiftLeft|ShiftRight)$/.test(key);
 export function validateSave(raw) {
  const save=freshSave();
  if (!raw || ![1,2,3].includes(raw.version)) return save;
  save.meta=validateMeta(raw.meta);
  const pref=raw.preferences;
+ if(['base','memory'].includes(pref?.skin))save.preferences.skin=pref.skin;
  if(typeof pref?.character==='string'&&Object.hasOwn(characters,pref.character))save.preferences.character=pref.character;
  if(pref && typeof pref==='object') {
   for(const k of ['autoFire','muted','music','reducedEffects']) if(typeof pref[k]==='boolean')save.preferences[k]=pref[k];

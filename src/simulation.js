@@ -1,3 +1,4 @@
+import {discover} from './meta-game.js';
 import {initRelics,recalculateRelics,eligibleSupers,relicImpact,relicKill,updateRelics} from './relics.js';
 import {relicBalance as R} from './data/relics.js';
 import {initEvolution,creditWeaponKill,projectileEffect} from './evolution.js';
@@ -33,7 +34,7 @@ export function sweptHit(ax,ay,bx,by,cx,cy,radius){
 }
 function clearBullets(world){for(const b of world.allies)b.active=false;for(const b of world.hostiles)b.active=false;}
 export function offerUpgrades(world) {
- const available=upgrades.filter(u=>(!u.shopUnlock||world.itemUnlocks===null||world.itemUnlocks.includes(u.id))&&(!u.unlock||world.unlocks>=u.unlock)&&(world.inventory[u.id]||0)<u.max);
+ const available=upgrades.filter(u=>(!u.shopUnlock||world.itemUnlocks===null||world.itemUnlocks.includes(u.id))&&(!u.unlock||world.unlocks>=u.unlock||world.itemUnlocks?.includes(u.id))&&(world.inventory[u.id]||0)<u.max);
  world.options=[];
  while(world.options.length<3&&available.length){
   const groups=['common','rare','epic'].filter(rarity=>available.some(u=>u.rarity===rarity));
@@ -55,7 +56,7 @@ export function chooseUpgrade(world,id){
  else if(id!=='restore')world.inventory[id]=(world.inventory[id]||0)+1;
  recalculate(world);
  if(id==='heart')world.player.hp=Math.min(world.player.maxHp,world.player.hp+1);
- if(id==='mercy'||id==='restore')world.player.hp=Math.min(world.player.maxHp,world.player.hp+2);
+ if(id==='mercy'||id==='restore')world.player.hp=Math.min(world.player.maxHp,world.player.hp+B.progression.restHeal);
  world.rooms[world.roomId].rewardTaken=true;world.options=[];world.status='playing';world.events.push('reward');return true;
 }
 export function travel(world,id){
@@ -65,7 +66,7 @@ export function travel(world,id){
  const p=world.player;p.x=320;p.y=180;
  if(room.x>old.x)p.x=48;if(room.x<old.x)p.x=592;if(room.y>old.y)p.y=48;if(room.y<old.y)p.y=312;
  p.invulnerable=B.progression.entryGrace;
- if(!room.visited&&room.kind==='rest'){p.hp=Math.min(p.maxHp,p.hp+B.progression.restHeal);world.events.push('heal');}
+ if(!room.visited&&room.kind==='rest'){p.hp=Math.min(p.maxHp,p.hp+Math.max(1,Math.floor(B.progression.restHeal*(1+(world.itemBonuses.heal||0)))));world.events.push('heal');}
  room.visited=true;
  return true;
 }
@@ -79,7 +80,7 @@ function spawnWave(world){
   const pos=choices[Math.floor(world.random()*choices.length)],data=world.zone.enemies[Math.floor(world.random()*world.zone.enemies.length)],boss=room.kind==='boss';
   const e=world.enemies.find(e=>!e.active);if(!e)break;
   const hp=boss?world.zone.boss.health:(data.health+Math.floor(room.depth/B.encounters.healthDepth))*world.zone.health;
-  e.active=true;e.id=world.enemies.indexOf(e);for(const b of world.allies)b.hits&=~(1<<e.id);e.type=boss?'boss':data.id;e.x=pos[0];e.y=pos[1];e.radius=boss?24:data.radius;e.hp=hp;e.maxHp=hp;e.timer=B.encounters.initialAttack+i*B.encounters.attackStagger;e.warning=false;e.pattern=boss?world.zone.boss.patterns[0]:data.pattern;e.angle=0;e.offset=world.random()*Math.PI*2;e.phase=0;e.flash=0;e.slowTime=0;e.burnTime=0;e.burnDamage=0;e.burnWeapon=null;e.behavior=boss?(world.zone.boss.behavior||'stay'):data.behavior;e.speed=boss?(world.zone.boss.speed||0):data.speed;e.charge=0;e.targetX=p.x;e.targetY=p.y;e.destX=0;e.destY=0;
+  discover(world,boss?'boss':'enemy',boss?world.zone.id:data.id);e.active=true;e.id=world.enemies.indexOf(e);for(const b of world.allies)b.hits&=~(1<<e.id);e.type=boss?'boss':data.id;e.x=pos[0];e.y=pos[1];e.radius=boss?24:data.radius;e.hp=hp;e.maxHp=hp;e.timer=B.encounters.initialAttack+i*B.encounters.attackStagger;e.warning=false;e.pattern=boss?world.zone.boss.patterns[0]:data.pattern;e.angle=0;e.offset=world.random()*Math.PI*2;e.phase=0;e.flash=0;e.slowTime=0;e.burnTime=0;e.burnDamage=0;e.burnWeapon=null;e.behavior=boss?(world.zone.boss.behavior||'stay'):data.behavior;e.speed=boss?(world.zone.boss.speed||0):data.speed;e.charge=0;e.targetX=p.x;e.targetY=p.y;e.destX=0;e.destY=0;
  }
  world.events.push('spawn');
 }
@@ -87,7 +88,7 @@ export function advanceWorld(world){
  if(world.status!=='transition'||world.worldIndex+1>=worlds.length)return false;
  world.worldIndex++;world.zone=worlds[world.worldIndex];world.rooms=generateMap((world.seed+world.worldIndex*7919)>>>0);for(const r of world.rooms)if(world.zone.rooms?.[r.id])r.name=world.zone.rooms[r.id];world.roomId=0;world.zoneCleared=0;world.wave=0;world.spawnTimer=1.4;world.bossPhase=0;world.exitLock=0.7;world.roomTime=0;
  clearBullets(world);for(const e of world.enemies)e.active=false;
- world.player.x=320;world.player.y=180;world.player.hp=Math.min(world.player.maxHp,world.player.hp+2);world.player.invulnerable=1.5;
+ world.player.x=320;world.player.y=180;world.player.hp=Math.min(world.player.maxHp,world.player.hp+2+(world.inventory.dawn?1:0));world.player.invulnerable=1.5;
  resetHazard(world);world.status='playing';world.events.push('reward');return true;
 }
 export function damagePlayer(world,damage=1){
@@ -150,7 +151,7 @@ function killEnemy(world,e,weaponId=null){
  e.active=false;world.kills++;relicKill(world);world.events.push('kill');
  if(world.effectsEnabled){world.hitStop=0.025;let count=0;for(const p of world.particles){if(!p.active){p.active=true;p.x=e.x;p.y=e.y;p.vx=Math.cos(count*2.4)*55;p.vy=Math.sin(count*2.4)*55;p.life=0.25;if(++count===4)break;}}}
  if(!world.enemies.some(item=>item.active))world.spawnTimer=B.encounters.waveDelay;
- if(e.type==='boss'){if(world.bossDamage===0&&!world.bossFeats.includes(world.worldIndex))world.bossFeats.push(world.worldIndex);world.superOffers=eligibleSupers(world);world.status=world.worldIndex===worlds.length-1?'won':'transition';world.pendingWorld=world.worldIndex+1;world.bossWeapon=rollWeapon(world,true);world.rooms[world.roomId].cleared=true;world.cleared++;world.zoneCleared++;clearBullets(world);world.events.push('win');}
+ if(e.type==='boss'){world.bossesDefeated.push(world.worldIndex);if(world.bossDamage===0&&!world.bossFeats.includes(world.worldIndex))world.bossFeats.push(world.worldIndex);world.superOffers=eligibleSupers(world);world.status=world.worldIndex===worlds.length-1?'won':'transition';world.pendingWorld=world.worldIndex+1;world.bossWeapon=rollWeapon(world,true);world.rooms[world.roomId].cleared=true;world.cleared++;world.zoneCleared++;clearBullets(world);world.events.push('win');}
 }
 function moveBullets(world,bullets,dt,allied){
  for(const b of bullets){

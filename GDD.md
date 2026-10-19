@@ -128,3 +128,11 @@ Las formas conservan un disparo centrado: una evolución no debe crear un hueco 
 Cinco superítems con condición, coste y límite de uno; compras habilitan el catálogo,
 no omiten la condición de obtención. Descubrimientos registrados en el códice.
 Las recetas activan efectos sin consumir piezas; así no se rompen sets al fusionar.
+
+## Profundidad — fase 4
+Santuario completo: cuatro ramas pequeñas, compras de armas/almas/catálogos, fragmentos,
+bestiario, aspectos y reintentos. Inicio añade elección de ítem y permite volver a tirar.
+Resumen de muerte/victoria desglosa bajas, jefes, mundos, dificultad, pactos y penalización.
+La derrota concede al menos 1 eco solo si hubo una baja o roce; esperar quieto no paga.
+Historial de 30 partidas, códice, estadísticas y liquidación única. Las mejoras de
+árbol suman como máximo +1 vida, +6% velocidad, +6 peso raro y -10% en precios.
