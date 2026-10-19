@@ -118,3 +118,13 @@ Node/Python sirven HTTP 200. iniciar.bat revisado; Windows nativo no disponible 
 Windows: extraer ZIP completo y abrir iniciar.bat (Python 3 o Node.js LTS).
 Pruebas y comandos de balance en README.md. Próxima tarea: jugar una campaña real
 para medir dificultad, legibilidad y duración en el PC del usuario.
+
+## Rediseño de interfaz — fase 1
+Auditoría y sistema de diseño en docs/diseno-ui.md. Se conserva tipografía monoespaciada
+local, aumenta legibilidad y se separarán menús de la arena. Interpretación del orden:
+esta entrega termina en fase 5 para prueba del usuario; fases 6–8 quedan pendientes.
+No cambia simulación ni balance. Respaldo Git realizado antes de editar. Glosario:
+«Esquiva» sustituye «Impulso» y «Habilidad» explica la carga por roce.
+Verificación inicial: 44 pruebas y ambos recorridos de navegador pasan. Se estabilizó
+el fixture de desafío (el viento podía llevar al jugador hasta una puerta antes del
+clic de repetir); no se cambió la regla de movimiento ni viaje del juego.
