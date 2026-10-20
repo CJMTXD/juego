@@ -183,3 +183,4 @@ aspectos, habilidades e historias conservan sus datos; no se añade lore ni pode
 
 Presentación — campo estable: la corrección de tamaño no añade contenido narrativo.
 El mapa vuelve a acompañar el ascenso; no revela secretos inaccesibles por defecto.
+Ilar distingue el recuerdo de cada arma de los dones que acompañan a toda alma.

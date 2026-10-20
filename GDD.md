@@ -244,3 +244,9 @@ Minimapa permanente con iconos compartidos, conexiones visibles, sala actual,
 visitadas y contador /8. Usa el margen si caben 156 px; en vertical ocupa el espacio
 reservado junto al HUD y en horizontal compacto la barra superior. Nunca invade el
 rectángulo del canvas ni mueve sus filas. Un toque abre el mapa pausado con leyenda.
+
+## Recuerdos nuevos — fase 3 implementada
+Tarjetas y detalles identifican Mejora + icono/nombre para armas concretas; el resto
+indica personaje o todas las armas. Se registra la forma máxima observada por arma
+como extensión opcional de meta en v3, sin atribuir logros antiguos no registrados.
+Armería/Códice comparten componentes. 51 pruebas y cuatro tamaños de menús pasan.
