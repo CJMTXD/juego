@@ -1,3 +1,4 @@
+import {assistStats} from './assistance.js';
 import {initFeats,weeklyRoom} from './progression.js';
 import {initAdventure,configureAdventureRooms,updateAdventure,adventureReward,configureRival,rivalAttack,rivalReward} from './adventure.js';
 import {expansion as A} from './data/expansion.js';
@@ -35,7 +36,7 @@ export function createWorld(seed=Date.now()>>>0, unlocks=0, characterId='remende
 export function recalculate(world) {
  const i=world.inventory,character=world.character;
  world.stats={speed:character.speed*(1+B.upgrades.step*(i.step||0)),damage:Math.min(B.campaign.maxDamage,character.damage*(1+B.upgrades.ember*(i.ember||0)+B.upgrades.lensDamage*(i.lens||0))*(i.halo?B.upgrades.halo:1)*(i.halo&&i.ember?B.upgrades.synergy:1))*(1+world.worldIndex*B.campaign.checkpointDamage*(world.checkpointBoost?1:0)),interval:B.projectiles.interval/(1+B.upgrades.pulse*(i.pulse||0)),bulletSpeed:B.projectiles.speed*(1+B.upgrades.lensSpeed*(i.lens||0)),pierce:i.pierce||0,side:i.fork||0};
- world.player.maxHp=character.health+(i.heart||0);recalculateRelics(world);world.stats.damage=Math.min(D.caps.damage,world.stats.damage*(1+world.judgmentPower));world.player.maxHp=Math.max(1,world.player.maxHp-world.judgmentHealth);world.player.hp=Math.min(world.player.hp,world.player.maxHp);
+ world.player.maxHp=character.health+(i.heart||0);recalculateRelics(world);world.stats.damage=Math.min(D.caps.damage,world.stats.damage*(1+world.judgmentPower));world.player.maxHp=Math.max(1,world.player.maxHp-world.judgmentHealth);assistStats(world);world.player.hp=Math.min(world.player.hp,world.player.maxHp);
 }
 // Segmento contra círculo: evita que una bala rápida atraviese la hitbox.
 export function sweptHit(ax,ay,bx,by,cx,cy,radius){
@@ -68,7 +69,7 @@ export function chooseUpgrade(world,id){
  recalculate(world);
  world.tutorial.upgraded=true;
  if(id==='heart')heal(world,1);
- if(id==='mercy')heal(world,B.progression.restHeal);if(id==='restore')heal(world,M.serviceHeal);if(id==='memory_coins')world.roomCoins=Math.min(M.coinsMax,world.roomCoins+M.serviceCoins);if(id==='memory_charge')world.abilityCharge=Math.min(D.graze.maximum,world.abilityCharge+M.serviceCharge);
+ if(id==='mercy')heal(world,B.progression.restHeal+(world.assist?.heal?A.assist.heal:0));if(id==='restore')heal(world,M.serviceHeal);if(id==='memory_coins')world.roomCoins=Math.min(M.coinsMax,world.roomCoins+M.serviceCoins);if(id==='memory_charge')world.abilityCharge=Math.min(D.graze.maximum,world.abilityCharge+M.serviceCharge);
  world.rooms[world.roomId].rewardTaken=true;world.options=[];world.status='playing';world.events.push('reward');return true;
 }
 export function travel(world,id){
@@ -78,7 +79,7 @@ export function travel(world,id){
  const p=world.player;p.x=320;p.y=180;
  if(room.x>old.x)p.x=48;if(room.x<old.x)p.x=592;if(room.y>old.y)p.y=48;if(room.y<old.y)p.y=312;
  p.invulnerable=B.progression.entryGrace;
- if(!room.visited&&room.kind==='rest'){heal(world,B.progression.restHeal);world.events.push('heal');}
+ if(!room.visited&&room.kind==='rest'){heal(world,B.progression.restHeal+(world.assist?.heal?A.assist.heal:0));world.events.push('heal');}
  loadRoomContent(world);weeklyRoom(world);room.visited=true;enterSideRoom(world,room);if(room.kind==='shop'&&!room.used){const oldStatus=world.status;offerUpgrades(world);world.shopOffer=world.options[0];world.status=oldStatus;}
  return true;
 }
@@ -176,7 +177,7 @@ function moveBullets(world,bullets,dt,allied){
   if(allied&&b.mode==='homing'){let target=null,distance=Infinity;for(const e of world.enemies)if(e.active){const d=(e.x-b.x)**2+(e.y-b.y)**2;if(d<distance){distance=d;target=e;}}if(target){const aim=Math.atan2(target.y-b.y,target.x-b.x),angle=Math.atan2(b.vy,b.vx),difference=Math.atan2(Math.sin(aim-angle),Math.cos(aim-angle)),next=angle+clamp(difference,-b.turn*dt,b.turn*dt),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(next)*speed;b.vy=Math.sin(next)*speed;}}
   if(allied&&b.mode==='boomerang'&&b.age>B.weapons.returnDelay-(b.weaponId==='boomerang'?(world.weaponMemories?.boomerang?.returnEarly||0):0)){if(!b.returned){b.hits=0;b.returned=true;}const angle=Math.atan2(world.player.y-b.y,world.player.x-b.x),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(angle)*speed;b.vy=Math.sin(angle)*speed;if(Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.weapons.returnCatch){if(b.finalEffect==='moon'){let orbitCount=0;for(const orb of world.allies)if(orb.active&&orb.mode==='orbit')orbitCount++;if(orbitCount>=B.weapons.maxOrbitals){b.active=false;continue;}b.mode='orbit';b.finalEffect='';b.orbitRadius=E.moonRadius;b.life=E.moonLife;b.vx=0;b.vy=0;b.hits=0;b.pierce=E.moonPierce;}else b.active=false;}}
   if(b.mode==='curve'){const a=Math.atan2(b.vy,b.vx)+b.turn*dt,speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;}
-  b.px=b.x;b.py=b.y;b.x+=b.vx*dt*(!allied&&world.candleSlow>0?A.candles.slow:1)*(!allied&&world.abilityTime>0&&world.character.id==='weaver'?X.ability.slow:1)*(world.superItem==='nobody'&&!allied?R.timeFactor:1)*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.characters.auraRadius?B.characters.auraFactor:1);b.y+=b.vy*dt*(!allied&&world.candleSlow>0?A.candles.slow:1)*(!allied&&world.abilityTime>0&&world.character.id==='weaver'?X.ability.slow:1)*(world.superItem==='nobody'&&!allied?R.timeFactor:1)*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.characters.auraRadius?B.characters.auraFactor:1);b.life-=dt;if(allied&&b.mode==='orbit'){b.orbit+=B.weapons.orbitSpeed*dt;b.x=world.player.x+Math.cos(b.orbit)*b.orbitRadius;b.y=world.player.y+Math.sin(b.orbit)*b.orbitRadius;}
+  b.px=b.x;b.py=b.y;b.x+=b.vx*dt*(!allied?(world.assist?.speed||1):1)*(!allied&&world.candleSlow>0?A.candles.slow:1)*(!allied&&world.abilityTime>0&&world.character.id==='weaver'?X.ability.slow:1)*(world.superItem==='nobody'&&!allied?R.timeFactor:1)*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.characters.auraRadius?B.characters.auraFactor:1);b.y+=b.vy*dt*(!allied?(world.assist?.speed||1):1)*(!allied&&world.candleSlow>0?A.candles.slow:1)*(!allied&&world.abilityTime>0&&world.character.id==='weaver'?X.ability.slow:1)*(world.superItem==='nobody'&&!allied?R.timeFactor:1)*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.characters.auraRadius?B.characters.auraFactor:1);b.life-=dt;if(allied&&b.mode==='orbit'){b.orbit+=B.weapons.orbitSpeed*dt;b.x=world.player.x+Math.cos(b.orbit)*b.orbitRadius;b.y=world.player.y+Math.sin(b.orbit)*b.orbitRadius;}
   if(allied&&b.finalEffect==='reflect'&&world.reflectCooldown<=0){for(const hostile of world.hostiles)if(hostile.active&&Math.hypot(hostile.x-b.x,hostile.y-b.y)<E.reflectRange){hostile.active=false;world.reflectCooldown=E.reflectCooldown;const reflected=emit(world.allies,b.x,b.y,world.player.angle,E.childSpeed,E.childRadius,b.damage*E.reflectDamage);if(reflected){reflected.weaponId=b.weaponId;reflected.generation=1;}break;}}
   if(b.mode==='sine'){b.x+=Math.cos(b.turn+Math.PI/2)*Math.sin((8-b.life)*5)*32*dt;b.y+=Math.sin(b.turn+Math.PI/2)*Math.sin((8-b.life)*5)*32*dt;}
   b.distance+=Math.hypot(b.vx,b.vy)*dt;

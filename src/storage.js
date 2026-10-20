@@ -1,16 +1,18 @@
+import {assistDefaults,validateAssist} from './assistance.js';
+import {presentation as P} from './data/presentation.js';
 import {restoreUrnUnlocks} from './urns.js';
 import {uiDefaults,validateUi} from './ui/preferences.js';
 import {metaDefaults,validateMeta} from './profile.js';
 import {characters} from './data/characters.js';
 import { defaults,upgrades } from './data.js';
 const KEY='ascenso-save-v1';
-export function freshSave() { return {version:3,meta:metaDefaults(), preferences:{ui:uiDefaults(),character:'remender',skin:'base',bindings:{...defaults},autoFire:true, muted:false,music:true,reducedEffects:false,colorblind:false,highlightBullets:false,disableFlash:false,disableShake:false,damageNumbers:false,tutorial:true,hitboxScale:1},progress:{echoes:0,runs:0,wins:0,unlocks:0,totalEchoes:0,worlds:1,bossMask:0,characters:['remender']}}; }
+export function freshSave() { return {version:3,meta:metaDefaults(), preferences:{assist:assistDefaults(),musicVolume:P.audio.musicDefault,effectsVolume:P.audio.effectsDefault,ui:uiDefaults(),character:'remender',skin:'base',bindings:{...defaults},autoFire:true, muted:false,music:true,reducedEffects:false,colorblind:false,highlightBullets:false,disableFlash:false,disableShake:false,damageNumbers:false,tutorial:true,hitboxScale:1},progress:{echoes:0,runs:0,wins:0,unlocks:0,totalEchoes:0,worlds:1,bossMask:0,characters:['remender']}}; }
 const validKey = key => typeof key==='string' && /^(Key[A-Z]|Digit[0-9]|Arrow(Up|Down|Left|Right)|Space|ShiftLeft|ShiftRight)$/.test(key);
 export function validateSave(raw) {
  const save=freshSave();
  if (!raw || ![1,2,3].includes(raw.version)) return save;
  save.meta=validateMeta(raw.meta);
- const pref=raw.preferences;save.preferences.ui=validateUi(pref?.ui);
+ const pref=raw.preferences;save.preferences.assist=validateAssist(pref?.assist);for(const key of ['musicVolume','effectsVolume'])if(Number.isFinite(pref?.[key]))save.preferences[key]=Math.max(0,Math.min(1,pref[key]));save.preferences.ui=validateUi(pref?.ui);
  if(['base','memory','ascendant','testimony'].includes(pref?.skin))save.preferences.skin=pref.skin;
  if(typeof pref?.character==='string'&&Object.hasOwn(characters,pref.character))save.preferences.character=pref.character;
  if(pref && typeof pref==='object') {

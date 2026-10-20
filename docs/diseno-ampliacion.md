@@ -72,3 +72,9 @@ Verificación B:79 pruebas y recorridos existentes. Espiral comienza una partida
 nueva desbloqueada por victoria; cada seis mundos añade presión hasta los topes.
 Reto semanal reutiliza el bloqueo de preparación de la diaria y lleva identidad
 semanal propia para el cobro. Familias/árbol/urnas no se transfieren al perfil neutral.
+
+Verificación C–D:81 pruebas. Exportación usa CRC32 (integridad accidental), sin
+dependencia de Web Crypto para poder usarse también en Wi-Fi HTTP. Solo se importa
+fuera de una partida y se mantiene respaldo descargable. Introducción consultable
+con un desplegable para conservar Jugar→Comenzar en dos toques. Escenas no alteran
+el tiempo de partida. Bot implementado desde A1 y usado tras fases de contenido.

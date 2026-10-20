@@ -334,3 +334,18 @@ fondo, vuelta de seis mundos; multiplicadores de vida/velocidad acotados y retir
 voluntaria en Pausa. No se sigue cobrando una victoria normal por cada vuelta.
 79 pruebas pasan, campañas y navegador ampliado completos. Nuevas opciones en
 Más modos y urnas en navegación; título revisado para no desbordar móvil.
+
+## Ampliación — presentación y robustez implementadas
+Tres paneles de pixel art animados por transición, introducción consultable en
+preparación y epílogos normal/verdadero; omisión inmediata, sin afectar simulación.
+Música existente ampliada con capas a12/36/80 balas, tempo de jefe y refugios suaves;
+volúmenes de música y efectos independientes, silencio conservado.
+Exportación/importación como JSON o código, CRC32 para detectar corrupción accidental,
+límite256KiB, vista previa y respaldo automático antes de reemplazar. Se bloquea
+importar durante una partida. CRC32 no se presenta como sistema antitrampas.
+Asistencia normal: bala×0,7–1, corazón extra(tope8), cura adicional en refugio,
+hitbox×0,8. Conserva ecos/desbloqueos, excluye rangos/maestría/objetivos y marcas;
+retos la desactivan. Tarjeta PNG960×640 descargable/compartible.
+81 pruebas lógicas y navegador nuevo pasan en cuatro tamaños: transferencia real,
+respaldo, semanal neutral, vela táctil, escenas y archivo PNG. PWA63 recursos.
+Pruebas humanas de duración/comodidad en teléfonos físicos siguen pendientes.

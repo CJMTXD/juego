@@ -232,3 +232,10 @@ conserva su voz, no vuelve invencible al portador. La Espiral explora vueltas de
 mismo ciclo reparado: no inventa regiones posteriores al cielo. Cada semana el río
 reúne una memoria común con una deuda conocida. El rango de Ilar honra ecos devueltos
 al ciclo y viajes terminados; sus marcos y títulos no añaden daño.
+
+## Confirmado — el viaje contado en tres imágenes
+Las transiciones recuerdan el vínculo entre sello, río, hilo, raíz, juramento y luz.
+La introducción de Ilar puede leerse antes de partir; nadie necesita esperar para
+jugar. El final normal devuelve recuerdos y el verdadero permite elegir descanso.
+Exportar el progreso y el modo asistido son opciones del jugador, no nuevas leyes
+ni recompensas del universo.
