@@ -213,3 +213,8 @@ no añaden jefes ni cambian el final. Esta ronda no deja lore nuevo planeado sin
 
 Ampliación del ciclo, acceso: las urnas ya pertenecen a Ilar. Se hace visible su
 entrada desde el título; no se introduce otra moneda ni un segundo sistema de azar.
+
+## Confirmado — salas que conservan el peso
+Sellos de carbón, pesas de sal, carretes, raíces, columnas y vasijas materializan
+los recuerdos de cada región. Las marcas de élite son cicatrices del ciclo roto.
+Ilar reconoce salas limpias con fichas; una caída de rango nunca quita recuerdos.

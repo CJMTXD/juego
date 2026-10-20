@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createWorld,travel,updateWorld} from '../src/simulation.js';
+import {roomTemplates} from '../src/data/expansion.js';
+import {blocked,boxHit,hitScenery,completeRoomRank,queueDanger,updateDanger} from '../src/rooms-content.js';
+import {emit} from '../src/projectiles.js';
+test('48 planos deterministas conservan corredores y puertas libres',()=>{assert.equal(roomTemplates.flat().length,48);for(let z=0;z<6;z++)for(let seed=0;seed<8;seed++){const w=createWorld(seed,0,'remender',z);travel(w,1);assert(w.scenery.length<=8);for(let x=40;x<=600;x+=8)assert(!blocked(w,x,180,12));for(let y=40;y<=320;y+=8)assert(!blocked(w,320,y,12));assert.deepEqual(w.scenery,(()=>{const b=createWorld(seed,0,'remender',z);travel(b,1);return b.scenery;})());}});
+test('pilar intercepta bala rápida; abismo deja pasar; vasija entrega una sola ficha',()=>{const w=createWorld();w.scenery=[{kind:'pillar',x:200,y:100,w:32,h:32,active:true}];const b={px:100,py:116,x:400,y:116,radius:3,damage:3,active:true};assert(hitScenery(w,b,true));assert(!b.active);w.scenery[0].kind='pit';assert(!hitScenery(w,b,true));Object.assign(w.scenery[0],{kind:'jar',hp:2});assert(hitScenery(w,b,true));assert.equal(w.roomCoins,1);assert(!hitScenery(w,b,true));assert(boxHit(0,0,10,10,{x:4,y:4,w:2,h:2}));});
+test('rango recompensa sin castigo y no duplica fichas',()=>{const w=createWorld();w.roomTime=20;assert.equal(completeRoomRank(w).grade,'S');assert.equal(w.roomCoins,3);completeRoomRank(w);assert.equal(w.roomCoins,3);});
+test('anillo vengativo espera, mantiene hueco y no aparece cerca del jugador',()=>{const w=createWorld();queueDanger(w,{x:100,y:80},'revenge',0);updateDanger(w,.5);assert(!w.hostiles.some(b=>b.active));updateDanger(w,.4);assert(w.hostiles.some(b=>b.active));assert(!w.hostiles.some(b=>b.active&&Math.abs(Math.atan2(b.vy,b.vx))<.62));w.hostiles.forEach(b=>b.active=false);queueDanger(w,{x:320,y:180},'mirror');updateDanger(w,1);assert(!w.hostiles.some(b=>b.active));});

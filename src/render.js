@@ -1,3 +1,4 @@
+import {drawRoomContent,drawEliteMarks} from './rooms-content.js';
 import {depth as D} from './data/depth.js';
 import {extras as X} from './data/extras.js';
 import {currentWeapon} from './weapons.js';
@@ -58,7 +59,7 @@ export function createRenderer(canvas){
  const gun=currentWeapon(world);if(loadedWeapon!==gun.id+':'+gun.level+':'+gun.skin){loadedWeapon=gun.id+':'+gun.level+':'+gun.skin;weaponImage=makeWeaponSprite(gun);}
  ctx.imageSmoothingEnabled=false;ctx.save();
  if(world.shake>0&&!preferences.reducedEffects&&!preferences.disableShake)ctx.translate(Math.round(Math.sin(world.time*160)*2),Math.round(Math.cos(world.time*140)*2));
- ctx.drawImage(floor,0,0);
+ ctx.drawImage(floor,0,0);drawRoomContent(ctx,world);
  const type=world.zone.hazard,phase=world.hazardPhase;
  if(phase>0){ctx.strokeStyle=phase===1?c.orange:c.red;ctx.fillStyle=phase===1?c.stone:c.earth;ctx.lineWidth=2;if(type==='embers'){for(const [x,y] of world.hazardPositions){ctx.beginPath();ctx.arc(x,y,34,0,Math.PI*2);warningStroke(phase===1?c.orange:c.red);if(phase===2){ctx.fillStyle=c.red;ctx.fillRect(x-8,y-8,16,16);}}}if(type==='wind'){ctx.strokeStyle=c.cyanDark;ctx.strokeRect(50,45,540,270);ctx.fillStyle=c.cyanDark;for(let x=80;x<600;x+=80)ctx.fillText('↑',x,280);}if(type==='roots'){ctx.strokeStyle=c.green;ctx.beginPath();ctx.arc(320,180,90,0,Math.PI*2);ctx.stroke();}if(type==='mirrors'){ctx.strokeStyle=phase===1?c.orange:c.yellow;for(const x of world.mirrorPositions){ctx.beginPath();ctx.moveTo(x,70);ctx.lineTo(x,290);warningStroke(phase===1?c.orange:c.yellow);}}if(type==='eclipse'){ctx.strokeStyle=phase===1?c.orange:c.red;warningRect(130,20,45,320,phase===1?c.orange:c.red);warningRect(465,20,45,320,phase===1?c.orange:c.red);}if(type==='tide'){ctx.strokeStyle=c.cyanDark;ctx.strokeRect(20,125,600,110);ctx.fillStyle=c.cyanDark;for(let x=70;x<600;x+=70)ctx.fillText(Math.floor(world.hazardClock/8)%2?'→':'←',x,182);}}
  if(world.mark.active){ctx.strokeStyle=world.mark.timer>0?c.orange:c.red;ctx.lineWidth=2;ctx.beginPath();ctx.arc(world.mark.x,world.mark.y,world.mark.radius,0,Math.PI*2);warningStroke(world.mark.timer>0?c.orange:c.red);}
@@ -76,7 +77,7 @@ export function createRenderer(canvas){
    if(e.pattern==='fan'){ctx.save();ctx.translate(e.x,e.y);ctx.rotate(e.angle);ctx.strokeStyle=c.orange;ctx.beginPath();ctx.moveTo(40*Math.cos(-Math.PI/6),40*Math.sin(-Math.PI/6));ctx.lineTo(160*Math.cos(-Math.PI/6),160*Math.sin(-Math.PI/6));ctx.moveTo(40*Math.cos(Math.PI/6),40*Math.sin(Math.PI/6));ctx.lineTo(160*Math.cos(Math.PI/6),160*Math.sin(Math.PI/6));ctx.stroke();ctx.restore();}
   }
   const size=e.type==='boss'?64:e.miniboss?48:32;const entry=e.type==='boss'&&!preferences.reducedEffects?1-Math.max(0,e.entry||0)/X.effects.entrySeconds*0.3:1;ctx.drawImage(sprites[e.type],Math.round(e.x-size*entry/2),Math.round(e.y-size*entry/2),size*entry,size*entry);
-  if(e.elite){ctx.strokeStyle=c.orange;ctx.lineWidth=2;ctx.strokeRect(e.x-17,e.y-17,34,34);}
+  drawEliteMarks(ctx,e);if(e.elite){ctx.strokeStyle=c.orange;ctx.lineWidth=2;ctx.strokeRect(e.x-17,e.y-17,34,34);}
   if(e.flash>0&&!preferences.reducedEffects&&!preferences.disableFlash){ctx.strokeStyle=c.white;ctx.strokeRect(Math.round(e.x-size/2),Math.round(e.y-size/2),size,size);}
   if(e.type==='boss'){ctx.fillStyle=c.orange;ctx.fillRect(e.x-24,e.y-32,8,8);ctx.fillRect(e.x+16,e.y-32,8,8);}
   else {ctx.fillStyle=c.outline;ctx.fillRect(e.x-14,e.y-23,28,3);ctx.fillStyle=c.bone;ctx.fillRect(e.x-14,e.y-23,28*Math.max(0,e.hp/e.maxHp),3);}

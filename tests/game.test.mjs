@@ -1,3 +1,4 @@
+import {steer} from '../scripts/bot-driver.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createWorld,updateWorld,travel,chooseUpgrade,recalculate,damagePlayer,emit,sweptHit,offerUpgrades} from '../src/simulation.js';
@@ -62,8 +63,8 @@ test('zona completa: combate real, oleadas, mejoras, refugio y tres fases del je
   assert(travel(w,id));
   while(w.status==='playing'&&!w.rooms[id].cleared&&budget<180000){
    // Fixture de supervivencia: se aísla el ciclo de combate; el daño se prueba aparte.
-   w.player.invulnerable=1;
-   const target=w.enemies.find(e=>e.active);if(target){i.mouseX=target.x;i.mouseY=target.y;if(target.type==='boss')phases.add(target.phase);}
+   w.player.invulnerable=1;steer(w,i);
+   const target=w.enemies.find(e=>e.active);if(target){if(target.type==='boss')phases.add(target.phase);}
    updateWorld(w,i,1/120,p);w.events.length=0;budget++;
   }
   if(id<8){assert.equal(w.status,'reward',`sala ${id}`);const choice=w.options.find(u=>u.id==='ember'||u.id==='pulse')||w.options[0];assert(chooseUpgrade(w,choice.id));}
@@ -105,7 +106,7 @@ export function finishZone(w){
  for(let id=1;id<=8;id++){
   assert(travel(w,id));
   while(w.status==='playing'&&!w.rooms[id].cleared&&budget<300000){
-   w.player.invulnerable=1;const target=w.enemies.find(e=>e.active);if(target){i.mouseX=target.x;i.mouseY=target.y;}
+   w.player.invulnerable=1;steer(w,i);const target=w.enemies.find(e=>e.active);if(target){}
    updateWorld(w,i,1/120,p);w.events.length=0;budget++;
   }
   if(id<8){assert.equal(w.status,'reward',`sala ${id} mundo ${w.worldIndex}`);const choice=w.options.find(u=>u.id==='ember'||u.id==='pulse')||w.options[0];assert(chooseUpgrade(w,choice.id));}

@@ -298,3 +298,14 @@ posibilidad, no una causa confirmada del dispositivo del usuario. Se corrige la
 invalidación del mapa entre mundos/contador, se reposiciona al volver al combate,
 se añade acceso directo a Urnas y aviso de versión pendiente en el título.
 Diseño de esta ronda: docs/diseno-ampliacion.md. 69 pruebas base pasan.
+
+## Ampliación — A1–A3 implementados
+48 configuraciones de sala (ocho geometrías compartidas con seis materiales),
+colisiones barridas contra pilares, abismos infranqueables y vasijas con fichas.
+Puertas/pasillos centrales libres. Seis marcas élite con máximo dos, aviso de 0,8 s,
+división sin recursión y proyectiles suprimidos a menos de 60 px. Rangos D–S con
+0–3 fichas y +1 cada tres perfectas. Se conserva el campo estable y los pools.
+73 pruebas pasan; bot de supervivencia sin bloqueos >180 s en tres semillas,
+muere entre salas 5–8: es una estrategia limitada, no prueba de balance humano.
+El comprobador anterior, que permanecía inmóvil, ahora navega alrededor de pilares.
+Campañas favorables completas y prueba de navegador pasan. Resto de bloques pendiente.

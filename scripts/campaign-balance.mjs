@@ -1,3 +1,4 @@
+import {steer} from './bot-driver.mjs';
 // Límite favorable: supervivencia forzada y puntería perfecta. No mide destreza ni diversión humana.
 import assert from 'node:assert/strict';
 import {createWorld,updateWorld,travel,chooseUpgrade,advanceWorld,recalculate,offerUpgrades} from '../src/simulation.js';
@@ -13,7 +14,7 @@ export function measureCampaign(seed,difficulty=0){
   const start=w.time;
   for(let room=1;room<=8;room++){
    assert(travel(w,room));let roomTicks=0;
-   while(w.status==='playing'&&!w.rooms[room].cleared&&roomTicks<600000){w.player.invulnerable=1;const e=w.enemies.find(e=>e.active);if(e){input.mouseX=e.x;input.mouseY=e.y;}updateWorld(w,input,1/120,prefs);w.events.length=0;roomTicks++;ticks++;}
+   while(w.status==='playing'&&!w.rooms[room].cleared&&roomTicks<600000){w.player.invulnerable=1;steer(w,input);const e=w.enemies.find(e=>e.active);if(e){}updateWorld(w,input,1/120,prefs);w.events.length=0;roomTicks++;ticks++;}
    assert(roomTicks<600000,JSON.stringify({error:'Combate sin salida',seed,difficulty,zone,room,player:w.player,gun:w.weaponProgress.needle,enemies:w.enemies.filter(e=>e.active),stats:w.stats}));if(room<8){assert.equal(w.status,'reward');const choice=['ember','pulse','halo','lens','fork','pierce','cinder','prism','laurel'].map(id=>w.options.find(u=>u.id===id)).find(Boolean)||w.options[0];assert(chooseUpgrade(w,choice.id));}
   }
   counts.push(+((w.time-start)/60).toFixed(2));if(zone<5)assert(advanceWorld(w));

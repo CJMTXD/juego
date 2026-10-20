@@ -56,3 +56,8 @@ Bot: estrategia de movimiento evaluando balas/obstáculos, sin invulnerabilidad;
 JSON de resultados y tabla en balance. No demuestra por sí solo que todo patrón
 sea esquivable por humanos. Pruebas de integridad, corrupción, respaldo, aislamiento,
 PNG, consola, PWA, cuatro tamaños y regresiones existentes.
+
+Verificación A1–A3: 73 pruebas, navegador y campañas favorables completos pasan.
+Bot de supervivencia añadido antes de terminar la fase para comprobar contenido
+nuevo desde ahora; no necesita esperar al pulido. Ocho geometrías reutilizadas con
+materiales regionales: 48 configuraciones, no 48 planos dibujados independientemente.
