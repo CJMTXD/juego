@@ -1,6 +1,7 @@
+import {memoryItems,memoryRecipes} from './memories.js';
 // Pertenencia por identificador; los niveles repetidos no cuentan como piezas de un set.
 export const mythologies={inferno:'Infierno',river:'Egipcia',threads:'Nórdica',olympus:'Olimpo',dawn:'Alba'};
-export const itemGroups={ember:'inferno',halo:'inferno',cinder:'inferno',ash:'inferno',heart:'river',mercy:'river',scale:'river',reed:'river',step:'threads',veil:'threads',knot:'threads',rune:'threads',pulse:'olympus',fork:'olympus',laurel:'olympus',oath:'olympus',lens:'dawn',pierce:'dawn',prism:'dawn',dawn:'dawn'};
+export const itemGroups={...Object.fromEntries(memoryItems.map(u=>[u.id,u.myth])),ember:'inferno',halo:'inferno',cinder:'inferno',ash:'inferno',heart:'river',mercy:'river',scale:'river',reed:'river',step:'threads',veil:'threads',knot:'threads',rune:'threads',pulse:'olympus',fork:'olympus',laurel:'olympus',oath:'olympus',lens:'dawn',pierce:'dawn',prism:'dawn',dawn:'dawn'};
 export const newItems=[
  {id:'cinder',name:'Carbón fiel',rarity:'common',max:2,text:'Los impactos queman; cada nivel prolonga la quemadura 0,15 s.'},
  {id:'ash',name:'Ceniza del regreso',rarity:'rare',max:1,shopUnlock:true,text:'El impulso recarga 0,12 s antes.'},
@@ -13,7 +14,7 @@ export const newItems=[
  {id:'prism',name:'Prisma sin dueño',rarity:'common',max:1,text:'+10% de velocidad de proyectiles.'},
  {id:'dawn',name:'Rocío de nadie',rarity:'rare',max:1,shopUnlock:true,text:'Recupera 1 de vida adicional al ascender de mundo.'},
 ];
-export const recipes=[
+export const recipes=[...memoryRecipes,
  {id:'living_ash',name:'Ceniza viva',requires:['ember','halo'],effect:'burn',text:'Los impactos queman brevemente; no propagan quemaduras infinitas.'},
  {id:'equal_scale',name:'Balanza compartida',requires:['heart','mercy'],effect:'mercy',text:'Cada 20 bajas recupera 1 de vida; máximo 6 curaciones.'},
  {id:'return_thread',name:'Hilo del retorno',requires:['step','veil'],effect:'trail',text:'La esquiva deja una zona que frena a los perseguidores.'},

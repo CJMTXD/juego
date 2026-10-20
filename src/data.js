@@ -1,3 +1,4 @@
+import {memoryItems} from './data/memories.js';
 import {newItems} from './data/relics.js';
 import { balance as B } from './data/balance.js';
 export const settings = Object.freeze({ width:640, height:360, wall:20, playerSpeed:B.player.speed, playerSize:32, hitRadius:B.player.hitRadius, bulletSpeed:B.projectiles.speed, fireInterval:B.projectiles.interval, bulletCapacity:B.projectiles.allyCapacity, enemyCapacity:B.projectiles.enemyCapacity, step:1/120 });
@@ -39,6 +40,7 @@ export const upgrades = Object.freeze([
  {id:'halo', name:'Memoria incandescente', rarity:'epic', max:1, text:'+25% de daño. Con Brasa cautiva: otro +15% de daño.'},
  {id:'lens', name:'Lente del retorno', rarity:'rare', max:2, unlock:1, text:'+30% de velocidad de proyectil y +10% de daño.'},
  ...newItems,
+ ...memoryItems,
  {id:'veil', name:'Velo del guardián', rarity:'epic', max:1, unlock:2, text:'La invulnerabilidad tras recibir daño dura 0,5 s más.'},
 ]);
 export const roomNames = ['Atrio de las promesas','Archivo hundido','Patio de ceniza','Galería de ecos','Foso de los nombres','Almacén de juramentos','Cripta de las cartas','Escalera rota','Compuerta del olvido'];

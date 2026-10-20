@@ -1,3 +1,5 @@
+import {memoryEligible,memoryKill,memoryBoss,memoryTrail,memoryTrailDuration,grantMemory} from './memories.js';
+import {memoryServices,memoryBalance as M} from './data/memories.js';
 import {evolutionEffects as E} from './data/evolutions.js';
 import {extras as X} from './data/extras.js';
 import {initExtras,configureSideRooms,canEnterRoom,enterSideRoom,updateExtras,graze,damageNumber} from './extras.js';
@@ -39,7 +41,7 @@ export function sweptHit(ax,ay,bx,by,cx,cy,radius){
 }
 function clearBullets(world){for(const b of world.allies)b.active=false;for(const b of world.hostiles)b.active=false;}
 export function offerUpgrades(world) {
- const available=upgrades.filter(u=>(!u.shopUnlock||world.itemUnlocks===null||world.itemUnlocks.includes(u.id))&&(!u.unlock||world.unlocks>=u.unlock||world.itemUnlocks?.includes(u.id))&&(world.inventory[u.id]||0)<u.max);
+ const available=upgrades.filter(u=>memoryEligible(world,u)&&(!u.shopUnlock||world.itemUnlocks===null||world.itemUnlocks.includes(u.id))&&(!u.unlock||world.unlocks>=u.unlock||world.itemUnlocks?.includes(u.id))&&(world.inventory[u.id]||0)<u.max);
  world.options=[];
  while(world.options.length<3&&available.length){
   const groups=['common','rare','epic'].filter(rarity=>available.some(u=>u.rarity===rarity));
@@ -51,24 +53,24 @@ export function offerUpgrades(world) {
   const index=available.indexOf(selected);
   world.options.push(available.splice(index,1)[0]);
  }
- if(!world.options.length)world.options=[{id:'restore',name:'Último recuerdo',rarity:'common',max:1,text:'Recupera 2 de vida. No añade niveles.'}];
+ for(const service of memoryServices)if(world.options.length<3)world.options.push(service);
  world.superOffers=eligibleSupers(world);world.weaponOffer=rollWeapon(world);
  world.status='reward';
 }
 export function chooseUpgrade(world,id){
  if(world.status!=='reward'||(!(id==='weapon'&&world.weaponOffer)&&!world.options.some(u=>u.id===id)))return false;
  if(id==='weapon'){if(!world.weaponOffer)return false;equipWeapon(world,world.weaponOffer.id);}
- else if(id!=='restore')world.inventory[id]=(world.inventory[id]||0)+1;
+ else if(!world.options.find(u=>u.id===id)?.service)world.inventory[id]=(world.inventory[id]||0)+1;
  recalculate(world);
  world.tutorial.upgraded=true;
  if(id==='heart')heal(world,1);
- if(id==='mercy'||id==='restore')heal(world,B.progression.restHeal);
+ if(id==='mercy')heal(world,B.progression.restHeal);if(id==='restore')heal(world,M.serviceHeal);if(id==='memory_coins')world.roomCoins=Math.min(M.coinsMax,world.roomCoins+M.serviceCoins);if(id==='memory_charge')world.abilityCharge=Math.min(D.graze.maximum,world.abilityCharge+M.serviceCharge);
  world.rooms[world.roomId].rewardTaken=true;world.options=[];world.status='playing';world.events.push('reward');return true;
 }
 export function travel(world,id){
  const old=world.rooms[world.roomId],room=world.rooms[id];
  if(world.status!=='playing'||!old.cleared||!old.rewardTaken||!old.links.includes(id)||!room||!canEnterRoom(world,room))return false;
- clearBullets(world);world.shield=world.character.kind==='shield';for(const e of world.enemies)e.active=false;resetHazard(world);world.roomTime=0;world.bossDamage=0;world.roomId=id;world.wave=0;world.spawnTimer=B.encounters.spawnDelay;world.fireTimer=0;world.exitLock=B.progression.exitLock;world.bossPhase=0;
+ clearBullets(world);world.shield=world.character.kind==='shield'||!!(world.memoryBonuses?.entryShield&&world.player.hp===world.player.maxHp);for(const e of world.enemies)e.active=false;resetHazard(world);world.roomTime=0;world.bossDamage=0;world.roomId=id;world.wave=0;world.spawnTimer=B.encounters.spawnDelay;world.fireTimer=0;world.exitLock=B.progression.exitLock;world.bossPhase=0;
  const p=world.player;p.x=320;p.y=180;
  if(room.x>old.x)p.x=48;if(room.x<old.x)p.x=592;if(room.y>old.y)p.y=48;if(room.y<old.y)p.y=312;
  p.invulnerable=B.progression.entryGrace;
@@ -159,16 +161,16 @@ function updateEnemy(world,e,dt){
 }
 function killEnemy(world,e,weaponId=null){
  creditWeaponKill(world,weaponId);
- e.active=false;world.kills++;if(world.kills%X.rooms.killCoinEvery===0)world.roomCoins+=1+(world.inventory.scale?X.rooms.scaleBonus:0);relicKill(world);world.events.push('kill');
+ e.active=false;world.kills++;if(world.kills%X.rooms.killCoinEvery===0)world.roomCoins+=1+(world.inventory.scale?X.rooms.scaleBonus:0);relicKill(world);memoryKill(world);world.events.push('kill');if(e.miniboss)grantMemory(world,'miniboss',recalculate);
  if(world.effectsEnabled){world.hitStop=X.effects.hitStop;let count=0;for(const p of world.particles){if(!p.active){p.active=true;p.kind='spark';p.x=e.x;p.y=e.y;p.vx=Math.cos(count*2.4)*55;p.vy=Math.sin(count*2.4)*55;p.life=0.25;if(++count===4)break;}}}
  if(!world.enemies.some(item=>item.active))world.spawnTimer=B.encounters.waveDelay;
- if(e.type==='boss'){Object.assign(world.defeat,{x:e.x,y:e.y,timer:X.effects.defeatSeconds});world.bossesDefeated.push(world.worldIndex);if(world.bossDamage===0&&!world.bossFeats.includes(world.worldIndex))world.bossFeats.push(world.worldIndex);world.superOffers=eligibleSupers(world);world.status=world.worldIndex===worlds.length-1?'won':'transition';world.pendingWorld=world.worldIndex+1;world.bossWeapon=rollWeapon(world,true);world.rooms[world.roomId].cleared=true;world.cleared++;world.zoneCleared++;clearBullets(world);world.events.push('win');}
+ if(e.type==='boss'){memoryBoss(world);Object.assign(world.defeat,{x:e.x,y:e.y,timer:X.effects.defeatSeconds});world.bossesDefeated.push(world.worldIndex);if(world.bossDamage===0&&!world.bossFeats.includes(world.worldIndex))world.bossFeats.push(world.worldIndex);world.superOffers=eligibleSupers(world);world.status=world.worldIndex===worlds.length-1?'won':'transition';world.pendingWorld=world.worldIndex+1;world.bossWeapon=rollWeapon(world,true);world.rooms[world.roomId].cleared=true;world.cleared++;world.zoneCleared++;clearBullets(world);world.events.push('win');}
 }
 function moveBullets(world,bullets,dt,allied){
  for(const b of bullets){
   if(!b.active)continue;b.age+=dt;b.pulseTimer-=dt;if(b.finalEffect==='quake'&&b.delay<=0&&b.pulseTimer<=0){b.hits=0;b.pierce=15;b.pulseTimer=E.quakeInterval;}b.delay=Math.max(0,b.delay-dt);
   if(allied&&b.mode==='homing'){let target=null,distance=Infinity;for(const e of world.enemies)if(e.active){const d=(e.x-b.x)**2+(e.y-b.y)**2;if(d<distance){distance=d;target=e;}}if(target){const aim=Math.atan2(target.y-b.y,target.x-b.x),angle=Math.atan2(b.vy,b.vx),difference=Math.atan2(Math.sin(aim-angle),Math.cos(aim-angle)),next=angle+clamp(difference,-b.turn*dt,b.turn*dt),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(next)*speed;b.vy=Math.sin(next)*speed;}}
-  if(allied&&b.mode==='boomerang'&&b.age>B.weapons.returnDelay){if(!b.returned){b.hits=0;b.returned=true;}const angle=Math.atan2(world.player.y-b.y,world.player.x-b.x),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(angle)*speed;b.vy=Math.sin(angle)*speed;if(Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.weapons.returnCatch){if(b.finalEffect==='moon'){let orbitCount=0;for(const orb of world.allies)if(orb.active&&orb.mode==='orbit')orbitCount++;if(orbitCount>=B.weapons.maxOrbitals){b.active=false;continue;}b.mode='orbit';b.finalEffect='';b.orbitRadius=E.moonRadius;b.life=E.moonLife;b.vx=0;b.vy=0;b.hits=0;b.pierce=E.moonPierce;}else b.active=false;}}
+  if(allied&&b.mode==='boomerang'&&b.age>B.weapons.returnDelay-(b.weaponId==='boomerang'?(world.weaponMemories?.boomerang?.returnEarly||0):0)){if(!b.returned){b.hits=0;b.returned=true;}const angle=Math.atan2(world.player.y-b.y,world.player.x-b.x),speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(angle)*speed;b.vy=Math.sin(angle)*speed;if(Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.weapons.returnCatch){if(b.finalEffect==='moon'){let orbitCount=0;for(const orb of world.allies)if(orb.active&&orb.mode==='orbit')orbitCount++;if(orbitCount>=B.weapons.maxOrbitals){b.active=false;continue;}b.mode='orbit';b.finalEffect='';b.orbitRadius=E.moonRadius;b.life=E.moonLife;b.vx=0;b.vy=0;b.hits=0;b.pierce=E.moonPierce;}else b.active=false;}}
   if(b.mode==='curve'){const a=Math.atan2(b.vy,b.vx)+b.turn*dt,speed=Math.hypot(b.vx,b.vy);b.vx=Math.cos(a)*speed;b.vy=Math.sin(a)*speed;}
   b.px=b.x;b.py=b.y;b.x+=b.vx*dt*(!allied&&world.abilityTime>0&&world.character.id==='weaver'?X.ability.slow:1)*(world.superItem==='nobody'&&!allied?R.timeFactor:1)*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.characters.auraRadius?B.characters.auraFactor:1);b.y+=b.vy*dt*(!allied&&world.abilityTime>0&&world.character.id==='weaver'?X.ability.slow:1)*(world.superItem==='nobody'&&!allied?R.timeFactor:1)*(!allied&&world.character.kind==='aura'&&Math.hypot(b.x-world.player.x,b.y-world.player.y)<B.characters.auraRadius?B.characters.auraFactor:1);b.life-=dt;if(allied&&b.mode==='orbit'){b.orbit+=B.weapons.orbitSpeed*dt;b.x=world.player.x+Math.cos(b.orbit)*b.orbitRadius;b.y=world.player.y+Math.sin(b.orbit)*b.orbitRadius;}
   if(allied&&b.finalEffect==='reflect'&&world.reflectCooldown<=0){for(const hostile of world.hostiles)if(hostile.active&&Math.hypot(hostile.x-b.x,hostile.y-b.y)<E.reflectRange){hostile.active=false;world.reflectCooldown=E.reflectCooldown;const reflected=emit(world.allies,b.x,b.y,world.player.angle,E.childSpeed,E.childRadius,b.damage*E.reflectDamage);if(reflected){reflected.weaponId=b.weaponId;reflected.generation=1;}break;}}
@@ -182,7 +184,7 @@ function moveBullets(world,bullets,dt,allied){
     // Cada enemigo ocupa un bit: nunca se repite daño al atravesarlo.
     const bit=1<<(e.id%30);
     if(!e.active||(b.hits&bit)||!sweptHit(b.px,b.py,b.x,b.y,e.x,e.y,e.radius+b.radius))continue;
-    const dealt=b.damage*(world.abilityTime>0&&world.character.id==='witness'?X.ability.damage:1)*(world.character.kind==='light'&&world.player.hp===world.player.maxHp?B.characters.fullHealthDamage:1);world.damageDealt+=Math.min(e.hp,dealt);world.damageBuckets[Math.floor(world.time)%B.campaign.metricsWindow]+=Math.min(e.hp,dealt);e.hp-=dealt;damageNumber(world,e,dealt,world.visualPreferences);e.flash=0.08;b.hits|=bit;world.events.push('hit');
+    const dealt=b.damage*(1+((e.type==='boss'||e.miniboss)?world.memoryBonuses?.bossDamage||0:0))*(world.abilityTime>0&&world.character.id==='witness'?X.ability.damage:1)*(world.character.kind==='light'&&world.player.hp===world.player.maxHp?B.characters.fullHealthDamage:1);world.damageDealt+=Math.min(e.hp,dealt);world.damageBuckets[Math.floor(world.time)%B.campaign.metricsWindow]+=Math.min(e.hp,dealt);e.hp-=dealt;damageNumber(world,e,dealt,world.visualPreferences);e.flash=0.08;b.hits|=bit;world.events.push('hit');
     projectileEffect(world,b,e);relicImpact(world,b,e);if(e.hp<=0)killEnemy(world,e,b.weaponId);
     if(b.pierce+(world.abilityTime>0&&world.character.id==='witness'?X.ability.pierce:0)<=0){b.active=false;break;}b.pierce--;
    }
@@ -200,7 +202,7 @@ export function updateWorld(world,input,dt,preferences){
  p.invulnerable=Math.max(0,p.invulnerable-dt);p.dashCooldown=Math.max(0,p.dashCooldown-dt);world.exitLock=Math.max(0,world.exitLock-dt);world.shake=Math.max(0,world.shake-dt);
  let dx=Number(input.keys.has(bindings.right))-Number(input.keys.has(bindings.left)),dy=Number(input.keys.has(bindings.down))-Number(input.keys.has(bindings.up));
  const length=Math.hypot(dx,dy);if(length){world.tutorial.moved+=world.stats.speed*dt;dx/=length;dy/=length;p.dx=dx;p.dy=dy;}
- if(input.dash&&p.dashCooldown<=0){p.dashTime=B.player.dashDuration;p.dashCooldown=Math.max(D.caps.minDash,(world.character.kind==='dash'?B.characters.dashRecharge:B.player.dashCooldown)-(world.itemBonuses.dash||0)-(world.inventory.ash?R.ashRecharge:0)-(world.inventory.rune?R.runeRecharge:0));if(world.combos.includes('return_thread')){world.trail.x=p.x;world.trail.y=p.y;world.trail.timer=R.trailSeconds;}if(world.superItem==='loom'){p.x=clamp(p.x+p.dx*R.teleport,36,604);p.y=clamp(p.y+p.dy*R.teleport,36,324);p.dashTime=0;p.dashCooldown=R.loomRecharge;}p.dashRecharge=p.dashCooldown;p.invulnerable=Math.max(p.invulnerable,B.player.dashInvulnerability);world.tutorial.dashed=true;world.events.push('dash');}input.dash=false;
+ if(input.dash&&p.dashCooldown<=0){p.dashTime=B.player.dashDuration;p.dashCooldown=Math.max(D.caps.minDash,(world.character.kind==='dash'?B.characters.dashRecharge:B.player.dashCooldown)-(world.itemBonuses.dash||0)-(world.inventory.ash?R.ashRecharge:0)-(world.inventory.rune?R.runeRecharge:0));if(memoryTrail(world)){world.trail.x=p.x;world.trail.y=p.y;world.trail.timer=memoryTrailDuration(world);}if(world.superItem==='loom'){p.x=clamp(p.x+p.dx*R.teleport,36,604);p.y=clamp(p.y+p.dy*R.teleport,36,324);p.dashTime=0;p.dashCooldown=R.loomRecharge;}p.dashRecharge=p.dashCooldown;p.invulnerable=Math.max(p.invulnerable,Math.min(M.dashInvulnerabilityMax,B.player.dashInvulnerability+(world.memoryBonuses?.dashInvulnerability||0)));world.tutorial.dashed=true;world.events.push('dash');}input.dash=false;
  if(p.dashTime>0){dx=p.dx;dy=p.dy;p.dashTime-=dt;}
  updateHazard(world,dt,damagePlayer);if(world.status!=='playing')return;
  const speed=world.stats.speed*(world.abilityTime>0&&world.character.id==='courier'?X.ability.speed:1)*(world.environmentSlow||1)*(p.dashTime>0?B.player.dashMultiplier:1);
@@ -211,7 +213,7 @@ export function updateWorld(world,input,dt,preferences){
  if(!room.cleared){
   if(!world.enemies.some(e=>e.active)){
    if(world.wave<room.waves||room.kind==='boss'&&world.wave===0){world.spawnTimer-=dt;if(world.spawnTimer<=0)spawnWave(world);}
-   else {room.cleared=true;world.cleared++;if(room.id<=8)world.zoneCleared++;if(world.character.kind==='heal'&&world.cleared%B.characters.healRooms===0)heal(world,1);clearBullets(world);offerUpgrades(world);world.events.push('clear');return;}
+   else {room.cleared=true;world.cleared++;if(room.id<=8)world.zoneCleared++;if(world.character.kind==='heal'&&world.cleared%B.characters.healRooms===0)heal(world,1);clearBullets(world);offerUpgrades(world);world.events.push('clear');if(room.kind==='challenge')grantMemory(world,'challenge',recalculate);return;}
   }
  }
  for(const e of world.enemies)updateEnemy(world,e,dt);

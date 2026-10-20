@@ -255,3 +255,11 @@ Armería/Códice comparten componentes. 51 pruebas y cuatro tamaños de menús p
 Base en docs/diseno-contenido-nuevo.md: 24 ítems (9 de urna), seis recetas, sets
 ampliados sin cambiar sus escalones y dos urnas de 6/12 ecos. Garantías y duplicados
 explícitos; sin dinero real ni presión. Se conserva v3 con extensión opcional validada.
+
+## Recuerdos nuevos — fase 5 implementada
+24 ítems configurados, 6 recetas sin consumir piezas y sets con 8–9 piezas por
+tradición. Nueve ítems de urna permanecen bloqueados hasta fase 6; no se venden
+individualmente. Cuatro desvíos conceden su ítem una vez al aceptar/completar el reto.
+Códice progresivo, iconos matriciales distintos, detalle de obtención y arma afectada.
+Tres servicios renovables completan ofertas agotadas. Pruebas de 50 campañas y
+balas reales comprueban efectos/topes. Balance y duración simulada en docs/balance.md.

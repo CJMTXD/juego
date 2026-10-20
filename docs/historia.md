@@ -184,3 +184,12 @@ aspectos, habilidades e historias conservan sus datos; no se añade lore ni pode
 Presentación — campo estable: la corrección de tamaño no añade contenido narrativo.
 El mapa vuelve a acompañar el ascenso; no revela secretos inaccesibles por defecto.
 Ilar distingue el recuerdo de cada arma de los dones que acompañan a toda alma.
+
+## Confirmado — recuerdos caídos, fase 5
+Los sellos de carbón guardan promesas del depósito; las vendas y pesas acompañan el
+río; costuras y carretes reparan los vínculos; sílabas y campanas cuestionan la corte;
+plumas y notas devuelven lo borrado del alba. El juicio entrega el Espejo de la
+Tasadora, el archivo un Carrete del silencio, el desafío una Campana del juicio y el
+Vigía una Nota al margen. Sello tibio, Peaje devuelto, Costura del regreso, Voz atada,
+Mapa del alba y Camino de bruma son recetas reales, sin destruir recuerdos previos.
+Los nueve recuerdos reservados a urnas todavía esperan su sistema de apertura.

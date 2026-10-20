@@ -44,7 +44,7 @@ Los sets conservan sus bonos 2/3/4 y suman las piezas nuevas: Infierno/Egipcia/N
 
 ## Oferta y límites
 
-Ocho ítems nuevos entran directamente; tres se abren con ecos, cuatro se consiguen en desvíos y nueve son exclusivos de urnas. Los desvíos conceden su recuerdo una vez por mundo y partida al aceptar/completar su reto; se informa antes de aceptar. La diaria excluye los nueve de urna incluso en el laboratorio. Las ofertas se completan, si agotaste todo, con tres servicios repetibles distintos: curar 1, ganar 2 fichas, cargar 10 habilidad. No se añaden esperas ni salas obligatorias.
+Ocho ítems nuevos entran directamente; tres se abren con ecos, cuatro se consiguen en desvíos y nueve son exclusivos de urnas. Los desvíos conceden su recuerdo una vez por mundo y partida al aceptar/completar su reto; se informa antes de aceptar. La diaria excluye los nueve de urna incluso en el laboratorio. Las ofertas se completan, si agotaste todo, con tres servicios repetibles distintos: curar 2, ganar 2 fichas, cargar 10 habilidad. No se añaden esperas ni salas obligatorias.
 
 Se conserva daño ≤4,2, velocidad ≤260, seis orbitales, pools existentes y recarga mínima de esquiva 0,8 s. Nuevos bonos globales de daño ≤35%, velocidad positiva ≤15%, cadencia condicional ≤15%, habilidad temporal 1–6 s, curas de jefe ≤3 y ecos de jefe ≤6 antes de multiplicadores. Efectos nuevos reutilizan rastro, quemadura, rebotes, penetración, escudo y explosión, sin emisiones recursivas.
 

@@ -1,3 +1,5 @@
+import {grantMemory} from './memories.js';
+import {memoryBalance as M} from './data/memories.js';
 import {depth as D} from './data/depth.js';
 import {extras as X,abilities} from './data/extras.js';
 import {heal} from './rules.js';
@@ -19,14 +21,14 @@ export function useRoom(w,action,recalculate){const r=w.rooms[w.roomId];if(w.sta
  else if(action==='debt'&&r.kind==='judgment'){if(w.player.hp<=D.rooms.judgmentHealthCost)return false;w.player.hp-=D.rooms.judgmentHealthCost;w.roomCoins+=X.rooms.judgmentCoins;}
  else if(action==='secret'&&r.kind==='secret'){heal(w,1);w.knownFragments=[...new Set([...w.knownFragments,w.zone.id])];w.discoveryRevision++;}
  else return false;
- r.used=true;w.status='playing';w.events.push('reward');return true;
+ if(['judgment','secret'].includes(r.kind))grantMemory(w,r.kind,recalculate);r.used=true;w.status='playing';w.events.push('reward');return true;
 }
 export function repeatChallenge(w){const r=w.rooms[w.roomId];if(w.status!=='playing'||r.kind!=='challenge'||!r.cleared||!r.rewardTaken||w.player.hp<=D.rooms.challengeRepeatHealth)return false;w.player.hp-=D.rooms.challengeRepeatHealth;r.repeats++;r.cleared=false;r.rewardTaken=false;w.wave=0;w.spawnTimer=1.4;w.roomTime=0;return true;}
-export function activateAbility(w){if(w.abilityCharge<D.graze.maximum)return false;const p=w.player;w.abilityCharge=0;w.abilityTime=D.graze.abilitySeconds+(w.itemBonuses.abilityDuration||0)+(w.inventory.oath?1:0);
+export function activateAbility(w){if(w.abilityCharge<D.graze.maximum)return false;const p=w.player;w.abilityCharge=0;w.abilityTime=D.graze.abilitySeconds+(w.itemBonuses.abilityDuration||0)+(w.inventory.oath?1:0)+(w.memoryBonuses?.duration||0);w.abilityTime=Math.max(M.abilityMin,Math.min(M.abilityMax,w.abilityTime));
  if(w.character.id==='remender')heal(w,X.ability.heal);
  if(w.character.id==='hollow')w.shield=true;
  if(w.character.id==='courier')p.dashCooldown=0;
- if(['remender','hollow'].includes(w.character.id))for(const b of w.hostiles)if(b.active&&Math.hypot(b.x-p.x,b.y-p.y)<X.ability.clearRadius)b.active=false;
+ if(['remender','hollow'].includes(w.character.id)||w.memoryBonuses?.clear)for(const b of w.hostiles)if(b.active&&Math.hypot(b.x-p.x,b.y-p.y)<X.ability.clearRadius+(w.memoryBonuses?.clear||0))b.active=false;
  p.invulnerable=Math.max(p.invulnerable,X.ability.invulnerability);w.events.push('special');w.comboNotice=abilities[w.character.id].name;w.comboTimer=2;return true;
 }
 export function graze(w,b,sweptHit){const p=w.player;if(b.grazed||p.invulnerable>0||p.dashTime>0||sweptHit(b.px,b.py,b.x,b.y,p.x,p.y,p.radius+b.radius))return false;

@@ -1,3 +1,6 @@
+import {depth as D} from './data/depth.js';
+import {memoryProjectile,memoryShotFactor} from './memories.js';
+import {memoryBalance as M} from './data/memories.js';
 import {relicBalance as R} from './data/relics.js';
 import {evolutionEffects as E} from './data/evolutions.js';
 import {weapons} from './data/weapons.js';
@@ -24,9 +27,9 @@ function projectile(world,gun,angle,damage){
  if(gun.mode==='boomerang')bullet.life=2.2;if(gun.finalEffect==='quake')bullet.life=gun.delay+E.quakeLife;
  if(world.weaponSlots.includes('ricochet')&&world.weaponSlots.includes('orbit'))bullet.bounces=Math.min(3,bullet.bounces+1);
  if(world.weaponSlots.includes('beam')&&world.weaponSlots.includes('needle'))bullet.pierce=Math.min(15,bullet.pierce+1);}
- return bullet;
+ memoryProjectile(world,gun,bullet);return bullet;
 }
-function discharge(world,gun,damageScale=1,withSides=true){
+function discharge(world,gun,damageScale=1,withSides=true){damageScale*=memoryShotFactor(world,gun);
  if(world.inventory.laurel&&world.weaponProgress[gun.id].shots%R.laurelEvery===R.laurelEvery-1)damageScale*=R.laurelDamage;
  if(gun.mode==='orbit'||gun.mode==='area')damageScale*=1+world.stats.side*B.weapons.sideUtility;
  if(['orbit','area','beam'].includes(gun.mode))damageScale*=1+world.stats.pierce*B.weapons.pierceUtility;
@@ -48,9 +51,9 @@ function discharge(world,gun,damageScale=1,withSides=true){
 export function updateWeapon(world,input,dt,preferences){
  if(input.swap){swapWeapon(world);input.swap=false;}
  for(const id in world.cooldowns)world.cooldowns[id]=Math.max(0,world.cooldowns[id]-dt);
- const gun=currentWeapon(world);world.fireTimer=world.cooldowns[gun.id]||0;world.aimX=input.mouseX;world.aimY=input.mouseY;
+ const gun=currentWeapon(world),interval=Math.max(D.caps.cadence,world.stats.interval/(1+(world.grazes>=M.grazeRequired?Math.min(M.cadenceCap,world.memoryBonuses?.grazeCadence||0):0)));world.fireTimer=world.cooldowns[gun.id]||0;world.aimX=input.mouseX;world.aimY=input.mouseY;
  if(gun.mode==='charge'){
-  if(preferences.autoFire||input.shoot)world.charge=Math.min(gun.interval,world.charge+dt/(world.stats.interval/B.projectiles.interval));
+  if(preferences.autoFire||input.shoot)world.charge=Math.min(gun.interval,world.charge+dt/(interval/B.projectiles.interval));
   if(world.charge>=gun.interval-1e-9||(!preferences.autoFire&&!input.shoot&&world.charge>0.15)){discharge(world,gun,world.charge/gun.interval);world.charge=0;}return;
  }world.burstTimer-=dt;
  if(world.burstLeft>0&&world.burstTimer<=0){discharge(world,gun,1,false);world.burstLeft--;world.burstTimer=gun.burstGap;return;}
@@ -58,7 +61,7 @@ export function updateWeapon(world,input,dt,preferences){
  if(!(preferences.autoFire||input.shoot)||world.fireTimer>1e-9)return;
  world.burstLeft=gun.mode==='burst'?gun.count-1:0;
  discharge(world,gun);world.burstTimer=gun.burstGap||0;
- world.fireTimer=gun.interval*world.stats.interval/B.projectiles.interval;world.cooldowns[gun.id]=world.fireTimer;
+ world.fireTimer=gun.interval*interval/B.projectiles.interval;world.cooldowns[gun.id]=world.fireTimer;
 }
 
 export function weaponSynergy(world){const ids=world.weaponSlots;if(ids.includes('scatter')&&ids.includes('burst'))return 'Voz + Sal: dispersión -20%';if(ids.includes('ricochet')&&ids.includes('orbit'))return 'Regreso + Astrolabio: un rebote extra (máx. 3)';if(ids.includes('beam')&&ids.includes('needle'))return 'Luz + Aguja: una penetración extra';if(ids.includes('area')&&ids.includes('charge'))return 'Tinta + Sol: +10% de daño';return '';}

@@ -1,3 +1,4 @@
+import {recalculateMemories} from './memories.js';
 import {heal,hasPact} from './rules.js';
 import {itemGroups,recipes,sets,superItems,relicBalance as R} from './data/relics.js';
 import {depth as D} from './data/depth.js';
@@ -11,7 +12,7 @@ export function recalculateRelics(w){
  for(const id of w.combos)if(!w.discoveredRecipes.includes(id)){w.discoveredRecipes.push(id);w.discoveryRevision++;w.comboNotice='Receta descubierta: '+recipes.find(r=>r.id===id).name;w.comboTimer=4;w.events.push('combo');}
  const b=w.itemBonuses,s=superItems.find(s=>s.id===w.superItem);
  w.stats.speed=Math.min(D.caps.speed,w.stats.speed*(1+D.stats.permanentSpeed*w.metaTree.stride)*(1+(b.speed||0))*(s?.speed||1));w.stats.damage=Math.min(D.caps.damage,w.stats.damage*(1+(b.damage||0))*(s?.damage||1));w.stats.bulletSpeed*=1+(b.bulletSpeed||0)+(w.inventory.prism?R.prismSpeedBonus:0);w.stats.interval=Math.max(D.caps.cadence,w.stats.interval/(1+(b.cadence||0)));w.stats.pierce=Math.min(D.caps.pierce,w.stats.pierce+(b.pierce||0));
- w.player.maxHp=Math.min(D.caps.health,Math.max(1,w.player.maxHp-(hasPact(w,'frail')?1:0)+w.metaTree.vitality+(b.health||0)-(s?.healthCost||0)));if(w.superItem==='nobody')w.player.maxHp=1;w.player.hp=Math.min(w.player.hp,w.player.maxHp);
+ w.player.maxHp=Math.min(D.caps.health,Math.max(1,w.player.maxHp-(hasPact(w,'frail')?1:0)+w.metaTree.vitality+(b.health||0)-(s?.healthCost||0)));if(w.superItem==='nobody')w.player.maxHp=1;w.player.hp=Math.min(w.player.hp,w.player.maxHp);recalculateMemories(w);
 }
 export function eligibleSupers(w){if(w.superItem)return [];return superItems.filter(s=>(!s.shopUnlock||w.superUnlocks===null||w.superUnlocks.includes(s.id))&&(!s.recipe||w.combos.includes(s.recipe))&&(!s.kills||w.kills>=s.kills)&&(s.boss===undefined||w.bossFeats.includes(s.boss))&&(!s.secret||w.secretVisits>0)&&(!s.graze||w.grazes>=s.graze)&&(!s.difficulty||(w.difficultyIndex||0)>=s.difficulty));}
 export function claimSuper(w,id){if(!eligibleSupers(w).some(s=>s.id===id))return false;w.superItem=id;w.superPulse=1;w.events.push('super');w.discoveryRevision++;w.comboNotice='Superítem: '+superItems.find(s=>s.id===id).name;w.comboTimer=5;return true;}

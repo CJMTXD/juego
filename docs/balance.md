@@ -190,3 +190,28 @@ terminan en 12,65 / 12,29 / 13,01 min en Brasa tenue (270 bajas, N3). Semilla 42
 Memoria absoluta: 21,97 min (384 bajas, N3). No se infiere de esto una duración humana.
 El objetivo estándar sigue siendo 15–25 min; necesita sesiones reales. No se obliga
 a esperar ni a visitar el desafío para completar la historia.
+
+## Recuerdos nuevos — fase 5
+24 ítems nuevos, máximo un nivel; nueve reservados a urnas (fase 6). Ocho al grupo
+normal, tres catálogos a 10 ecos, cuatro premios de desvíos. Sello del testimonio
+requiere dificultad 3+. Tabla exacta: docs/diseno-contenido-nuevo.md y
+`node scripts/item-balance.mjs`. Las seis recetas no consumen piezas. Los sets
+mantienen valores y cuentan nuevas piezas distintas: 9/9/9/9/8 por tradición.
+
+Se conservan daño de estadísticas ≤4,2, velocidad ≤260, seis orbitales y pools.
+Cadencia condicional respeta el suelo 0,065. Bonos de daño de disparos concretos y
+habilidad se aplican después, como las sinergias anteriores; efectos secundarios no
+se propagan. Urna de sal intercambia alcance por rebote; hilo/luna/prisma pierden
+8/8/10% de daño por utilidad. Sol adelanta su efecto final desde N2 por -15% daño.
+Vasija pierde un punto máximo por su escudo condicionado; los sets pueden compensar
+esa pérdida, sin superar vida 8. Laurel carga por bajas a cambio de -8% daño.
+
+El grupo nunca queda con menos de tres opciones: al agotarse se añaden servicios
+renovables de cura 2, fichas 2 y carga 10, sin niveles permanentes. Se conserva la
+cura de reserva anterior (2), añadiendo elecciones útiles de economía/habilidad.
+Prueba: 50 semillas ×60 recompensas y saturación total. No se añade tiempo ni salas.
+
+Campaña simulada favorable (invulnerabilidad y puntería perfecta): semillas
+42/123/2026 = 11,60/12,48/13,40 minutos; dificultad máxima semilla 42 =21,23.
+270/384 bajas, forma N3. No incluye decisiones/viajes humanos ni valida la duración
+real de 15–25 minutos. No se alteran ataques enemigos para compensar estas elecciones.

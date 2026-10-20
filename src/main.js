@@ -119,13 +119,13 @@ function updateHud(){
  $('controls-help').textContent+=` · ${keyName(b.special)}: ${abilities[world.character.id].name} ${Math.floor(world.abilityCharge)}/100 · ${world.grazes} roces · ${world.roomCoins} fichas`;
  updateGameHud(world,save.preferences,keyName,input.touchActive||false);
  const challengeButton=$('repeat-challenge');if(challengeButton)challengeButton.hidden=!(mode==='playing'&&world.status==='playing'&&room.kind==='challenge'&&room.cleared&&room.rewardTaken);
- const mapKey=`${mode}:${world.status}:${world.roomId}:${world.rooms.filter(r=>r.visited).map(r=>r.id).join(',')}:${world.grazes>=D.rooms.secretGraze}:${world.combos.length}`;
+ const mapKey=`${mode}:${world.status}:${world.roomId}:${world.rooms.filter(r=>r.visited).map(r=>r.id).join(',')}:${world.grazes>=D.rooms.secretGraze}:${world.combos.length}:${!!world.memoryBonuses?.reveal}`;
  if(mapKey===lastMap)return;lastMap=mapKey;$('minimap').innerHTML=minimapMarkup(world);positionMinimap();
  const map=$('map');map.replaceChildren();
  for(let y=0;y<5;y++)for(let x=0;x<5;x++){
   const r=world.rooms.find(r=>r.x===x&&r.y===y),button=document.createElement('button');button.type='button';
   if(!r){button.className='empty';button.disabled=true;button.tabIndex=-1;}else{
-   const visible=(r.visited||r.links.some(id=>world.rooms[id].visited))&&canEnterRoom(world,r);button.innerHTML=visible?icon(r.kind):icon('secret',16);button.dataset.kind=r.kind;button.className=[r.id===world.roomId?'current':'',r.cleared?'cleared':'',!visible?'unknown':''].join(' ');
+   const visible=!!world.memoryBonuses?.reveal||(r.visited||r.links.some(id=>world.rooms[id].visited))&&canEnterRoom(world,r);button.innerHTML=visible?icon(r.kind):icon('secret',16);button.dataset.kind=r.kind;button.className=[r.id===world.roomId?'current':'',r.cleared?'cleared':'',!visible?'unknown':''].join(' ');
    button.disabled=!['playing','map'].includes(mode)||world.status!=='playing'||!room.cleared||!room.rewardTaken||!room.links.includes(r.id)||!canEnterRoom(world,r);button.dataset.room=r.id;button.title=visible?r.name:'Sala desconocida';button.setAttribute('aria-label',`${visible?roomLabels[r.kind]+': '+r.name:'Sala desconocida'}${r.id===world.roomId?', ubicación actual':''}${r.cleared?', completada':''}`);if(r.id===world.roomId)button.setAttribute('aria-current','location');
   }map.append(button);
  }

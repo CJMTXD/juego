@@ -14,7 +14,7 @@ export function price(save,category,id){let base=Infinity;const m=save.meta;
 export function purchase(save,category,id){const m=save.meta;let target=null;
  if(category==='weapon'&&Object.hasOwn(weapons,id))target=m.weapons;
  if(category==='character'&&Object.hasOwn(characters,id))target=save.progress.characters;
- if(category==='item'&&upgrades.some(u=>u.id===id&&(u.shopUnlock||u.unlock)))target=m.items;
+ if(category==='item'&&upgrades.some(u=>u.id===id&&(u.shopUnlock||u.unlock)&&(!u.source||u.source==='sanctuary')))target=m.items;
  if(category==='super'&&superItems.some(s=>s.id===id&&s.shopUnlock))target=m.supers;
  if(category==='skin'&&Object.hasOwn(characters,id))target=m.skins;
  if(category==='lore'&&worlds.some(w=>w.id===id))target=m.lore;
@@ -35,10 +35,10 @@ export function prepareProfile(w,save){w.startWorld=w.worldIndex;w.metaTree={...
 export function discover(w,kind,id){const field={enemy:'discoveredEnemies',boss:'discoveredBosses'}[kind];if(field&&!w[field].includes(id)){w[field].push(id);w.discoveryRevision++;}}
 export function syncDiscoveries(w,save){let changed=false;if(!w.cheated)for(const [id,p] of Object.entries(w.weaponProgress))if(p.shots>0&&p.level>(save.meta.weaponForms[id]||0)){save.meta.weaponForms[id]=p.level;changed=true;}if(w.savedDiscoveryRevision===w.discoveryRevision)return changed;w.savedDiscoveryRevision=w.discoveryRevision;for(const [target,source] of [['fragments',w.knownFragments],['recipes',w.discoveredRecipes],['seenItems',w.discoveredItems],['seenEnemies',w.discoveredEnemies],['seenBosses',w.discoveredBosses]])for(const id of source)if(!save.meta[target].includes(id)){save.meta[target].push(id);changed=true;}return changed;}
 export function resultBreakdown(w){const difficulty=difficulties[w.difficultyIndex||0],pactBonus=(w.pactIds||[]).reduce((n,id)=>n+(pacts.find(p=>p.id===id)?.echoes||0),0),won=w.status==='won';
- const kills=Math.floor(w.kills/D.economy.killEvery),bosses=(w.bossesDefeated?.length||0)*D.economy.boss,worlds=(w.bossesDefeated?.length||0)*D.economy.world,victory=won?D.economy.win:0,base=kills+bosses+worlds+victory;
+ const kills=Math.floor(w.kills/D.economy.killEvery),bosses=(w.bossesDefeated?.length||0)*D.economy.boss,worlds=(w.bossesDefeated?.length||0)*D.economy.world,victory=won?D.economy.win:0,memories=Math.min(6,w.memoryEchoes||0),base=kills+bosses+worlds+victory+memories;
  const difficultyBonus=Math.floor(base*(difficulty.echoes-1)),pact=Math.floor(base*pactBonus),before=base+difficultyBonus+pact,death=won?0:Math.ceil(before*(1-D.economy.deathFactor));
  let total=Math.max(0,before-death);if(!won&&(w.kills>0||w.grazes>0))total=Math.max(D.economy.minDeath,total);if(w.cheated)total=0;
- return {kills,bosses,worlds,victory,difficulty:difficultyBonus,pacts:pact,death,total};
+ return {kills,bosses,worlds,victory,memories,difficulty:difficultyBonus,pacts:pact,death,total};
 }
 export function settleRun(w,save){if(w.settled||!['dead','won'].includes(w.status))return false;w.settled=true;w.result=resultBreakdown(w);w.earned=w.result.total;
  w.trueEnding=w.status==='won'&&w.startWorld===0&&(w.difficultyIndex||0)>=2&&(w.knownFragments?.length||0)>=3&&w.secretVisits>0;
