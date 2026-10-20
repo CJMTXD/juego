@@ -208,3 +208,18 @@ fijos inventados. Catálogos no omiten condiciones. Sin cambios de combate, prec
 reglas ni esquema de guardado v3. Preparación explícita pendiente en fase 2.
 Verificado: 47 pruebas existentes, tres de catálogo, servidor HTTP 200 y pantallas
 secundarias en cuatro tamaños sin errores de consola ni desbordes horizontales.
+
+## Claridad de preparación — fase 2
+Implementado: bloques simultáneos Tu personaje / Tu arma, botones explícitos de
+cambio, cuadrículas con Elegido y bloqueos, mejora inicial visible, dificultad y
+opciones avanzadas plegadas con contador de pactos. Comenzar y Atrás permanecen en
+la cabecera. La selección vuelve al resumen y entrar al Santuario conserva equipo,
+mejora y semilla escrita; las compras actualizan el perfil preparado sin renovar
+ofertas gratis. La regla de tres ofertas/préstamos/reintentos se conserva.
+La ayuda inicial descartable utiliza una marca local de presentación independiente
+(el-umbral-preparation-help-v1, separada para laboratorio), sin ampliar el guardado
+v3 ni sus preferencias. Opciones permite revisar la explicación. La ayuda de cambio
+de arma lee la tecla asignada y muestra el botón en dispositivos táctiles.
+No se modificaron HUD, textos/ayudas de combate, controles, simulación ni datos.
+Pendiente: comodidad en teléfonos físicos; el rediseño general de fases 6–8 sigue
+fuera de esta tarea. No se sube a GitHub: se respeta la regla específica sin push.

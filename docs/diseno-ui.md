@@ -136,3 +136,29 @@ fijos inventados. Catálogos no omiten condiciones. Sin cambios de combate, prec
 reglas ni esquema de guardado v3. Preparación explícita pendiente en fase 2.
 Verificado: 47 pruebas existentes, tres de catálogo, servidor HTTP 200 y pantallas
 secundarias en cuatro tamaños sin errores de consola ni desbordes horizontales.
+
+## Preparación explícita — implementada
+Se sustituye la navegación por pestañas como acceso principal:
+- Escritorio y teléfono: [Atrás | Preparar partida | Comenzar fijo].
+  [Tu personaje: retrato/habilidad/Cambiar | Tu arma: icono/daño/Cambiar].
+  [Ayuda descartable] [Mejora inicial: tarjetas visibles].
+  [Dificultad y opciones avanzadas · N pactos activos].
+- Cambiar: cuadrícula de tarjetas con Elegido, estadísticas y bloqueo explicado;
+  tocar Elegir vuelve al resumen. Volver y Escape regresan sin elegir.
+- Reglas: dificultad visible y Opciones avanzadas plegado para pactos, mundo y semilla.
+- Santuario: [Atrás fijo] [Ecos visibles] [Armas/Almas/Mejoras/Ítems/Lore].
+  Tarjeta → detalle completo → Comprar o Volver. No se compra al abrir la tarjeta.
+  Las tarjetas sin saldo siguen siendo consultables; solo la confirmación está
+  deshabilitada y dice Te faltan N ecos. Adquiridas al final de cada filtro.
+- Armería/Códice reutilizan el componente de armas en modo consulta; las compras de
+  armas se confirman en el Santuario entre partidas. La tienda conserva sus precios.
+
+Iconos de armas: makeWeaponSprite con forma 1–4 y marcas existentes; no se inventa
+un sprite nuevo por evolución. Orbitales explican radio/duración efectivos, en vez
+de presentar el límite interno de recorrido 10000 como distancia de ataque.
+Suerte muestra un ejemplo normalizado de raros/épicos en Brasa tenue con las tres
+rareza disponibles. Cambia con dificultad y disponibilidad, no es +2% absoluto.
+Ayuda de preparación: marca local independiente de presentación; no reutiliza ni
+oculta las ayudas de combate. Se consulta en Opciones → Revisar ayuda de preparación.
+Los selectores CSS añadidos están limitados a catálogo/preparación; estilos anteriores
+conservados. No hay una segunda zona desplazable ni paneles modales anidados.

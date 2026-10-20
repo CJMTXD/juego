@@ -66,3 +66,14 @@ fijos inventados. Catálogos no omiten condiciones. Sin cambios de combate, prec
 reglas ni esquema de guardado v3. Preparación explícita pendiente en fase 2.
 Verificado: 47 pruebas existentes, tres de catálogo, servidor HTTP 200 y pantallas
 secundarias en cuatro tamaños sin errores de consola ni desbordes horizontales.
+
+## Claridad de compras y preparación — fases 1 y 2
+51 pruebas de lógica: las 47 previas y cuatro nuevas de catálogo/preparación.
+Nuevos recorridos `tests/clarity-browser.cjs` y `tests/preparation-browser.cjs`:
+cinco pestañas del Santuario y un detalle por pestaña; estados sin saldo/adquirida,
+compra confirmada y sin doble cargo, tarjetas compartidas de Armería/Códice;
+bloques de equipo, cuadrículas, exactamente tres ofertas, ayuda descartable tras
+recarga, revisión en Opciones y regreso del Santuario sin renovar ofertas ni perder
+arma, mejora o semilla escrita. Capturas en `docs/capturas/claridad/`, cuatro tamaños.
+Se adaptan los recorridos antiguos a confirmación de compra y Opciones avanzadas;
+se conservan sus comprobaciones de migración, diaria, seis mundos y seis jefes.

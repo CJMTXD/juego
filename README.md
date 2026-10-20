@@ -122,3 +122,12 @@ La campaña y las reglas existentes no se modificaron. Diseño y glosario en
 Compras claras: abre Santuario, elige una sección y toca una tarjeta para leer el
 panel completo. Solo «Comprar por N ecos» gasta moneda. Armería y Códice muestran
 las mismas estadísticas y evoluciones de armas. Precios y guardado v3 sin cambios.
+
+Al pulsar **Jugar**, usa **Cambiar personaje** o **Cambiar arma** en los dos bloques
+superiores. La mejora inicial está debajo. **Comenzar** siempre está arriba; puedes
+entrar con Jugar → Comenzar. Desde una opción bloqueada puedes ir al Santuario y
+volver sin perder tus elecciones. Dificultad y opciones avanzadas agrupan los pactos,
+el mundo y la semilla. La ayuda se consulta en Opciones.
+
+Esta entrega se guarda con commits locales, sin push por la instrucción específica.
+Windows: abre `iniciar.bat`. No requiere nuevas dependencias para jugar.

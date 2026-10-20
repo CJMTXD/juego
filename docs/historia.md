@@ -175,3 +175,8 @@ fijos inventados. Catálogos no omiten condiciones. Sin cambios de combate, prec
 reglas ni esquema de guardado v3. Preparación explícita pendiente en fase 2.
 Verificado: 47 pruebas existentes, tres de catálogo, servidor HTTP 200 y pantallas
 secundarias en cuatro tamaños sin errores de consola ni desbordes horizontales.
+
+## Presentación confirmada — elección y compras
+Ilar sigue vendiendo las mismas posibilidades. El Santuario explica que el arma
+personal prestada no equivale a comprar su aparición como botín. Los fragmentos,
+aspectos, habilidades e historias conservan sus datos; no se añade lore ni poderes.
