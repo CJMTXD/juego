@@ -1,9 +1,9 @@
 # El umbral — título de trabajo
 
 ## Visión y estado
-**Estado actual:** ronda de campo/minimapa/recuerdos/urnas implementada; lista para prueba del usuario.
+**Estado actual:** ampliación del ciclo A–D implementada y comprobada; lista para prueba humana.
 El historial de entregas anteriores se conserva debajo.
-Las fases 6–8 de interfaz están pendientes. La campaña y el balance se conservan.
+La campaña de seis mundos se conserva. Los apartados anteriores son historial; el estado vigente figura en los últimos apartados de ampliación.
 
 Bullet hell roguelike cenital original para PC y móviles: Canvas + módulos JavaScript + CSS,
 sin motor ni dependencias para jugar. Ascenso del infierno al cielo, inspirado en
@@ -349,3 +349,15 @@ retos la desactivan. Tarjeta PNG960×640 descargable/compartible.
 81 pruebas lógicas y navegador nuevo pasan en cuatro tamaños: transferencia real,
 respaldo, semanal neutral, vela táctil, escenas y archivo PNG. PWA63 recursos.
 Pruebas humanas de duración/comodidad en teléfonos físicos siguen pendientes.
+
+## Cierre de ampliación del ciclo
+Minimapa ampliado al área descubierta y rotulado «Mapa»; acceso Urnas en el título.
+Cuatro acciones táctiles legibles sin ampliar los carriles del campo. Fusiones:
+segundo nivel con cambio propio de alcance, giro, órbita o área; tercero con efecto
+final. La tabla de armas incluye las ocho fusiones. Espiral conserva la dificultad
+base elegida. Se corrige el resumen de resultados de armas fusionadas.
+82 pruebas lógicas pasan. Navegador comprueba combate/campaña, perfiles, cuatro
+tamaños, multitoque, migración, transferencia y PNG. Capturas actuales en
+`docs/capturas/ampliacion/`. Campos del guardado antiguo y v3 conservados.
+No se afirma que la duración humana, diversión ni rendimiento en un teléfono real
+estén certificados: quedan para jugar y ajustar con observaciones del usuario.

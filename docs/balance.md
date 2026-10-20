@@ -251,3 +251,22 @@ Estrategia simple, sin invulnerabilidad; no certifica justicia humana.
 | 42 | dead | 8 | 37 | 107.3 | 0 |
 | 123 | dead | 8 | 36 | 97.1 | 0 |
 | 2026 | dead | 3 | 10 | 27.3 | 0 |
+
+## Ampliación del ciclo: límites finales
+Salas:48 configuraciones regionales basadas en ocho planos, pasillos centrales
+libres, hasta8 elementos. Vasijas2PV/+1 ficha. Élite: probabilidad3%+1,8 puntos/mundo
+más dificultad(tope40%);22% de llevar dos marcas. Reflejo/anillo avisan0,8s,
+radio de exclusión60px, anillo10 balas/80px por segundo con hueco0,62rad.
+División:dos hijos de28%PV, sin heredar marcas ni dividirse de nuevo.
+Rango:0–3 fichas y +1 cada tres perfectas, sin penalización. Familiar máximo2,
+apoyo1 daño/s, bloqueo1/2s, señalador+8%, recolector+1 ficha/vasija. Precio6 fichas.
+Velas cada3 salas, tienda3 fichas, cola total4; tiempo×0,6 durante3s.
+Rival60+18PV por mundo,+3 por recuerdo(max3), tope160, daño1; premio4ecos.
+Fusiones: ocho, formas a40/100 bajas, daño×1/1,12/1,24; DPS ideal en
+`node scripts/weapon-balance.mjs`, excluye fallos y efectos secundarios indicados.
+Espiral por vuelta:vida+12%(tope+120%), bala+2%(tope+16%), hasta2 fases extra
+sobre dificultad elegida;3ecos por mundo. Maestría100/500/1500, solo cosmética.
+Objetivo personal final:+2% de carga base por roce, sin efecto en retos.
+Asistencia: bala×0,7–1, vida+1(tope8), hitbox×0,8, refugio+1 antes de ajustes.
+Urnas:38 recompensas al sumar dos catálogos de familiares; mismas probabilidades,
+garantías y devolución. No añaden poder permanente al inicio.

@@ -167,3 +167,22 @@ node scripts/urn-balance.mjs
 
 Esta ronda queda en commits locales, sin push. Pruebas físicas de Android/iPhone y
 Windows, y duración de partida con una persona, siguen pendientes.
+
+## Ampliación del ciclo
+El minimapa aparece durante la partida; tócalo para ampliarlo. Las urnas están
+accesibles desde **Urnas** en el título y desde el Santuario, solo con ecos del juego.
+Novedades: salas con cobertura/abismos/vasijas, élites, rangos, rival opcional,
+cuatro velas, cuatro familiares, ocho fusiones, maestría y recuerdos personales.
+**Más modos** abre el reto semanal y Espiral (tras una victoria).
+
+- **C**: consumir vela (reasignable). Celular: botón **Vela** junto a las acciones.
+- **Opciones**: asistencia, volumen separado y exportar/importar progreso entre
+  PC y celular con vista previa y respaldo. El guardado sigue siendo v3.
+- Al terminar: descarga o comparte una tarjeta PNG del resultado.
+- Si ves una versión antigua: **Opciones → Buscar actualización**. No borres los
+  datos del navegador para actualizar: allí está tu progreso.
+
+Windows: abre `iniciar.bat`. Web: https://cjmtxd.github.io/juego/
+Comprobaciones adicionales: `node --test tests/expansion.test.mjs`,
+`node tests/expansion-browser.cjs`, `node scripts/survival-bot.mjs --write`.
+Diseño y límites en `docs/diseno-ampliacion.md` y `docs/balance.md`.

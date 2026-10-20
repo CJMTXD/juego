@@ -206,3 +206,27 @@ Glosario adicional:
 - Crédito de evolución: progreso adicional de un arma; no es otra baja ni añade
   recompensas por enemigos. El HUD distingue bajas reales y créditos con «+».
 - Fragmento: historia conocida; cuenta para una condición del final verdadero.
+
+## Ampliación del ciclo — implementada
+Título: Jugar principal, Diaria y Más modos; navegación incluye Urnas. Más modos
+abre Semanal/Espiral. Perfil neutral para retos. Minimapa ajusta la vista al área
+descubierta y dice Mapa; contador /8 y botón amplían el mapa pausado.
+Cuatro acciones táctiles (Esquiva/Poder/Cambiar/Vela): 2×2 en vertical y apuntado
+manual, columna en horizontal automático. Mantienen los carriles existentes,
+objetivos≥44px y etiquetas completas. Mochila también describe velas/familiares.
+Opciones: volúmenes independientes, asistencia para próxima partida y transferencia
+con archivo/código, vista previa, confirmación y respaldo. Resultado: PNG descargable.
+Transiciones: tres viñetas animadas omitibles. Introducción consultable en preparación.
+
+Glosario añadido:
+- Marca élite: propiedad visible de un enemigo fuerte; conserva aviso de ataque.
+- Rango de sala: D–S según tiempo/daño/roces; solo concede fichas, nunca las quita.
+- Vela: consumible de un uso; una activa y hasta tres en cola.
+- Alma guía: familiar temporal; como máximo dos.
+- Fusión: sacrificio voluntario de dos armas compatibles por una de tres formas.
+- Maestría: bajas acumuladas por arma, con recompensas cosméticas.
+- Recuerdo personal: cadena de tres objetivos de un personaje.
+- Espiral: recorrido opcional sin fin desbloqueado tras una victoria.
+- Reto semanal: misma semilla y mutador desde el lunes UTC, sin ventajas permanentes.
+- Partida asistida: ayudas opcionales; conserva progreso, sin rangos ni marcas.
+- Respaldo: copia del perfil anterior a una importación; se puede descargar.

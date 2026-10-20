@@ -139,3 +139,15 @@ node tests/preparation-browser.cjs
 Pendiente de prueba humana: comodidad real de joysticks, barra del navegador móvil,
 rotación/llamadas en Android/iPhone, Windows nativo y duración humana 15–25 minutos.
 La ronda se detiene aquí para esa prueba, con commits locales y sin push.
+
+## Ampliación del ciclo
+82 pruebas de lógica; suite de navegador existente y nueva `expansion-browser.cjs`.
+Tamaños390×844,844×390,768×1024,1920×1080. Capturas nuevas:
+`docs/capturas/ampliacion/`: combate/minimapa, retos, transferencia/vista previa,
+transición y resultados. Verificados multitoque, modo zurdo, controles grandes,
+apuntado manual, pausa, campo estable, PWA offline y rutas bajo /juego/.
+La prueba nueva descarga un PNG960×640 y confirma importación/respaldo y perfil
+semanal sin árbol/asistencia. Catálogo de urnas actualizado de36 a38 recuerdos.
+Fixture de desvíos identifica por tipo (existen nuevas ramas de fusión/rival) y
+navega alrededor de cobertura. No se eliminan los obstáculos para hacerlo pasar.
+Pendientes: pruebas humanas en Windows, Android/iPhone físicos y duración15–25min.

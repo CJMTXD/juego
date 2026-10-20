@@ -6,7 +6,7 @@ export const expansion = {
  candles:{capacity:4,dropEvery:3,cost:3,clearRadius:100,slow:0.6,seconds:3,heal:1},
  familiar:{capacity:2,cost:6,blockCooldown:2,shotCooldown:1,damage:1,speed:220,range:300,mark:0.08},
  rival:{health:60,healthPerWorld:18,maxHealth:160,speed:34,maxDamage:1,warning:1,interval:2.2,bulletSpeed:90,reward:4,items:3},
- fusion:{thresholds:[40,100],maxLevel:3},
+ fusion:{thresholds:[40,100],maxLevel:3,damage:[1,1.12,1.24]},
  mastery:{kills:[100,500,1500],names:['Voz','Memoria','Testimonio'],victories:[1,3,10]},
  profile:{spentPerPoint:1,runPoints:10,levels:[0,60,180,400,800],titles:['Recién llegado','Portador de ecos','Guardián del hilo','Voz del ciclo','Memoria compartida']},
  spiral:{healthStep:0.12,maxHealth:1.2,speedStep:0.02,maxSpeed:0.16,echoes:3},

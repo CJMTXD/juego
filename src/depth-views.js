@@ -6,7 +6,7 @@ import {upgrades} from './data.js';
 import {price} from './meta-game.js';
 import {achievements,difficulties} from './data/depth.js';
 import {recipes,superItems,mythologies} from './data/relics.js';
-import {weapons} from './data/weapons.js';
+import {arsenal as weapons} from './data/fusions.js';
 import {depth as D} from './data/depth.js';
 export function extraPanel(screen,w,save,state={}){
  if(screen==='codex'&&state.detail&&!state.detail.startsWith('weapon:')){const entry=catalogue(save).find(e=>e.key===state.detail);if(entry)return `<section class="catalog-screen">${catalogueDetail(entry,save)}</section>`;}

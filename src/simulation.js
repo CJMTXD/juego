@@ -1,3 +1,4 @@
+import {difficulties} from './data/depth.js';
 import {assistStats} from './assistance.js';
 import {initFeats,weeklyRoom} from './progression.js';
 import {initAdventure,configureAdventureRooms,updateAdventure,adventureReward,configureRival,rivalAttack,rivalReward} from './adventure.js';
@@ -100,7 +101,7 @@ function spawnWave(world){
 }
 export function advanceWorld(world){
  if(world.status!=='transition'||world.worldIndex+1>=worlds.length&&!world.spiral)return false;if(world.spiral&&world.worldIndex+1>=worlds.length)world.worldIndex=-1;
- world.worldIndex++;if(world.spiral){const loops=Math.floor(world.spiralDepth/6);world.rules={...world.rules,health:1+Math.min(A.spiral.maxHealth,loops*A.spiral.healthStep),speed:1+Math.min(A.spiral.maxSpeed,loops*A.spiral.speedStep),extraPhases:Math.min(2,loops)};}world.zone=worlds[world.worldIndex];world.rooms=generateMap((world.seed+world.worldIndex*7919)>>>0);for(const r of world.rooms)if(world.zone.rooms?.[r.id])r.name=world.zone.rooms[r.id];configureSideRooms(world);configureAdventureRooms(world);world.roomId=0;world.zoneCleared=0;world.wave=0;world.spawnTimer=1.4;world.bossPhase=0;world.exitLock=0.7;world.roomTime=0;
+ world.worldIndex++;if(world.spiral){const loops=Math.floor(world.spiralDepth/6);world.rules={...world.rules,health:difficulties[world.difficultyIndex].health*(1+Math.min(A.spiral.maxHealth,loops*A.spiral.healthStep)),speed:difficulties[world.difficultyIndex].speed*(1+Math.min(A.spiral.maxSpeed,loops*A.spiral.speedStep)),extraPhases:difficulties[world.difficultyIndex].extraPhases+Math.min(2,loops)};}world.zone=worlds[world.worldIndex];world.rooms=generateMap((world.seed+world.worldIndex*7919)>>>0);for(const r of world.rooms)if(world.zone.rooms?.[r.id])r.name=world.zone.rooms[r.id];configureSideRooms(world);configureAdventureRooms(world);world.roomId=0;world.zoneCleared=0;world.wave=0;world.spawnTimer=1.4;world.bossPhase=0;world.exitLock=0.7;world.roomTime=0;
  clearBullets(world);for(const e of world.enemies)e.active=false;
  world.player.x=320;world.player.y=180;heal(world,2+(world.inventory.dawn?1:0));world.player.invulnerable=1.5;
  resetHazard(world);loadRoomContent(world);world.status='playing';world.events.push('reward');return true;

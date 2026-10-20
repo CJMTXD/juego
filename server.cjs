@@ -6,7 +6,7 @@ const root = __dirname;
 const args=process.argv.slice(2),lan=args.includes('--lan'),portArg=args.indexOf('--port');
 const port=portArg>=0?Number(args[portArg+1]):8000;
 if(!Number.isInteger(port)||port<1||port>65535){console.error('Puerto no válido.');process.exit(1);}
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.webmanifest':'application/manifest+json', '.svg':'image/svg+xml', '.png':'image/png' };
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.mjs':'text/javascript', '.webmanifest':'application/manifest+json', '.svg':'image/svg+xml', '.png':'image/png' };
 const server = http.createServer((req, res) => {
   let pathname;
   try { pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname); }
