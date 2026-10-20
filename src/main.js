@@ -1,3 +1,5 @@
+import {weaponLibrary} from './ui/catalog.js';
+import {buildForms} from './evolution.js';
 import {createTouch} from './ui/touch.js';
 import {mobileSettings,helpCard} from './ui/mobile-settings.js';
 import {createPlatform} from './ui/platform.js';
@@ -35,7 +37,7 @@ const $=id=>document.getElementById(id),canvas=$('game'),panel=$('panel');
 const debugTools=new URLSearchParams(location.search).get('debug')==='1';
 const loaded=loadSave(debugTools);const save=loaded.save;refreshCharacters(save.progress);if(!canSelect(save.progress,characters[save.preferences.character]))save.preferences.character='remender';
 let saveError=loaded.error,world=createWorld(1,save.progress.unlocks),mode='title',settingsReturn='title',waitingKey=null,previous=0,accumulator=0,lastHud=0,lastPanel='',lastMap='';
-let debug=debugTools,fps=60,preparation={tab:'summary',weapon:'needle',initial:'ember'},navigation=[];
+let debug=debugTools,fps=60,preparation={tab:'summary',weapon:'needle',initial:'ember'},navigation=[],catalogState={tab:'weapons',detail:null};
 const audio=createAudio(()=>save.preferences);
 const input=createInput(canvas,()=>save.preferences.bindings,()=>togglePause());
 const render=createRenderer(canvas),updateGameHud=createHud();const effectivePreferences={...save.preferences};const platform=createPlatform(()=>save.preferences);const touch=createTouch(input,()=>world,()=>save.preferences,()=>mode==='playing'&&world.status==='playing');let lastDraw=0,drawScale=1;
@@ -69,7 +71,7 @@ function updatePanel(){
  const signature=screen+waitingKey+save.progress.echoes+save.progress.unlocks+world.roomId+saveError;
  if(signature===lastPanel)return;lastPanel=signature;panel.hidden=false;
  let html='';
- const extra=extraPanel(screen,world,save);
+ const extra=extraPanel(screen,world,save,catalogState);
  if(screen==='map'||screen==='items')html=`<div id="utility-host"></div>`;
  else if(screen==='room')html=roomPanel(world);
  else if(extra!==null)html=extra;
@@ -77,7 +79,7 @@ function updatePanel(){
  else if(screen==='prepare')html=preparationScreen(world,save,preparation);
  else if(screen==='transition')html=`<span class="eyebrow">MUNDO SUPERADO</span><h2>${world.zone.name}</h2><p>${world.zone.lore[2]}</p><p>«${world.zone.boss.quote}»</p><p>Siguiente: ${worlds[world.worldIndex+1].name}. Recuperas hasta ${B.progression.restHeal+(world.inventory.dawn?1:0)} de vida, ajustada por dificultad y pactos; conservas equipo y mejoras.</p>${world.bossWeapon?`<button data-boss-weapon="${world.bossWeapon.id}">Tomar ${world.bossWeapon.name} y ascender</button>`:""}<button class="primary" data-action="ascend">Ascender conservando equipo</button>`;
  else if(screen==='settings')html=settingsPanel();
- else if(screen==='arsenal')html=`<h2>Armería del ascenso</h2><p>Dos ranuras: Q alterna. Las armas se consiguen en cofres de sala o al vencer jefes. Las parejas de armas pueden prestar una sinergia sin disparar ambas a la vez.</p><div class="cards">${Object.values(weapons).map(g=>`<div class="upgrade"><canvas class="weapon-icon" data-weapon-icon="${g.id}" width="16" height="16"></canvas><strong>${g.name}</strong><span>${g.damage} daño × ${g.count} · ${g.interval} s · ${g.speed} px/s · ${g.range} px</span><small>${g.rarity} · ${g.source}. ${g.special}</small></div>`).join('')}</div><button data-action="back">Volver</button>`;
+ else if(screen==='arsenal')html=weaponLibrary(save,catalogState);
  else if(screen==='characters')html=`<h2>Elige tu memoria</h2><div class="cards">${Object.values(characters).map(c=>`<button class="upgrade" data-character="${c.id}" ${canSelect(save.progress,c)?'':'disabled'}><canvas class="portrait" data-portrait="${c.id}" width="32" height="32"></canvas><strong>${c.name}</strong><span>Vida ${c.health} · Vel. ${c.speed} · Hitbox ${c.radius} · Daño ×${c.damage}</span><span>${c.passive}</span><small>${c.story} ${canSelect(save.progress,c)?'':c.unlock}</small></button>`).join('')}</div><button data-action="title">Volver</button>`;
  else if(screen==='paused')html='<h2>En pausa</h2><p>El tiempo se ha detenido. Reanuda cuando estés listo.</p><div class="actions"><button class="primary" data-action="resume">Continuar</button><button data-action="settings">Opciones</button><button data-action="map">Mapa</button><button data-action="items">Mochila</button><button data-action="arsenal">Armería</button><button data-action="abandon">Terminar partida</button></div>';
  else if(screen==='abandon')html='<h2>¿Terminar esta partida?</h2><p>Las mejoras temporales se perderán. Conservarás los ecos de las salas completadas.</p><div class="actions"><button data-action="resume">Seguir jugando</button><button data-action="confirm-abandon">Terminar</button></div>';
@@ -93,7 +95,7 @@ function updatePanel(){
  if(screen==='map'||screen==='items')$('utility-host').append($(screen==='map'?'map-card':'items-card'));
  // El foco vuelve a un control visible al abrir un menú, sin secuestrar el teclado al jugar.
  for(const portrait of panel.querySelectorAll('[data-portrait]'))drawPortrait(portrait,characters[portrait.dataset.portrait]);
- for(const icon of panel.querySelectorAll('[data-weapon-icon]'))icon.getContext('2d').drawImage(makeWeaponSprite(weapons[icon.dataset.weaponIcon]),0,0);
+ for(const icon of panel.querySelectorAll('[data-weapon-icon]'))icon.getContext('2d').drawImage(makeWeaponSprite(buildForms(icon.dataset.weaponIcon)[Number(icon.dataset.weaponLevel||1)-1]),0,0);
  (panel.querySelector('[data-action="begin"],[data-action="start"]')||panel.querySelector('button:not(:disabled)'))?.focus({preventScroll:true});
 }
 function updateHud(){
@@ -130,6 +132,9 @@ $('fullscreen-button').addEventListener('click',()=>platform.fullscreen());
 $('menu-button').addEventListener('click',()=>{audio.unlock();togglePause();});
 panel.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;audio.unlock();audio.play(target.dataset.action==='nav-back'?'uiBack':target.dataset.action==='begin'?'uiConfirm':'uiSelect');
+ if(target.dataset.catalogTab){catalogState.tab=target.dataset.catalogTab;catalogState.detail=null;lastPanel='';updatePanel();return;}
+ if(target.dataset.catalogDetail){catalogState.detail=target.dataset.catalogDetail;lastPanel='';updatePanel();panel.querySelector('.panel-content').scrollTop=0;panel.querySelector('[data-catalog-back]')?.focus();return;}
+ if(target.hasAttribute('data-catalog-back')){const key=catalogState.detail;catalogState.detail=null;lastPanel='';updatePanel();panel.querySelector(`[data-catalog-detail="${key}"]`)?.focus();return;}
  if(target.dataset.dismissHelp){save.preferences.ui.dismissedHelp.push(target.dataset.dismissHelp);saveNow();lastPanel='';updatePanel();return;}
  if(target.dataset.itemDetail){showItem(world,target.dataset.itemDetail);return;}
  if(target.dataset.prepTab){preparation.tab=target.dataset.prepTab;lastPanel='';updatePanel();return;}
@@ -148,7 +153,7 @@ panel.addEventListener('click',e=>{
  if(target.dataset.upgrade){if(chooseUpgrade(world,target.dataset.upgrade)){lastPanel='';updatePanel();updateHud();canvas.focus({preventScroll:true});}return;}
  if(target.dataset.character){if(canSelect(save.progress,characters[target.dataset.character])){save.preferences.character=target.dataset.character;save.preferences.skin='base';saveNow();setMode('title');}return;}
  if(target.dataset.bind){waitingKey=target.dataset.bind;lastPanel='';updatePanel();return;}
- if(['codex','sanctuary','arsenal','characters','settings'].includes(target.dataset.action))navigation.push(mode==='playing'?'paused':mode);
+ if(['codex','sanctuary','arsenal','characters','settings'].includes(target.dataset.action)){catalogState.detail=null;navigation.push(mode==='playing'?'paused':mode);}
  switch(target.dataset.action){
   case 'install-app':platform.install();break;
   case 'update-app':platform.update();break;
@@ -162,7 +167,7 @@ panel.addEventListener('click',e=>{
   case 'begin':startRun();break;
   case 'map':setMode('map');break;
   case 'items':setMode('items');break;
-  case 'nav-back':if(['map','items'].includes(mode))setMode('playing');else if(['map','items'].includes(mode))setMode('playing');else if(mode==='prepare')setMode('title');else if(mode==='playing'&&world.status==='playing')setMode('paused');else if(mode==='playing'&&['reward','transition','room'].includes(world.status))setMode('paused');else if(mode==='paused')setMode('playing');else setMode(navigation.pop()||settingsReturn||'title');break;
+  case 'nav-back':if(catalogState.detail&&['sanctuary','arsenal','codex'].includes(mode)){catalogState.detail=null;lastPanel='';updatePanel();break;}if(['map','items'].includes(mode))setMode('playing');else if(['map','items'].includes(mode))setMode('playing');else if(mode==='prepare')setMode('title');else if(mode==='playing'&&world.status==='playing')setMode('paused');else if(mode==='playing'&&['reward','transition','room'].includes(world.status))setMode('paused');else if(mode==='paused')setMode('playing');else setMode(navigation.pop()||settingsReturn||'title');break;
   case 'resume':setMode('playing');break;
   case 'settings':settingsReturn=mode;setMode('settings');break;
   case 'back':setMode(settingsReturn);break;

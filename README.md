@@ -118,3 +118,7 @@ Entrega hasta la fase 5, lista para prueba del usuario. Quedan fases 6–8: dise
 completo de tarjetas secundarias, pulido final y rendimiento en teléfonos reales.
 La campaña y las reglas existentes no se modificaron. Diseño y glosario en
 [docs/diseno-ui.md](docs/diseno-ui.md); validación en [docs/pruebas-ui.md](docs/pruebas-ui.md).
+
+Compras claras: abre Santuario, elige una sección y toca una tarjeta para leer el
+panel completo. Solo «Comprar por N ecos» gasta moneda. Armería y Códice muestran
+las mismas estadísticas y evoluciones de armas. Precios y guardado v3 sin cambios.

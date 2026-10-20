@@ -1,5 +1,5 @@
 // Subir CACHE al publicar cambios: una versión completa, sin activar durante el combate.
-const CACHE='el-umbral-mobile-1';
+const CACHE='el-umbral-clarity-1';
 const FILES=[
  "./",
  "index.html",
@@ -37,6 +37,7 @@ const FILES=[
  "src/simulation.js",
  "src/storage.js",
  "src/ui/config.js",
+ "src/ui/catalog.js",
  "src/ui/hud.js",
  "src/ui/icons.js",
  "src/ui/mobile-settings.js",

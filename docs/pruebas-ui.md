@@ -55,3 +55,14 @@ el juego: nunca sustituye, guarda ni borra localStorage.
 [Escritorio](capturas/escritorio.png). Las dimensiones de viewport están en CSS px;
 las capturas de dispositivos de DPR 2 contienen el doble de píxeles por eje.
 Contraste mínimo del texto base/secundario sobre las superficies: 6,98:1.
+
+
+## Claridad de compras — fase 1
+Implementado: Santuario con filtros Armas/Almas/Mejoras/Ítems/Lore, imágenes, saldo,
+estados y panel de confirmación antes de gastar. Armería y Códice comparten tarjetas
+y detalles de armas: estadísticas base, cuatro formas y bajas acumuladas. Árbol
+explica efecto actual/siguiente y probabilidades reales de rareza, no porcentajes
+fijos inventados. Catálogos no omiten condiciones. Sin cambios de combate, precios,
+reglas ni esquema de guardado v3. Preparación explícita pendiente en fase 2.
+Verificado: 47 pruebas existentes, tres de catálogo, servidor HTTP 200 y pantallas
+secundarias en cuatro tamaños sin errores de consola ni desbordes horizontales.
