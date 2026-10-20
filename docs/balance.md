@@ -231,3 +231,13 @@ Pruebas separadas verifican los máximos de mala suerte, saldo y devolución en 
 apertura. Colección finita de 36; los duplicados no crean bucles rentables.
 Variedad inicial medida en item-balance: 20,68 ítems distintos ofrecidos frente a
 12,94 sin nuevos, media de 50 semillas y 20 recompensas. Es variedad, no dificultad humana.
+
+## Ajustes de la revisión final
+Sal del depósito añade un rebote (máximo 3), en lugar de sustituirlo por uno: sigue
+siendo útil en Ascenso/Forma verdadera. Sol del juramento anticipa la explosión en
+N2/N3 por -15% daño; en N4 cambia a +5% daño por -10% alcance, sin duplicar explosión.
+Así no deja una penalización sin beneficio cuando el arma ya tiene su efecto final.
+Los valores y textos correspondientes se actualizan en memories.js y el diseño.
+Se comprueban con proyectiles reales, distinguiendo daño central y satélites.
+Los bonos globales de recuerdos se suman antes de aplicar topes; condiciones de
+arma/vida/habilidad se multiplican después, como las sinergias previas.

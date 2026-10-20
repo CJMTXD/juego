@@ -58,6 +58,8 @@ function togglePause(){if(backFromUrns())return;if(catalogState.detail&&['sanctu
 // La ayuda de preparación usa una marca de interfaz separada; no altera el guardado v3.
 const prepHelpKey='el-umbral-preparation-help-v1'+(debugTools?'-debug':'');
 function prepHelpSeen(){try{return localStorage.getItem(prepHelpKey)==='1';}catch{return false;}}
+// Las compras entre pantallas no renuevan ofertas ni transfieren el árbol a la diaria.
+function refreshPreparedProfile(){if(navigation.includes('prepare')&&world.status==='draft'&&!world.dailyKey){prepareProfile(world,save);world.allowedWeapons=[...save.meta.weapons];world.itemUnlocks=[...save.meta.items];world.superUnlocks=[...save.meta.supers];recalculate(world);world.player.hp=world.player.maxHp;}}
 function prepareRun(daily=false,keepSeed=false){
  const u=save.preferences.ui,day=dailyIdentity();let seed=world.seed;
  if(daily)seed=day.seed;else if(!keepSeed){const values=new Uint32Array(1);crypto.getRandomValues(values);seed=values[0];}
@@ -141,13 +143,13 @@ $('fullscreen-button').addEventListener('click',()=>platform.fullscreen());
 $('menu-button').addEventListener('click',()=>{audio.unlock();togglePause();});
 panel.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;audio.unlock();audio.play(target.dataset.action==='nav-back'?'uiBack':target.dataset.action==='begin'?'uiConfirm':'uiSelect');
- if(target.dataset.urnOpen){if(!catalogState.urnResult){const result=openUrn(save,target.dataset.urnOpen);if(result){catalogState.urnResult=result;catalogState.urnDetail=null;saveNow();audio.play('reward');lastPanel='';updatePanel();}}return;}
+ if(target.dataset.urnOpen){if(!catalogState.urnResult){const result=openUrn(save,target.dataset.urnOpen);if(result){catalogState.urnResult=result;catalogState.urnDetail=null;refreshPreparedProfile();saveNow();audio.play('reward');lastPanel='';updatePanel();}}return;}
  if(target.dataset.urnDetail){catalogState.urnDetail=target.dataset.urnDetail.replace(/^urn:/,'');lastPanel='';updatePanel();return;}
  if(target.hasAttribute('data-urn-skip')){panel.querySelector('.urn-opening')?.classList.remove('urn-opening');return;}
  if(target.hasAttribute('data-urn-last')){catalogState.urnResult=save.meta.urns.last;lastPanel='';updatePanel();return;}
  if(target.hasAttribute('data-urn-collection')){catalogState.urnCollection=true;lastPanel='';updatePanel();return;}
  if(target.hasAttribute('data-urn-back')){backFromUrns();return;}
- if(target.dataset.weaponSkin){if(equipWeaponSkin(save,target.dataset.weaponSkin)){saveNow();lastPanel='';updatePanel();}return;}
+ if(target.dataset.weaponSkin){if(equipWeaponSkin(save,target.dataset.weaponSkin)){refreshPreparedProfile();saveNow();lastPanel='';updatePanel();}return;}
  if(target.hasAttribute('data-dismiss-prep-help')){try{localStorage.setItem(prepHelpKey,'1');}catch{}preparation.helpDismissed=true;lastPanel='';updatePanel();panel.querySelector('[data-prep-tab="character"]')?.focus({preventScroll:true});return;}
  if(target.dataset.prepSanctuary){catalogState.tab=target.dataset.prepSanctuary;catalogState.detail=null;preparation.tab='summary';navigation.push('prepare');setMode('sanctuary');return;}
  if(target.dataset.catalogTab){catalogState.tab=target.dataset.catalogTab;catalogState.detail=null;lastPanel='';updatePanel();return;}
@@ -166,7 +168,7 @@ panel.addEventListener('click',e=>{
  if(target.dataset.super){if(claimSuper(world,target.dataset.super)){recalculate(world);if(world.status==='reward'){world.rooms[world.roomId].rewardTaken=true;world.status='playing';}lastPanel='';updatePanel();updateHud();canvas.focus({preventScroll:true});}return;}
  if(target.dataset.startWeapon&&mode==='prepare'){preparation.tab='summary';preparation.weapon=target.dataset.startWeapon;if(!world.dailyKey){save.preferences.ui.lastWeapon=target.dataset.startWeapon;saveNow();}lastPanel='';updatePanel();return;}
  if(target.dataset.startWeapon){if(selectStartingWeapon(world,target.dataset.startWeapon)){offerUpgrades(world);world.status='keepsake';resetClock();lastPanel='';updatePanel();updateHud();canvas.focus({preventScroll:true});}return;}
- if(target.dataset.buy){const [category,id]=target.dataset.buy.split(':');if(purchase(save,category,id)){if(navigation.includes('prepare')){prepareProfile(world,save);world.allowedWeapons=[...save.meta.weapons];world.itemUnlocks=[...save.meta.items];world.superUnlocks=[...save.meta.supers];recalculate(world);world.player.hp=world.player.maxHp;}saveNow();lastPanel='';updatePanel();}else if($('meta-message'))$('meta-message').textContent='No hay ecos suficientes o ya lo tienes.';return;}
+ if(target.dataset.buy){const [category,id]=target.dataset.buy.split(':');if(purchase(save,category,id)){refreshPreparedProfile();saveNow();lastPanel='';updatePanel();}else if($('meta-message'))$('meta-message').textContent='No hay ecos suficientes o ya lo tienes.';return;}
  if(target.dataset.bossWeapon){if(world.status==='transition'&&world.bossWeapon?.id===target.dataset.bossWeapon){equipWeapon(world,target.dataset.bossWeapon);advanceWorld(world);resetClock();lastPanel='';lastMap='';updatePanel();updateHud();canvas.focus({preventScroll:true});}return;}
  if(target.dataset.upgrade){if(chooseUpgrade(world,target.dataset.upgrade)){lastPanel='';updatePanel();updateHud();canvas.focus({preventScroll:true});}return;}
  if(target.dataset.character){if(canSelect(save.progress,characters[target.dataset.character])){save.preferences.character=target.dataset.character;save.preferences.skin='base';saveNow();setMode('title');}return;}

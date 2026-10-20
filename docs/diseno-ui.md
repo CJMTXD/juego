@@ -168,3 +168,41 @@ Glosario adicional: **Comprable** significa que hay saldo y aún no se adquirió
 impide pagar de nuevo; **Elegido** señala la selección de esta preparación;
 **No ofrecida esta vez** es un arma desbloqueada fuera de las tres opciones actuales.
 Los textos calculados de daño se redondean a tres decimales, sin redondear simulación.
+
+## Recuerdos nuevos — implementado
+Campo estable: .arena-wrap tiene filas explícitas para HUD, sala, jefe, campo,
+herramientas y dos líneas de aviso/ayuda. Una fila vacía sigue reservada aunque su
+contenido se oculte. En horizontal corto, la fila de jefe reserva 48 px; en táctil
+vertical, el campo conserva 16:9 por ancho. El viewport dinámico controla el espacio;
+ResizeObserver escala el dibujo. No se usa el largo de un texto para decidir su alto.
+
+Minimapa: botón independiente del flujo, con SVG de los iconos ya existentes,
+conexiones, actual/visitadas y contador /8. Si hay margen amplio junto al campo,
+usa 146×176; si cabe un margen compacto, 104×62. En vertical usa el espacio de sala/
+jefe junto al HUD. Sin margen en horizontal, usa la fila reservada antes del campo,
+entre los carriles táctiles, separada de la barra del jefe. No se superpone a la
+habilidad ni a joysticks; tocar abre el mapa pausado. /8 cuenta combates y jefe.
+Revelar el mapa mediante ítems no elimina la condición de entrada del archivo secreto.
+
+Santuario/Armería/Códice/urnas: el componente compartido indica «Mejora: [arma]» con
+icono y nombre, o «Afecta al personaje» / «Afecta a todas las armas». Las compras de
+arma y sus recuerdos disponibles se agrupan cuando comparten destinatario, mostrando
+propiedad y forma máxima registrada desde esta versión. No se inventa el historial
+anterior. Los catálogos no omiten desafíos ni venden los exclusivos de urnas.
+
+Urnas: pestaña propia; saldo y Atrás fijos. Tarjetas con precio final (incluido el
+árbol), probabilidades nominales y próximas, garantías y devolución por rareza.
+Resultado guardado antes de animar; animación de 0,45 s solo en el icono, omitible,
+sin destellos y desactivada con reducir efectos. No hay temporizadores de presión.
+La última apertura puede revisarse sin pagar. Colección 36, filtros tradición/rareza,
+siluetas para faltantes; imágenes y detalle del mismo catálogo. Aspectos opcionales:
+Memoria pálida usa la ropa existente; Marfil del ciclo usa dos tonos de la paleta y
+no altera las balas ni estadísticas. No se amplía la paleta de 24 colores.
+
+Glosario adicional:
+- Urna de recuerdos: apertura opcional con ecos para ampliar botín o colección.
+- Garantía: tras el número indicado sin cierta rareza, la siguiente apertura la asegura.
+- Duplicado: recuerdo ya reunido; se convierte automáticamente en ecos.
+- Crédito de evolución: progreso adicional de un arma; no es otra baja ni añade
+  recompensas por enemigos. El HUD distingue bajas reales y créditos con «+».
+- Fragmento: historia conocida; cuenta para una condición del final verdadero.

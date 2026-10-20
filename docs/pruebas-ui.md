@@ -106,3 +106,36 @@ node --test tests/game.test.mjs tests/depth.test.mjs tests/ui.test.mjs tests/cla
 node tests/clarity-browser.cjs
 node tests/preparation-browser.cjs
 ```
+
+## Ronda de campo, minimapa y recuerdos — cierre
+- 69 pruebas de lógica, sin fallos ni saltos: previas + nuevos ítems/recetas, 50
+  campañas de 60 ofertas, proyectiles reales, topes y progreso por arma, migración
+  v1/v2/v3, urnas con versión interna 1, garantías, devoluciones y aspectos sin poder.
+- Diez recorridos de navegador pasan: browser, depth-browser, ui-layout, ui-flow,
+  ui-screens, mobile-browser, clarity-browser, preparation-browser, field-stability y
+  memories-browser. Se conserva campaña, diaria y aislamiento de perfiles.
+- field-stability reproduce el fallo anterior y comprueba inicio/5/130 s, aviso,
+  jefe y minimapa sin variar dimensiones. Ratón y táctil, con autoapuntado y joystick
+  derecho, cuatro tamaños; sin intersección con campo, habilidad ni controles.
+  Rotación y viewport 40 px más bajo se comprueban como cambios legítimos de ventana.
+- memories-browser: seis secciones del Santuario, apertura, duplicado, detalle,
+  colección/filtros, última apertura tras recarga, ítem específico y minimapa que
+  abre mapa pausado. Compra desde preparación diaria conserva identidad y árbol
+  vacío; los desbloqueos de urna no se transfieren a esa partida diaria.
+- 200000 sorteos nominales por urna y 20000 aperturas por tipo con comprobación en
+  cada apertura; además urn-balance imprime 50000 por tipo con/sin garantías.
+- check-pwa valida 52 recursos, rutas relativas y caché el-umbral-memories-8.
+  Sintaxis: 67 archivos. HTTP 200: portada, módulos nuevos y service worker.
+  weapon-balance, campaign-balance, item-balance y urn-balance ejecutados.
+- Estrés Chromium con los 44 ítems y pools llenos (128/512/16/64), 240 pasos de
+  simulación+dibujo: mediana 0,60 ms, p95 12,10 ms en este entorno. Pools conservan
+  tamaño e identidad. No se infiere FPS de teléfonos a partir de esta medición.
+- [48 capturas actuales](capturas/recuerdos/README.md), en 390×844, 844×390,
+  768×1024 y 1920×1080. Revisadas: controles fuera del campo, mapa sin tapar
+  habilidad/joysticks, precio/garantías legibles y detalles sin recorte horizontal.
+  Etiquetas del HUD conservan las elipsis anteriores; el texto completo sigue en
+  el DOM y el mapa ampliado permite consultar el contexto. Menús usan un solo scroll.
+
+Pendiente de prueba humana: comodidad real de joysticks, barra del navegador móvil,
+rotación/llamadas en Android/iPhone, Windows nativo y duración humana 15–25 minutos.
+La ronda se detiene aquí para esa prueba, con commits locales y sin push.

@@ -10,7 +10,7 @@ Estado: implementado en fases 5–6 y comprobado con pruebas de lógica, apertur
 | Huellas de ceniza | Infierno | common | La esquiva deja durante 0,9 segundos una zona de radio 55 píxeles que ralentiza perseguidores. | Grupo común de partida |
 | Diente del horno | Infierno | rare | Todas las armas causan un 18% más de daño; te mueves un 8% más lento. | Catálogo del Santuario (10 ecos) |
 | Ojo del rescoldo | Infierno | rare | Aguja de ceniza obtiene 1 crédito de evolución extra cada 5 bajas propias; no cuenta como enemigo eliminado. | Exclusivo de urnas; luego recompensas normales |
-| Sal del depósito | Infierno | epic | Los disparos del Abanico de sal rebotan al menos una vez; su alcance se reduce un 15%. | Exclusivo de urnas; luego recompensas normales |
+| Sal del depósito | Infierno | epic | Añade un rebote a los disparos del Abanico de sal, máximo 3; su alcance se reduce un 15%. | Exclusivo de urnas; luego recompensas normales |
 | Óbolo sin dueño | Egipcia | common | Recibes una ficha adicional cada 6 bajas. Máximo 999 fichas. | Grupo común de partida |
 | Venda del río | Egipcia | common | Toda curación recibida aumenta un 10%; conserva fracciones. No cura por sí sola. | Grupo común de partida |
 | Espejo de la Tasadora | Egipcia | rare | La habilidad despeja balas en un radio de 120 píxeles con cualquier alma; dura 0,5 segundos menos. | Aceptar una bendición del juicio |
@@ -25,7 +25,7 @@ Estado: implementado en fases 5–6 y comprobado con pruebas de lógica, apertur
 | Sello del testimonio | Olimpo | rare | Luz del testimonio causa un 12% más de daño mientras guardas al menos 50 de carga de habilidad. Solo aparece desde Terraza del juicio. | Catálogo del Santuario (10 ecos) |
 | Campana del juicio | Olimpo | rare | La habilidad dura 0,5 segundos más y despeja balas en un radio de 110 píxeles con cualquier alma. | Completar la sala de desafío |
 | Laurel de la deuda | Olimpo | rare | Cada baja carga 6 puntos de habilidad, hasta 100; todas las armas causan un 8% menos de daño. | Exclusivo de urnas; luego recompensas normales |
-| Sol del juramento | Olimpo | epic | Desde Recuerdo, Sol en una vasija deja la explosión de su forma final al impactar; desde entonces causa un 15% menos de daño. No duplica el efecto final. | Exclusivo de urnas; luego recompensas normales |
+| Sol del juramento | Olimpo | epic | En Recuerdo y Ascenso, Sol en una vasija anticipa su explosión final por un 15% menos de daño. En Forma verdadera da un 5% más de daño a cambio de un 10% menos de alcance. No duplica explosiones. | Exclusivo de urnas; luego recompensas normales |
 | Pluma del alba | Alba | common | Proyectiles un 8% más rápidos; viento y corrientes te desplazan un 20% menos. | Grupo común de partida |
 | Nota al margen | Alba | rare | Los impactos directos de todas las armas causan un 10% más de daño a jefes y minijefes. | Vencer al minijefe |
 | Hilo del primer día | Alba | rare | Al vencer un jefe con la mitad de vida o menos, recuperas 1 de vida. Máximo 3 curaciones por partida, ajustadas a dificultad. | Catálogo del Santuario (10 ecos) |

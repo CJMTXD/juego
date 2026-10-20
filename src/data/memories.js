@@ -103,7 +103,7 @@ export const memoryItems=[
   "myth": "inferno",
   "rarity": "epic",
   "source": "urn",
-  "text": "Los disparos del Abanico de sal rebotan al menos una vez; su alcance se reduce un 15%.",
+  "text": "Añade un rebote a los disparos del Abanico de sal, máximo 3; su alcance se reduce un 15%.",
   "effects": {
    "bounce": 1,
    "range": -0.15
@@ -474,9 +474,11 @@ export const memoryItems=[
   "myth": "olympus",
   "rarity": "epic",
   "source": "urn",
-  "text": "Desde Recuerdo, Sol en una vasija deja la explosión de su forma final al impactar; desde entonces causa un 15% menos de daño. No duplica el efecto final.",
+  "text": "En Recuerdo y Ascenso, Sol en una vasija anticipa su explosión final por un 15% menos de daño. En Forma verdadera da un 5% más de daño a cambio de un 10% menos de alcance. No duplica explosiones.",
   "effects": {
    "sunfall": 1,
+   "finalDamage": 0.05,
+   "finalRange": -0.1,
    "damage": -0.15
   },
   "weapon": "charge",
@@ -673,7 +675,7 @@ export const memoryRecipes=[
  }
 ];
 // Topes adicionales: nunca reemplazan los topes globales de depth.js.
-export const memoryBalance={damageCap:0.35,speedCap:0.15,cadenceCap:0.15,abilityMin:1,abilityMax:6,dashInvulnerabilityMax:0.26,bossHeals:3,bossEchoes:6,coinsMax:999,grazeRequired:10,chargedRequired:50,healthyFraction:0.5,serviceHeal:2,serviceCoins:2,serviceCharge:10};
+export const memoryBalance={bouncesMax:3,damageCap:0.35,speedCap:0.15,cadenceCap:0.15,abilityMin:1,abilityMax:6,dashInvulnerabilityMax:0.26,bossHeals:3,bossEchoes:6,coinsMax:999,grazeRequired:10,chargedRequired:50,healthyFraction:0.5,serviceHeal:2,serviceCoins:2,serviceCharge:10};
 export const memorySourceNames={normal:'Recompensas de sala',sanctuary:'Catálogo del Santuario',urn:'Urnas del Santuario; después recompensas de sala',judgment:'Aceptar una bendición del juicio',secret:'Conservar el fragmento secreto',challenge:'Completar la sala de desafío',miniboss:'Vencer al minijefe'};
 // Servicios renovables: garantizan tres elecciones distintas incluso con todo el inventario al máximo.
 export const memoryServices=[{id:'restore',name:'Agua del camino',rarity:'common',max:1,service:'heal',text:'Recupera 2 de vida, ajustada a dificultad y pactos. Repetible.'},{id:'memory_coins',name:'Fichas del camino',rarity:'common',max:1,service:'coins',text:'Obtén 2 fichas para esta partida. Repetible.'},{id:'memory_charge',name:'Voz del camino',rarity:'common',max:1,service:'charge',text:'Carga 10 puntos de habilidad, hasta 100. Repetible.'}];

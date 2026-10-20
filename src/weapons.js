@@ -43,7 +43,7 @@ function discharge(world,gun,damageScale=1,withSides=true){damageScale*=memorySh
  }
  // Ecos laterales limitados: no multiplican toda la escopeta o cada bala de la ráfaga.
  if(withSides&&gun.mode!=='orbit'&&gun.mode!=='area')for(let i=1;i<=world.stats.side;i++)for(const sign of [-1,1])projectile(world,gun,p.angle+sign*B.upgrades.sideAngle*i,gun.damage*world.stats.damage*Math.min(B.upgrades.sideDamage,gun.mode==='beam'?0.2:0.55)/Math.max(1,gun.count));
- if(world.weaponProgress[gun.id])world.weaponProgress[gun.id].shots++;
+ if(world.weaponProgress[gun.id]){if(world.weaponProgress[gun.id].shots===0)world.discoveryRevision++;world.weaponProgress[gun.id].shots++;}
  if(gun.finalEffect==='backfan'&&withSides)for(let i=-1;i<=1;i++)projectile(world,gun,p.angle+Math.PI+i*E.backAngle,gun.damage*world.stats.damage*E.backDamage);
  if(world.combos.includes('echo_oath')&&world.weaponProgress[gun.id].shots%R.rearEvery===0)for(let n=-1;n<=1;n++)projectile(world,gun,p.angle+Math.PI+n*R.rearAngle,gun.damage*world.stats.damage*R.rearDamage);
  world.events.push('shoot');

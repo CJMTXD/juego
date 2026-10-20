@@ -1,10 +1,11 @@
 # El umbral — título de trabajo
 
 ## Visión y estado
-**Estado de interfaz:** fases 1–5 terminadas; se detiene para prueba del usuario.
+**Estado actual:** ronda de campo/minimapa/recuerdos/urnas implementada; lista para prueba del usuario.
+El historial de entregas anteriores se conserva debajo.
 Las fases 6–8 de interfaz están pendientes. La campaña y el balance se conservan.
 
-Bullet hell roguelike cenital original para PC: Canvas + módulos JavaScript + CSS,
+Bullet hell roguelike cenital original para PC y móviles: Canvas + módulos JavaScript + CSS,
 sin motor ni dependencias para jugar. Ascenso del infierno al cielo, inspirado en
 estructuras míticas, con un único más allá fragmentado por el ciclo de los recuerdos.
 Esta ampliación está implementada en ocho fases con commits; respaldo inicial c1f4d66.
@@ -41,7 +42,7 @@ tramo ya desbloqueado; solo una victoria desde el fondo abre la siguiente dificu
 - Diez armas configurables y cuarenta formas, con evoluciones a 100/250/500 bajas
   atribuidas al arma que las causó. Sus contadores persisten dentro de la partida.
   Botín global limitado a armas compradas. Selección inicial de tres con estadísticas.
-- Veinte ítems, cinco recetas automáticas sin consumir piezas y cinco sets que suman
+- Cuarenta y cuatro ítems, once recetas automáticas sin consumir piezas y cinco sets que suman
   bonos a 2/3/4 piezas distintas. Códice registra descubrimientos, ingredientes y bonos.
 - Cinco superítems, uno por partida, con condiciones exigentes y desventajas. Comprar
   su catálogo no concede el objeto ni omite el reto. Manto: receta+100 bajas;
@@ -269,8 +270,23 @@ Dos urnas opcionales de Ilar, 6/12 ecos base (descuento del árbol respetado).
 Probabilidades nominales y de la próxima apertura, garantías persistentes por tipo,
 duplicados convertidos en 1/3/6 ecos. Se guarda el resultado antes de animar; se
 puede omitir y revisar la última apertura. Colección de 36 con filtros/siluetas,
-nueve ítems exclusivos que solo amplían botín, aspectos opcionales y cartas/fragments.
+nueve ítems exclusivos que solo amplían botín, aspectos opcionales y cartas/fragmentos.
 Guardado sigue v3, con extensión urns versión interna 1 validada y migración sin
 borrar datos anteriores. Diaria excluye ítems de urna y usa árbol vacío.
 Pruebas: 200000 sorteos nominales por urna; 20000 aperturas por tipo con todos los
 costos, garantías y duplicados comprobados; navegador en cuatro tamaños.
+
+## Recuerdos nuevos — cierre de fase 7
+Implementadas las siete fases de esta ronda: campo estable, minimapa permanente,
+destinatario de compras, diseño, 24 ítems, seis recetas y urnas/colección de 36.
+Se ajustan Sal y Sol para conservar utilidad al evolucionar. Se evita recorrer y
+crear listas de progreso de armas cada fotograma: se sincronizan al descubrir,
+disparar por primera vez o evolucionar. Pools y ataques enemigos se conservan.
+Guardado v3 y preferencias previas se mantienen; extensión urns versión interna 1.
+Próxima tarea: prueba humana de una partida en móvil; duración humana 15–25 minutos,
+comodidad física y comportamiento de la barra del navegador siguen por validar.
+Esta ronda termina con commits locales y sin push conforme a la instrucción específica.
+
+Corrección de aislamiento: comprar en el Santuario desde una preparación diaria
+conserva su identidad, árbol vacío y exclusión de ítems de urna. Las compras sí
+actualizan el grupo de botín de una preparación normal, sin renovar sus tres ofertas.

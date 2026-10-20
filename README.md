@@ -2,7 +2,7 @@
 
 Bullet hell roguelike cenital original en Canvas, JavaScript y CSS, sin motor ni paquetes
 para jugar. Seis mundos del infierno al cielo, 18 enemigos, seis jefes, cinco personajes,
-diez armas con cuarenta formas, veinte ítems, recetas, cinco superítems, cinco dificultades,
+diez armas con cuarenta formas, 44 ítems, once recetas, cinco superítems, cinco dificultades,
 santuario y desbloqueos guardados en el navegador.
 
 ## Jugar desde la web o el celular
@@ -135,3 +135,35 @@ Windows: abre `iniciar.bat`. No requiere nuevas dependencias para jugar.
 Verificación de esta entrega: 51 pruebas de lógica, ocho recorridos de navegador y
 PWA correctos. [Capturas de los menús](docs/capturas/claridad/README.md) y resultados
 en [docs/pruebas-ui.md](docs/pruebas-ui.md). El combate y el guardado se conservan.
+
+### Campo, minimapa y recuerdos nuevos
+El campo ya no cambia de tamaño al ocultar ayudas o mostrar al jefe. El minimapa
+permanece visible sin ocupar el campo: tócalo para abrir el mapa completo pausado.
+Santuario, Armería y Códice identifican el arma concreta o el destinatario de una mejora.
+
+Hay 24 ítems nuevos y seis recetas, con efectos, condiciones y riesgos configurados.
+Santuario → **Urnas** abre dos urnas opcionales con ecos (6/12 base). Muestra precio,
+probabilidades y garantías antes de pagar; devuelve ecos por duplicados. No hay dinero
+real, anuncios ni esperas. **Colección** permite consultar los recuerdos y equipar
+aspectos cosméticos. Los nueve ítems exclusivos amplían el botín; no los recibes
+automáticamente dentro de la partida. La diaria excluye estos ítems y el árbol.
+Se conserva el guardado v3 y sus controles; no se guarda una partida en curso.
+
+En Windows, abre `iniciar.bat` (Python 3 o Node.js LTS). No hay dependencias nuevas
+para jugar. Diseño completo en [docs/diseno-contenido-nuevo.md](docs/diseno-contenido-nuevo.md).
+Pruebas adicionales para desarrollo, en PowerShell con el servidor activo:
+
+```powershell
+$env:GAME_URL = "http://127.0.0.1:8040"
+node --test tests/game.test.mjs tests/depth.test.mjs tests/ui.test.mjs tests/clarity.test.mjs tests/memories.test.mjs tests/urns.test.mjs
+node tests/field-stability.cjs
+node tests/memories-browser.cjs
+node scripts/check-pwa.mjs
+node scripts/weapon-balance.mjs
+node scripts/campaign-balance.mjs
+node scripts/item-balance.mjs
+node scripts/urn-balance.mjs
+```
+
+Esta ronda queda en commits locales, sin push. Pruebas físicas de Android/iPhone y
+Windows, y duración de partida con una persona, siguen pendientes.

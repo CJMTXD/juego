@@ -206,3 +206,7 @@ silencio llegó al archivo del jardín con las deudas del río. La Nota al marge
 Vigía anticipa lo que el alba intentó borrar. Son conexiones del mismo ciclo roto.
 Los aspectos se equipan voluntariamente y no cambian poderes. Los fragmentos cuentan
 para el final verdadero; no lo conceden sin vencer y visitar el archivo secreto.
+
+Confirmado en revisión final: Marfil del ciclo recuerda el color de las vasijas que
+Ilar reparó. Los recuerdos de Sal y Sol conservan su utilidad cuando el arma asciende;
+no añaden jefes ni cambian el final. Esta ronda no deja lore nuevo planeado sin integrar; las propuestas anteriores se conservan como tales.
