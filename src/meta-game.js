@@ -1,3 +1,4 @@
+import {memoryBalance as M} from './data/memories.js';
 import {depth as D,difficulties,pacts,achievements} from './data/depth.js';
 import {weapons} from './data/weapons.js';
 import {characters} from './data/characters.js';
@@ -31,11 +32,11 @@ export function purchase(save,category,id){const m=save.meta;let target=null;
  if(category==='lore'&&!m.fragments.includes(id))m.fragments.push(id);
  return true;
 }
-export function prepareProfile(w,save){w.startWorld=w.worldIndex;w.metaTree={...save.meta.tree};w.knownFragments=[...save.meta.fragments];w.skin=save.preferences.skin==='ascendant'&&save.meta.skins.includes(w.character.id+':ascendant')?'ascendant':save.preferences.skin==='memory'&&save.meta.skins.includes(w.character.id)?'memory':'base';w.dailyKey='';w.bossesDefeated=[];w.roomCoins=0;}
+export function prepareProfile(w,save){w.startWorld=w.worldIndex;w.metaTree={...save.meta.tree};w.knownFragments=[...save.meta.fragments];w.skin=save.preferences.skin==='ascendant'&&save.meta.skins.includes(w.character.id+':ascendant')?'ascendant':save.preferences.skin==='memory'&&save.meta.skins.includes(w.character.id)?'memory':'base';for(const [id,forms] of Object.entries(w.weaponForms))for(const f of forms)f.skin=save.meta.urns.equippedWeapons.includes(id)?'votive':'base';w.dailyKey='';w.bossesDefeated=[];w.roomCoins=0;}
 export function discover(w,kind,id){const field={enemy:'discoveredEnemies',boss:'discoveredBosses'}[kind];if(field&&!w[field].includes(id)){w[field].push(id);w.discoveryRevision++;}}
 export function syncDiscoveries(w,save){let changed=false;if(!w.cheated)for(const [id,p] of Object.entries(w.weaponProgress))if(p.shots>0&&p.level>(save.meta.weaponForms[id]||0)){save.meta.weaponForms[id]=p.level;changed=true;}if(w.savedDiscoveryRevision===w.discoveryRevision)return changed;w.savedDiscoveryRevision=w.discoveryRevision;for(const [target,source] of [['fragments',w.knownFragments],['recipes',w.discoveredRecipes],['seenItems',w.discoveredItems],['seenEnemies',w.discoveredEnemies],['seenBosses',w.discoveredBosses]])for(const id of source)if(!save.meta[target].includes(id)){save.meta[target].push(id);changed=true;}return changed;}
 export function resultBreakdown(w){const difficulty=difficulties[w.difficultyIndex||0],pactBonus=(w.pactIds||[]).reduce((n,id)=>n+(pacts.find(p=>p.id===id)?.echoes||0),0),won=w.status==='won';
- const kills=Math.floor(w.kills/D.economy.killEvery),bosses=(w.bossesDefeated?.length||0)*D.economy.boss,worlds=(w.bossesDefeated?.length||0)*D.economy.world,victory=won?D.economy.win:0,memories=Math.min(6,w.memoryEchoes||0),base=kills+bosses+worlds+victory+memories;
+ const kills=Math.floor(w.kills/D.economy.killEvery),bosses=(w.bossesDefeated?.length||0)*D.economy.boss,worlds=(w.bossesDefeated?.length||0)*D.economy.world,victory=won?D.economy.win:0,memories=Math.min(M.bossEchoes,w.memoryEchoes||0),base=kills+bosses+worlds+victory+memories;
  const difficultyBonus=Math.floor(base*(difficulty.echoes-1)),pact=Math.floor(base*pactBonus),before=base+difficultyBonus+pact,death=won?0:Math.ceil(before*(1-D.economy.deathFactor));
  let total=Math.max(0,before-death);if(!won&&(w.kills>0||w.grazes>0))total=Math.max(D.economy.minDeath,total);if(w.cheated)total=0;
  return {kills,bosses,worlds,victory,memories,difficulty:difficultyBonus,pacts:pact,death,total};

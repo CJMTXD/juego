@@ -1,3 +1,5 @@
+import {urnScreen} from './ui/urns.js';
+import {openUrn,equipWeaponSkin} from './urns.js';
 import {minimapMarkup,positionMinimap} from './ui/minimap.js';
 import {weaponLibrary} from './ui/catalog.js';
 import {buildForms} from './evolution.js';
@@ -28,7 +30,7 @@ import {weapons} from './data/weapons.js';
 import {worlds} from './data/worlds.js';
 import {characters,canSelect,refreshCharacters} from './data/characters.js';
 import {currentWeapon,weaponSynergy,equipWeapon} from './weapons.js';
-import {settings,defaults,upgrades,lore} from './data.js';
+import {settings,defaults,upgrades,lore,colors} from './data.js';
 import {createWorld,updateWorld,chooseUpgrade,travel,advanceWorld} from './simulation.js';
 import {createInput} from './input.js';
 import {createRenderer,drawPortrait,makeWeaponSprite} from './render.js';
@@ -51,7 +53,8 @@ applyPreferences();
 function saveNow(){applyPreferences();saveError=!persist(save,debugTools);}
 function resetClock(){previous=performance.now();accumulator=0;input.clear();}
 function setMode(value){mode=value;waitingKey=null;resetClock();lastPanel='';lastMap='';updatePanel();updateHud();if(value==='playing'&&world.status==='playing')canvas.focus({preventScroll:true});}
-function togglePause(){if(catalogState.detail&&['sanctuary','arsenal','codex'].includes(mode)){catalogState.detail=null;lastPanel='';updatePanel();return;}if(mode==='prepare'&&preparation.tab!=='summary'){preparation.tab='summary';lastPanel='';updatePanel();return;}if(mode==='playing'&&world.status==='playing')setMode('paused');else if(mode==='paused')setMode('playing');else if(mode==='settings'||mode==='arsenal')setMode(navigation.pop()||settingsReturn);else if(['map','items'].includes(mode))setMode('playing');else if(mode==='prepare')setMode('title');else if(['codex','characters','sanctuary'].includes(mode))setMode(navigation.pop()||'title');}
+function backFromUrns(){if(mode!=='sanctuary'||catalogState.tab!=='urns')return false;if(catalogState.urnDetail)catalogState.urnDetail=null;else if(catalogState.urnResult)catalogState.urnResult=null;else if(catalogState.urnCollection)catalogState.urnCollection=false;else return false;lastPanel='';updatePanel();return true;}
+function togglePause(){if(backFromUrns())return;if(catalogState.detail&&['sanctuary','arsenal','codex'].includes(mode)){catalogState.detail=null;lastPanel='';updatePanel();return;}if(mode==='prepare'&&preparation.tab!=='summary'){preparation.tab='summary';lastPanel='';updatePanel();return;}if(mode==='playing'&&world.status==='playing')setMode('paused');else if(mode==='paused')setMode('playing');else if(mode==='settings'||mode==='arsenal')setMode(navigation.pop()||settingsReturn);else if(['map','items'].includes(mode))setMode('playing');else if(mode==='prepare')setMode('title');else if(['codex','characters','sanctuary'].includes(mode))setMode(navigation.pop()||'title');}
 // La ayuda de preparación usa una marca de interfaz separada; no altera el guardado v3.
 const prepHelpKey='el-umbral-preparation-help-v1'+(debugTools?'-debug':'');
 function prepHelpSeen(){try{return localStorage.getItem(prepHelpKey)==='1';}catch{return false;}}
@@ -75,6 +78,7 @@ function updatePanel(){
  const signature=screen+waitingKey+save.progress.echoes+save.progress.unlocks+world.roomId+saveError;
  if(signature===lastPanel)return;lastPanel=signature;panel.hidden=false;
  let html='';
+ if(screen==='sanctuary'&&catalogState.tab==='urns')catalogState.urnContent=urnScreen(save,catalogState);
  const extra=extraPanel(screen,world,save,catalogState);
  if(screen==='map'||screen==='items')html=`<div id="utility-host"></div>`;
  else if(screen==='room')html=roomPanel(world);
@@ -98,8 +102,8 @@ function updatePanel(){
  panel.innerHTML=`${screen==='title'?'':`<header class="screen-header"><button data-action="nav-back" aria-label="Volver">${icon('back')}<span>Atrás</span></button><strong>${screenHeader(screen)}</strong>${screen==='prepare'?'<button class="primary" data-action="begin">Comenzar</button>':''}</header>`}<div class="panel-content">${html}<p id="save-message">${saveError?'No se pudo leer o guardar el progreso. El juego funciona, pero comprueba que el navegador permite almacenamiento local.':''}</p></div>`;
  if(screen==='map'||screen==='items')$('utility-host').append($(screen==='map'?'map-card':'items-card'));
  // El foco vuelve a un control visible al abrir un menú, sin secuestrar el teclado al jugar.
- for(const portrait of panel.querySelectorAll('[data-portrait]'))drawPortrait(portrait,characters[portrait.dataset.portrait]);
- for(const icon of panel.querySelectorAll('[data-weapon-icon]'))icon.getContext('2d').drawImage(makeWeaponSprite(buildForms(icon.dataset.weaponIcon)[Number(icon.dataset.weaponLevel||1)-1]),0,0);
+ for(const portrait of panel.querySelectorAll('[data-portrait]')){drawPortrait(portrait,characters[portrait.dataset.portrait]);if(portrait.dataset.portraitSkin==='memory'){const ctx=portrait.getContext('2d');ctx.fillStyle=colors.bone;ctx.fillRect(5,21,22,7);}}
+ for(const icon of panel.querySelectorAll('[data-weapon-icon]'))icon.getContext('2d').drawImage(makeWeaponSprite({...buildForms(icon.dataset.weaponIcon)[Number(icon.dataset.weaponLevel||1)-1],skin:icon.dataset.weaponSkin||'base'}),0,0);
  (panel.querySelector('[data-action="begin"],[data-action="start"]')||panel.querySelector('button:not(:disabled)'))?.focus({preventScroll:true});
 }
 function updateHud(){
@@ -137,11 +141,18 @@ $('fullscreen-button').addEventListener('click',()=>platform.fullscreen());
 $('menu-button').addEventListener('click',()=>{audio.unlock();togglePause();});
 panel.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;audio.unlock();audio.play(target.dataset.action==='nav-back'?'uiBack':target.dataset.action==='begin'?'uiConfirm':'uiSelect');
+ if(target.dataset.urnOpen){if(!catalogState.urnResult){const result=openUrn(save,target.dataset.urnOpen);if(result){catalogState.urnResult=result;catalogState.urnDetail=null;saveNow();audio.play('reward');lastPanel='';updatePanel();}}return;}
+ if(target.dataset.urnDetail){catalogState.urnDetail=target.dataset.urnDetail.replace(/^urn:/,'');lastPanel='';updatePanel();return;}
+ if(target.hasAttribute('data-urn-skip')){panel.querySelector('.urn-opening')?.classList.remove('urn-opening');return;}
+ if(target.hasAttribute('data-urn-last')){catalogState.urnResult=save.meta.urns.last;lastPanel='';updatePanel();return;}
+ if(target.hasAttribute('data-urn-collection')){catalogState.urnCollection=true;lastPanel='';updatePanel();return;}
+ if(target.hasAttribute('data-urn-back')){backFromUrns();return;}
+ if(target.dataset.weaponSkin){if(equipWeaponSkin(save,target.dataset.weaponSkin)){saveNow();lastPanel='';updatePanel();}return;}
  if(target.hasAttribute('data-dismiss-prep-help')){try{localStorage.setItem(prepHelpKey,'1');}catch{}preparation.helpDismissed=true;lastPanel='';updatePanel();panel.querySelector('[data-prep-tab="character"]')?.focus({preventScroll:true});return;}
  if(target.dataset.prepSanctuary){catalogState.tab=target.dataset.prepSanctuary;catalogState.detail=null;preparation.tab='summary';navigation.push('prepare');setMode('sanctuary');return;}
  if(target.dataset.catalogTab){catalogState.tab=target.dataset.catalogTab;catalogState.detail=null;lastPanel='';updatePanel();return;}
  if(target.dataset.catalogDetail){catalogState.detail=target.dataset.catalogDetail;lastPanel='';updatePanel();panel.querySelector('.panel-content').scrollTop=0;panel.querySelector('[data-catalog-back]')?.focus();return;}
- if(target.hasAttribute('data-catalog-back')){const key=catalogState.detail;catalogState.detail=null;lastPanel='';updatePanel();panel.querySelector(`[data-catalog-detail="${key}"]`)?.focus();return;}
+ if(target.hasAttribute('data-catalog-back')){if(catalogState.urnDetail){backFromUrns();return;}const key=catalogState.detail;catalogState.detail=null;lastPanel='';updatePanel();panel.querySelector(`[data-catalog-detail="${key}"]`)?.focus();return;}
  if(target.dataset.dismissHelp){save.preferences.ui.dismissedHelp.push(target.dataset.dismissHelp);saveNow();lastPanel='';updatePanel();return;}
  if(target.dataset.itemDetail){showItem(world,target.dataset.itemDetail);return;}
  if(target.dataset.prepTab){preparation.tab=target.dataset.prepTab;lastPanel='';updatePanel();panel.querySelector('.panel-content').scrollTop=0;panel.querySelector('[data-prep-character][aria-pressed=true],[data-start-weapon][aria-pressed=true]')?.focus({preventScroll:true});return;}
@@ -174,7 +185,7 @@ panel.addEventListener('click',e=>{
   case 'begin':startRun();break;
   case 'map':setMode('map');break;
   case 'items':setMode('items');break;
-  case 'nav-back':if(mode==='prepare'&&preparation.tab!=='summary'){preparation.tab='summary';lastPanel='';updatePanel();break;}if(catalogState.detail&&['sanctuary','arsenal','codex'].includes(mode)){catalogState.detail=null;lastPanel='';updatePanel();break;}if(['map','items'].includes(mode))setMode('playing');else if(['map','items'].includes(mode))setMode('playing');else if(mode==='prepare')setMode('title');else if(mode==='playing'&&world.status==='playing')setMode('paused');else if(mode==='playing'&&['reward','transition','room'].includes(world.status))setMode('paused');else if(mode==='paused')setMode('playing');else setMode(navigation.pop()||settingsReturn||'title');break;
+  case 'nav-back':if(backFromUrns())break;if(mode==='prepare'&&preparation.tab!=='summary'){preparation.tab='summary';lastPanel='';updatePanel();break;}if(catalogState.detail&&['sanctuary','arsenal','codex'].includes(mode)){catalogState.detail=null;lastPanel='';updatePanel();break;}if(['map','items'].includes(mode))setMode('playing');else if(['map','items'].includes(mode))setMode('playing');else if(mode==='prepare')setMode('title');else if(mode==='playing'&&world.status==='playing')setMode('paused');else if(mode==='playing'&&['reward','transition','room'].includes(world.status))setMode('paused');else if(mode==='paused')setMode('playing');else setMode(navigation.pop()||settingsReturn||'title');break;
   case 'resume':setMode('playing');break;
   case 'settings':settingsReturn=mode;setMode('settings');break;
   case 'back':setMode(settingsReturn);break;
@@ -189,7 +200,7 @@ panel.addEventListener('click',e=>{
 });
 panel.addEventListener('pointerover',e=>{if(e.pointerType==='mouse'){const b=e.target.closest('[data-item-detail]');if(b)showItem(world,b.dataset.itemDetail);}});panel.addEventListener('focusin',e=>{const b=e.target.closest('[data-item-detail]');if(b)showItem(world,b.dataset.itemDetail);});
 panel.addEventListener('input',e=>{if(mode==='prepare'&&e.target.id==='seed-input')preparation.seedText=e.target.value;});
-panel.addEventListener('change',e=>{if(e.target.dataset.uiPref){const key=e.target.dataset.uiPref,value=e.target.type==='checkbox'?e.target.checked:e.target.type==='range'||['controlScale','resolution'].includes(key)?Number(e.target.value):e.target.value;save.preferences.ui=validateUi({...save.preferences.ui,[key]:value});saveNow();input.clear();touch.update();return;}if(mode==='prepare'&&!world.dailyKey){const u=save.preferences.ui;if(e.target.id==='difficulty-input')u.difficulty=Number(e.target.value);else if(e.target.id==='start-world')u.startWorld=Number(e.target.value);else if(e.target.dataset.pact)u.pacts=[...panel.querySelectorAll('[data-pact]:checked')].map(x=>x.dataset.pact);else if(e.target.id==='seed-input')return;else return;saveNow();prepareRun(false,true);return;}if(e.target.hasAttribute('data-hitbox')){save.preferences.hitboxScale=Number(e.target.value);saveNow();return;}const key=e.target.dataset.pref;if(key){save.preferences[key]=e.target.checked;saveNow();updateHud();}});
+panel.addEventListener('change',e=>{if(e.target.dataset.urnFilter){catalogState[e.target.dataset.urnFilter]=e.target.value;lastPanel='';updatePanel();return;}if(e.target.dataset.uiPref){const key=e.target.dataset.uiPref,value=e.target.type==='checkbox'?e.target.checked:e.target.type==='range'||['controlScale','resolution'].includes(key)?Number(e.target.value):e.target.value;save.preferences.ui=validateUi({...save.preferences.ui,[key]:value});saveNow();input.clear();touch.update();return;}if(mode==='prepare'&&!world.dailyKey){const u=save.preferences.ui;if(e.target.id==='difficulty-input')u.difficulty=Number(e.target.value);else if(e.target.id==='start-world')u.startWorld=Number(e.target.value);else if(e.target.dataset.pact)u.pacts=[...panel.querySelectorAll('[data-pact]:checked')].map(x=>x.dataset.pact);else if(e.target.id==='seed-input')return;else return;saveNow();prepareRun(false,true);return;}if(e.target.hasAttribute('data-hitbox')){save.preferences.hitboxScale=Number(e.target.value);saveNow();return;}const key=e.target.dataset.pref;if(key){save.preferences[key]=e.target.checked;saveNow();updateHud();}});
 window.addEventListener('keydown',e=>{
  if(mode!=='settings'||!waitingKey)return;e.preventDefault();e.stopImmediatePropagation();
  if(e.code==='Escape'){waitingKey=null;lastPanel='';updatePanel();return;}

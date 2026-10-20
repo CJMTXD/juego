@@ -1,3 +1,4 @@
+import {restoreUrnUnlocks} from './urns.js';
 import {uiDefaults,validateUi} from './ui/preferences.js';
 import {metaDefaults,validateMeta} from './profile.js';
 import {characters} from './data/characters.js';
@@ -30,7 +31,7 @@ export function validateSave(raw) {
  save.progress.worlds=Math.max(1,Math.min(6,save.progress.worlds));save.progress.bossMask&=63;for(let i=0;i<6;i++)if(save.progress.bossMask&(1<<i))save.progress.worlds=Math.max(save.progress.worlds,Math.min(6,i+2));
  save.progress.unlocks=Math.min(2,save.progress.unlocks);
  for(const u of upgrades)if(u.unlock&&save.progress.unlocks>=u.unlock&&!save.meta.items.includes(u.id))save.meta.items.push(u.id);
- return save;
+ restoreUrnUnlocks(save);return save;
 }
 export function loadSave(sandbox=false) { try {return {save:validateSave(JSON.parse(localStorage.getItem(sandbox?'ascenso-debug-v3':KEY))),error:false};}catch{return {save:freshSave(),error:true};} }
 export function persist(save,sandbox=false) { try {localStorage.setItem(sandbox?'ascenso-debug-v3':KEY,JSON.stringify(save));return true;}catch{return false;} }

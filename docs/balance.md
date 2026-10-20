@@ -215,3 +215,19 @@ Campaña simulada favorable (invulnerabilidad y puntería perfecta): semillas
 42/123/2026 = 11,60/12,48/13,40 minutos; dificultad máxima semilla 42 =21,23.
 270/384 bajas, forma N3. No incluye decisiones/viajes humanos ni valida la duración
 real de 15–25 minutos. No se alteran ataques enemigos para compensar estas elecciones.
+
+## Urnas de recuerdos — implementadas
+Ceniza: 6 ecos, común/rara/épica 70/25/5; garantías tras 4 sin rara+ y 12 sin épica.
+Alba: 12 ecos, 35/50/15; garantías tras 2 y 8. Se prioriza épica y se normaliza rara+.
+El descuento de Santuario se aplica y redondea hacia arriba: máximo 6/11 ecos.
+Dentro de cada rareza se sortea uniformemente. Los duplicados devuelven 1/3/6 ecos,
+nunca más que lo gastado. No se compra poder permanente ni se modifica la diaria.
+
+`node scripts/urn-balance.mjs`, 50000 aperturas por tipo, semilla 2026:
+- Ceniza sin garantía: 70,050/24,936/5,014%; con garantías: 61,664/27,672/10,664%.
+- Alba sin garantía: 35,350/49,812/14,838%; con garantías: 30,948/49,178/19,874%.
+Las nominales se comprueban sin garantías, no contra la distribución alterada por ellas.
+Pruebas separadas verifican los máximos de mala suerte, saldo y devolución en cada
+apertura. Colección finita de 36; los duplicados no crean bucles rentables.
+Variedad inicial medida en item-balance: 20,68 ítems distintos ofrecidos frente a
+12,94 sin nuevos, media de 50 semillas y 20 recompensas. Es variedad, no dificultad humana.

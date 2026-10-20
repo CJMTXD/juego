@@ -10,7 +10,7 @@ const fs=require('node:fs');
   page.on('pageerror',e=>errors.push(e.message));
   assert.equal((await page.goto(BASE+'/?debug=1')).status(),200);
   await page.locator('[data-action="characters"]').click();assert.equal(await page.locator('[data-character]').count(),5);assert.equal(await page.locator('[data-character]:disabled').count(),4);
-  await page.locator('[data-action="title"]').click();await page.locator('[data-action="arsenal"]').click();assert.equal(await page.locator('[data-weapon-icon]').count(),10);await page.locator('[data-action="nav-back"]').click();
+  await page.locator('[data-action="title"]').click();await page.locator('[data-action="arsenal"]').click();assert.equal(await page.locator('[data-catalog-detail^="weapon:"]').count(),10);await page.locator('[data-action="nav-back"]').click();
   await page.evaluate(()=>{const data=JSON.parse(localStorage.getItem('ascenso-debug-v3')||'null')||{version:2};data.progress={echoes:20,runs:3,wins:1,unlocks:2,totalEchoes:20,worlds:6,bossMask:63,characters:['remender','hollow','courier','weaver','witness']};localStorage.setItem('ascenso-debug-v3',JSON.stringify(data));});
   const characters=['remender','hollow','courier','weaver','witness'];
   for(let zone=0;zone<6;zone++){

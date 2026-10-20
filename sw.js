@@ -1,5 +1,5 @@
 // Subir CACHE al publicar cambios: una versión completa, sin activar durante el combate.
-const CACHE='el-umbral-memories-5';
+const CACHE='el-umbral-memories-6';
 const FILES=[
  "./",
  "index.html",
@@ -16,6 +16,7 @@ const FILES=[
  "src/data/extras.js",
  "src/data/relics.js",
  "src/data/memories.js",
+ "src/data/urns.js",
  "src/data/weapon-balance.js",
  "src/data/weapons.js",
  "src/data/worlds.js",
@@ -31,6 +32,8 @@ const FILES=[
  "src/map.js",
  "src/meta-game.js",
  "src/memories.js",
+ "src/urns.js",
+ "src/ui/urns.js",
  "src/profile.js",
  "src/projectiles.js",
  "src/relics.js",

@@ -193,3 +193,16 @@ Tasadora, el archivo un Carrete del silencio, el desafío una Campana del juicio
 Vigía una Nota al margen. Sello tibio, Peaje devuelto, Costura del regreso, Voz atada,
 Mapa del alba y Camino de bruma son recetas reales, sin destruir recuerdos previos.
 Los nueve recuerdos reservados a urnas todavía esperan su sistema de apertura.
+
+## Confirmado — urnas de recuerdos de Ilar
+Al romperse el ciclo, también cayeron recuerdos desde las alturas. Ilar los reúne en
+urnas de ceniza recogida o del alba caída. Los ecos pagan reunir las piezas, no un
+destino ni poder permanente. Abrir una urna es opcional; una memoria repetida vuelve
+al ciclo en forma de ecos, y ninguna se pierde por esperar.
+Las urnas contienen nueve recuerdos temporales exclusivos, vestimentas pálidas,
+aspectos de arma Marfil del ciclo, fragmentos de los seis mundos y seis Cartas caídas.
+La Campana del juicio cayó de la corte a los talleres del hilo; el Carrete del
+silencio llegó al archivo del jardín con las deudas del río. La Nota al margen del
+Vigía anticipa lo que el alba intentó borrar. Son conexiones del mismo ciclo roto.
+Los aspectos se equipan voluntariamente y no cambian poderes. Los fragmentos cuentan
+para el final verdadero; no lo conceden sin vencer y visitar el archivo secreto.

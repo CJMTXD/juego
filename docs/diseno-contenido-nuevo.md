@@ -1,6 +1,6 @@
 # Diseño del contenido nuevo
 
-Estado inicial: diseño aprobado por interpretación autónoma del encargo; implementación en fases 5–6. No sustituye los ítems existentes. Todos tienen máximo un nivel y un icono matricial propio.
+Estado: implementado en fases 5–6 y comprobado con pruebas de lógica, aperturas y navegador. No sustituye los ítems existentes. Todos tienen máximo un nivel y un icono matricial propio.
 
 ## Veinticuatro recuerdos temporales
 
@@ -66,3 +66,5 @@ El resultado se guarda antes de animar; animación breve, omitible y desactivada
 ## Guardado y coherencia
 
 Se conserva el contenedor y preferencias v3. Urnas es una extensión opcional con versión interna 1, listas conocidas y contadores acotados; ausente en guardados antiguos significa ninguna apertura. Se conservan compras, progresión y controles. Las urnas son recuerdos que cayeron del cielo tras la rotura del ciclo; Ilar cobra por reunirlos, no vende destinos ni poder permanente. Los fragmentos mantienen las condiciones del final verdadero.
+
+El descuento permanente existente también se aplica a urnas, redondeando hacia arriba (6/12 ecos base; con descuento máximo, 6/11). El precio final se muestra antes de abrir. Las probabilidades nominales describen aperturas sin garantía; las frecuencias a largo plazo con garantías son mayores para raras/épicas y se miden por separado.

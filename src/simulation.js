@@ -213,7 +213,7 @@ export function updateWorld(world,input,dt,preferences){
  if(!room.cleared){
   if(!world.enemies.some(e=>e.active)){
    if(world.wave<room.waves||room.kind==='boss'&&world.wave===0){world.spawnTimer-=dt;if(world.spawnTimer<=0)spawnWave(world);}
-   else {room.cleared=true;world.cleared++;if(room.id<=8)world.zoneCleared++;if(world.character.kind==='heal'&&world.cleared%B.characters.healRooms===0)heal(world,1);clearBullets(world);offerUpgrades(world);world.events.push('clear');if(room.kind==='challenge')grantMemory(world,'challenge',recalculate);return;}
+   else {room.cleared=true;world.cleared++;if(room.id<=8)world.zoneCleared++;if(world.character.kind==='heal'&&world.cleared%B.characters.healRooms===0)heal(world,1);clearBullets(world);if(room.kind==='challenge')grantMemory(world,'challenge',recalculate);offerUpgrades(world);world.events.push('clear');return;}
   }
  }
  for(const e of world.enemies)updateEnemy(world,e,dt);

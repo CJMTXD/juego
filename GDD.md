@@ -263,3 +263,14 @@ individualmente. Cuatro desvíos conceden su ítem una vez al aceptar/completar 
 Códice progresivo, iconos matriciales distintos, detalle de obtención y arma afectada.
 Tres servicios renovables completan ofertas agotadas. Pruebas de 50 campañas y
 balas reales comprueban efectos/topes. Balance y duración simulada en docs/balance.md.
+
+## Recuerdos nuevos — fase 6 implementada
+Dos urnas opcionales de Ilar, 6/12 ecos base (descuento del árbol respetado).
+Probabilidades nominales y de la próxima apertura, garantías persistentes por tipo,
+duplicados convertidos en 1/3/6 ecos. Se guarda el resultado antes de animar; se
+puede omitir y revisar la última apertura. Colección de 36 con filtros/siluetas,
+nueve ítems exclusivos que solo amplían botín, aspectos opcionales y cartas/fragments.
+Guardado sigue v3, con extensión urns versión interna 1 validada y migración sin
+borrar datos anteriores. Diaria excluye ítems de urna y usa árbol vacío.
+Pruebas: 200000 sorteos nominales por urna; 20000 aperturas por tipo con todos los
+costos, garantías y duplicados comprobados; navegador en cuatro tamaños.
