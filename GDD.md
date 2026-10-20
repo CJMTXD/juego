@@ -361,3 +361,6 @@ tamaños, multitoque, migración, transferencia y PNG. Capturas actuales en
 `docs/capturas/ampliacion/`. Campos del guardado antiguo y v3 conservados.
 No se afirma que la duración humana, diversión ni rendimiento en un teléfono real
 estén certificados: quedan para jugar y ajustar con observaciones del usuario.
+
+## Códigos de regalo implementados
+Opciones incluye Canjear código. CJMTXD concede 1000 ecos una vez por guardado. Se ignoran mayúsculas y espacios exteriores; recompensa y canje se guardan juntos. Guardado v3 compatible: perfiles anteriores empiezan sin códigos canjeados.

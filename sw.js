@@ -1,6 +1,8 @@
 // Subir CACHE al publicar cambios: una versión completa, sin activar durante el combate.
-const CACHE='el-umbral-cycle-9';
+const CACHE='el-umbral-cycle-10';
 const FILES=[
+ "src/codes.js",
+ "src/data/codes.js",
  "./",
  "index.html",
  "styles.css",

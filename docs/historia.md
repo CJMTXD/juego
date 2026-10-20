@@ -239,3 +239,6 @@ La introducción de Ilar puede leerse antes de partir; nadie necesita esperar pa
 jugar. El final normal devuelve recuerdos y el verdadero permite elegir descanso.
 Exportar el progreso y el modo asistido son opciones del jugador, no nuevas leyes
 ni recompensas del universo.
+
+### Regalos de ecos (interfaz confirmada)
+Opciones permite canjear códigos de regalo de ecos; no añade personajes ni altera la historia del ciclo.
