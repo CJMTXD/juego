@@ -76,7 +76,7 @@ function titlePanel(){return titleScreen(save);}
 function settingsPanel(){const b=save.preferences.bindings;return `<h2>Opciones</h2><p>Los cambios se guardan solo en este navegador.</p><div class="settings">${[['up','Arriba'],['down','Abajo'],['left','Izquierda'],['right','Derecha'],['dash','Esquiva'],['swap','Cambiar arma'],['special','Habilidad de roce']].map(([id,label])=>`<div class="setting"><span>${label}</span><button data-bind="${id}">${waitingKey===id?'Pulsa una tecla…':keyName(b[id])}</button></div>`).join('')}<label class="setting wide">Disparo automático<input type="checkbox" data-pref="autoFire" ${save.preferences.autoFire?'checked':''}></label><label class="setting wide">Silenciar audio<input type="checkbox" data-pref="muted" ${save.preferences.muted?'checked':''}></label><label class="setting wide">Música y ambiente<input type="checkbox" data-pref="music" ${save.preferences.music?'checked':''}></label><label class="setting wide">Reducir efectos y sacudida<input type="checkbox" data-pref="reducedEffects" ${save.preferences.reducedEffects?'checked':''}></label>${[['colorblind','Paleta alternativa'],['highlightBullets','Resaltar balas enemigas'],['disableFlash','Desactivar destellos y parpadeo'],['disableShake','Desactivar sacudida'],['damageNumbers','Números de daño'],['tutorial','Consejos integrados']].map(([id,label])=>`<label class="setting wide">${label}<input type="checkbox" data-pref="${id}" ${save.preferences[id]?'checked':''}></label>`).join('')}<label class="setting wide">Tamaño visual de hitbox (colisión sin cambios)<select data-hitbox>${D.accessibility.hitboxSizes.map(n=>`<option value="${n}" ${save.preferences.hitboxScale===n?'selected':''}>×${n}</option>`).join('')}</select></label></div>${mobileSettings(save.preferences.ui)}<details class="preparation-clarity"><summary>Revisar ayuda de preparación</summary><p>Aquí cambias de personaje y de arma: pulsa Jugar y después «Cambiar personaje» o «Cambiar arma». Elige una tarjeta para volver. La mejora inicial está en el tercer bloque. Comenzar usa tus selecciones sin pasos extra.</p></details><p id="binding-message" role="status">Pulsa un control para reasignarlo. Esc cancela. Sin disparo automático, mantén clic izquierdo.</p><div class="actions"><button data-action="reset-controls">Restaurar controles</button><button class="primary" data-action="back">Volver</button></div>`;}
 function updatePanel(){
  let screen=mode==='playing'?world.status:mode;if(document.body.dataset.screen!==screen){document.body.dataset.screen=screen;$('app').inert=screen!=='playing';}
- if(screen==='playing'){panel.hidden=true;lastPanel='';return;}
+ if(screen==='playing'){panel.hidden=true;lastPanel='';requestAnimationFrame(positionMinimap);return;}
  const signature=screen+waitingKey+save.progress.echoes+save.progress.unlocks+world.roomId+saveError;
  if(signature===lastPanel)return;lastPanel=signature;panel.hidden=false;
  let html='';
@@ -125,7 +125,7 @@ function updateHud(){
  $('controls-help').textContent+=` · ${keyName(b.special)}: ${abilities[world.character.id].name} ${Math.floor(world.abilityCharge)}/100 · ${world.grazes} roces · ${world.roomCoins} fichas`;
  updateGameHud(world,save.preferences,keyName,input.touchActive||false);
  const challengeButton=$('repeat-challenge');if(challengeButton)challengeButton.hidden=!(mode==='playing'&&world.status==='playing'&&room.kind==='challenge'&&room.cleared&&room.rewardTaken);
- const mapKey=`${mode}:${world.status}:${world.roomId}:${world.rooms.filter(r=>r.visited).map(r=>r.id).join(',')}:${world.grazes>=D.rooms.secretGraze}:${world.combos.length}:${!!world.memoryBonuses?.reveal}`;
+ const mapKey=`${mode}:${world.status}:${world.worldIndex}:${world.zoneCleared}:${world.roomId}:${world.rooms.filter(r=>r.visited).map(r=>r.id).join(',')}:${world.grazes>=D.rooms.secretGraze}:${world.combos.length}:${!!world.memoryBonuses?.reveal}`;
  if(mapKey===lastMap)return;lastMap=mapKey;$('minimap').innerHTML=minimapMarkup(world);positionMinimap();
  const map=$('map');map.replaceChildren();
  for(let y=0;y<5;y++)for(let x=0;x<5;x++){
@@ -178,6 +178,7 @@ panel.addEventListener('click',e=>{
   case 'install-app':platform.install();break;
   case 'update-app':platform.update();break;
   case 'codex':setMode('codex');break;
+  case 'urns':catalogState.tab='urns';catalogState.detail=null;navigation.push('title');setMode('sanctuary');break;
   case 'sanctuary':setMode('sanctuary');break;
   case 'arsenal':settingsReturn=mode;setMode('arsenal');break;
   case 'characters':setMode('characters');break;

@@ -29,3 +29,6 @@ body[data-touch=true]{-webkit-user-select:none;user-select:none;-webkit-touch-ca
 @media(max-width:600px){.hud .clock{width:54px;min-width:54px}}
 
 .arena-wrap[data-map-placement=bar]>#boss-hud{padding-right:0;max-width:var(--map-head-space)}
+
+/* Actualización visible en el título; nunca interrumpe una partida. */
+#update-ready{display:none;position:fixed;bottom:12px;left:12px;right:12px;z-index:30;background:var(--cyan);color:var(--ink)}body[data-screen=title] #update-ready{display:block}body:has(#update-ready)[data-screen=title] .panel-content{padding-bottom:70px}

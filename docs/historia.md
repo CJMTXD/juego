@@ -210,3 +210,6 @@ para el final verdadero; no lo conceden sin vencer y visitar el archivo secreto.
 Confirmado en revisión final: Marfil del ciclo recuerda el color de las vasijas que
 Ilar reparó. Los recuerdos de Sal y Sol conservan su utilidad cuando el arma asciende;
 no añaden jefes ni cambian el final. Esta ronda no deja lore nuevo planeado sin integrar; las propuestas anteriores se conservan como tales.
+
+Ampliación del ciclo, acceso: las urnas ya pertenecen a Ilar. Se hace visible su
+entrada desde el título; no se introduce otra moneda ni un segundo sistema de azar.

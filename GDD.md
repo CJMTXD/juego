@@ -290,3 +290,11 @@ Esta ronda termina con commits locales y sin push conforme a la instrucción esp
 Corrección de aislamiento: comprar en el Santuario desde una preparación diaria
 conserva su identidad, árbol vacío y exclusión de ítems de urna. Las compras sí
 actualizan el grupo de botín de una preparación normal, sin renovar sus tres ofertas.
+
+## Ampliación del ciclo — fase 0
+Minimapa y urnas existen y pasan las doce variantes de tamaño/entrada. No se
+reprodujo su ausencia con recursos actuales; una versión antigua instalada es una
+posibilidad, no una causa confirmada del dispositivo del usuario. Se corrige la
+invalidación del mapa entre mundos/contador, se reposiciona al volver al combate,
+se añade acceso directo a Urnas y aviso de versión pendiente en el título.
+Diseño de esta ronda: docs/diseno-ampliacion.md. 69 pruebas base pasan.
