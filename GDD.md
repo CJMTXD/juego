@@ -250,3 +250,8 @@ Tarjetas y detalles identifican Mejora + icono/nombre para armas concretas; el r
 indica personaje o todas las armas. Se registra la forma máxima observada por arma
 como extensión opcional de meta en v3, sin atribuir logros antiguos no registrados.
 Armería/Códice comparten componentes. 51 pruebas y cuatro tamaños de menús pasan.
+
+## Recuerdos nuevos — fase 4 diseñada, aún no implementada
+Base en docs/diseno-contenido-nuevo.md: 24 ítems (9 de urna), seis recetas, sets
+ampliados sin cambiar sus escalones y dos urnas de 6/12 ecos. Garantías y duplicados
+explícitos; sin dinero real ni presión. Se conserva v3 con extensión opcional validada.
