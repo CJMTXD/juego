@@ -19,6 +19,7 @@ export function validateSave(raw) {
   const b={...defaults,...pref.bindings};
   if(pref.bindings&&!pref.bindings.swap)b.swap=['KeyQ','KeyE','KeyR','KeyX','KeyZ','KeyC'].find(key=>!Object.values(pref.bindings).includes(key))||'KeyQ';
   if(pref.bindings&&!pref.bindings.special)b.special=['KeyE','KeyR','KeyX','KeyZ','KeyC','KeyT'].find(key=>!Object.entries(b).some(([id,value])=>id!=='special'&&value===key))||'KeyE';
+  if(pref.bindings&&!pref.bindings.candle)b.candle=['KeyC','KeyV','KeyB','KeyN','KeyM','KeyF'].find(key=>!Object.entries(b).some(([id,value])=>id!=='candle'&&value===key))||'KeyC';
   if(b && Object.keys(defaults).every(k=>validKey(b[k])) && new Set(Object.keys(defaults).map(k=>b[k])).size===Object.keys(defaults).length) save.preferences.bindings=Object.fromEntries(Object.keys(defaults).map(k=>[k,b[k]]));
  }
  for(const key of ['echoes','runs','wins','unlocks','totalEchoes','worlds','bossMask']) {

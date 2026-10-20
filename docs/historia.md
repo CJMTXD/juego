@@ -218,3 +218,10 @@ entrada desde el título; no se introduce otra moneda ni un segundo sistema de a
 Sellos de carbón, pesas de sal, carretes, raíces, columnas y vasijas materializan
 los recuerdos de cada región. Las marcas de élite son cicatrices del ciclo roto.
 Ilar reconoce salas limpias con fichas; una caída de rango nunca quita recuerdos.
+
+## Confirmado — compañeros y ecos del viaje
+El Espejo del viaje anterior conserva una silueta, nunca una copia perfecta del alma.
+Vencerla libera sus recuerdos. Las velas contienen intervalos del ciclo; al consumirse
+vuelven al fondo. Junco, Brasa, Hilo y Ojo acompañan el ascenso como almas guía.
+El Altar de las dos memorias enlaza armas compatibles: la nueva forma recuerda la
+renuncia, no aumenta indefinidamente el número de armas que se pueden llevar.

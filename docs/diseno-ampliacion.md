@@ -61,3 +61,9 @@ Verificación A1–A3: 73 pruebas, navegador y campañas favorables completos pa
 Bot de supervivencia añadido antes de terminar la fase para comprobar contenido
 nuevo desde ahora; no necesita esperar al pulido. Ocho geometrías reutilizadas con
 materiales regionales: 48 configuraciones, no 48 planos dibujados independientemente.
+
+Verificación A4–A7: 76 pruebas, adquisición/colas/fusión real/migración del rival;
+campo estable en doce variantes. El rival interpreta tres recuerdos como +3 PV
+por pieza dentro del tope160; no reproduce todas las sinergias del jugador. Las ramas
+extra no sustituyen tiendas/juicios previos y solo aparecen donde cabe conexión válida.
+Los dos familiares básicos siempre pueden ofrecerse; dos adicionales se abren en urnas.

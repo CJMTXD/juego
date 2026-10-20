@@ -109,7 +109,7 @@ export function finishZone(w){
    w.player.invulnerable=1;steer(w,i);const target=w.enemies.find(e=>e.active);if(target){}
    updateWorld(w,i,1/120,p);w.events.length=0;budget++;
   }
-  if(id<8){assert.equal(w.status,'reward',`sala ${id} mundo ${w.worldIndex}`);const choice=w.options.find(u=>u.id==='ember'||u.id==='pulse')||w.options[0];assert(chooseUpgrade(w,choice.id));}
+  if(id<8){assert.equal(w.status,'reward',`sala ${id} mundo ${w.worldIndex} ${JSON.stringify({p:w.player,keys:[...i.keys],enemies:w.enemies.filter(e=>e.active).map(e=>({x:e.x,y:e.y,hp:e.hp})),objects:w.scenery})}`);const choice=w.options.find(u=>u.id==='ember'||u.id==='pulse')||w.options[0];assert(chooseUpgrade(w,choice.id));}
  }
  assert(budget<300000);return budget/120;
 }

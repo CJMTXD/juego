@@ -1,3 +1,4 @@
+import {adventureRoomAction} from './adventure.js';
 import {grantMemory} from './memories.js';
 import {memoryBalance as M} from './data/memories.js';
 import {depth as D} from './data/depth.js';
@@ -9,10 +10,11 @@ export function configureSideRooms(w){
  r.kind=X.rooms.kinds[w.worldIndex];r.name=X.rooms.names[r.kind];r.used=false;r.repeats=0;
  if(r.kind==='challenge'||r.kind==='miniboss'){r.cleared=false;r.rewardTaken=false;r.waves=r.kind==='challenge'?D.rooms.challengeWaves:1;}
 }
-export function initExtras(w){w.abilityCharge=0;w.abilityTime=0;w.grazePulse=0;w.roomCoins=0;w.judgmentPower=0;w.judgmentHealth=0;w.numberCooldown=0;w.defeat={x:0,y:0,timer:0};w.tutorial={moved:0,dashed:false,shot:false,upgraded:false};configureSideRooms(w);}
+export function initExtras(w){w.roomAbilities++;w.abilityCharge=0;w.abilityTime=0;w.grazePulse=0;w.roomCoins=0;w.judgmentPower=0;w.judgmentHealth=0;w.numberCooldown=0;w.defeat={x:0,y:0,timer:0};w.tutorial={moved:0,dashed:false,shot:false,upgraded:false};configureSideRooms(w);}
 export function canEnterRoom(w,room){return room.kind!=='secret'||w.grazes>=D.rooms.secretGraze||w.combos.length>0;}
-export function enterSideRoom(w,r){if(['shop','altar','judgment','secret'].includes(r.kind)&&!r.used){if(r.kind==='secret'&&!r.secretFound){r.secretFound=true;w.secretVisits++;w.roomCoins+=X.rooms.secretCoins;w.events.push('reward');}w.status='room';}}
+export function enterSideRoom(w,r){if(['shop','altar','judgment','secret','fusion'].includes(r.kind)&&!r.used){if(r.kind==='secret'&&!r.secretFound){r.secretFound=true;w.secretVisits++;w.roomCoins+=X.rooms.secretCoins;w.events.push('reward');}w.status='room';}}
 export function useRoom(w,action,recalculate){const r=w.rooms[w.roomId];if(w.status!=='room')return false;
+ if(adventureRoomAction(w,action))return true;
  if(action==='leave'){w.status='playing';return true;}
  if(r.used)return false;
  if(action==='buy'&&r.kind==='shop'){const u=w.shopOffer,cost=Math.ceil(D.rooms.shopCost*(1-(w.itemBonuses.shopDiscount||0)));if(!u||w.roomCoins<cost)return false;w.roomCoins-=cost;w.inventory[u.id]=(w.inventory[u.id]||0)+1;recalculate(w);}
@@ -24,7 +26,7 @@ export function useRoom(w,action,recalculate){const r=w.rooms[w.roomId];if(w.sta
  if(['judgment','secret'].includes(r.kind))grantMemory(w,r.kind,recalculate);r.used=true;w.status='playing';w.events.push('reward');return true;
 }
 export function repeatChallenge(w){const r=w.rooms[w.roomId];if(w.status!=='playing'||r.kind!=='challenge'||!r.cleared||!r.rewardTaken||w.player.hp<=D.rooms.challengeRepeatHealth)return false;w.player.hp-=D.rooms.challengeRepeatHealth;r.repeats++;r.cleared=false;r.rewardTaken=false;w.wave=0;w.spawnTimer=1.4;w.roomTime=0;return true;}
-export function activateAbility(w){if(w.abilityCharge<D.graze.maximum)return false;const p=w.player;w.abilityCharge=0;w.abilityTime=D.graze.abilitySeconds+(w.itemBonuses.abilityDuration||0)+(w.inventory.oath?1:0)+(w.memoryBonuses?.duration||0);w.abilityTime=Math.max(M.abilityMin,Math.min(M.abilityMax,w.abilityTime));
+export function activateAbility(w){if(w.abilityCharge<D.graze.maximum)return false;const p=w.player;w.roomAbilities++;w.abilityCharge=0;w.abilityTime=D.graze.abilitySeconds+(w.itemBonuses.abilityDuration||0)+(w.inventory.oath?1:0)+(w.memoryBonuses?.duration||0);w.abilityTime=Math.max(M.abilityMin,Math.min(M.abilityMax,w.abilityTime));
  if(w.character.id==='remender')heal(w,X.ability.heal);
  if(w.character.id==='hollow')w.shield=true;
  if(w.character.id==='courier')p.dashCooldown=0;

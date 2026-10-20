@@ -248,6 +248,6 @@ Estrategia simple, sin invulnerabilidad; no certifica justicia humana.
 
 | Semilla | Estado | Salas observadas | Bajas | Segundos | Bloqueos >180 s |
 |---|---|---:|---:|---:|---:|
-| 42 | dead | 8 | 37 | 111.3 | 0 |
-| 123 | dead | 8 | 36 | 106.7 | 0 |
-| 2026 | dead | 5 | 19 | 45.3 | 0 |
+| 42 | dead | 8 | 37 | 107.3 | 0 |
+| 123 | dead | 8 | 36 | 97.1 | 0 |
+| 2026 | dead | 3 | 10 | 27.3 | 0 |

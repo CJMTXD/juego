@@ -1,16 +1,16 @@
 import {icon,itemIcon} from './icons.js';
 import {upgrades} from '../data.js';
-import {weapons} from '../data/weapons.js';
+import {arsenal as weapons} from '../data/fusions.js';
 import {recipes,itemGroups,mythologies} from '../data/relics.js';
 import {depth as D} from '../data/depth.js';
 import {currentWeapon} from '../weapons.js';
 import {makeWeaponSprite} from '../render.js';
 const $=id=>document.getElementById(id);
-export const roomLabels={start:'Inicio',combat:'Combate',boss:'Jefe',rest:'Refugio',shop:'Tienda',altar:'Altar',judgment:'Juicio',secret:'Secreto',challenge:'Desafío',miniboss:'Minijefe'};
+export const roomLabels={start:'Inicio',combat:'Combate',boss:'Jefe',rival:'Tu eco',fusion:'Fusión',rest:'Refugio',shop:'Tienda',altar:'Altar',judgment:'Juicio',secret:'Secreto',challenge:'Desafío',miniboss:'Minijefe'};
 export function createHud(){let healthKey='',itemKey='',weaponKey='',roomKey='',roomNoticeUntil=0;
- return function update(w,prefs,keyName,touch=false){const p=w.player,gun=currentWeapon(w),record=w.weaponProgress[gun.id],target=D.evolution.thresholds[record.level-1],previous=D.evolution.thresholds[record.level-2]||0;
+ return function update(w,prefs,keyName,touch=false){const p=w.player,gun=currentWeapon(w),record=w.weaponProgress[gun.id],thresholds=gun.fusion?[40,100]:D.evolution.thresholds,target=thresholds[record.level-1],previous=thresholds[record.level-2]||0;
  const health=$('health');if(healthKey!==p.hp+':'+p.maxHp){healthKey=p.hp+':'+p.maxHp;health.innerHTML=Array.from({length:p.maxHp},(_,i)=>`<span class="${i<p.hp?'heart-full':'heart-empty'}">${icon('heart',14)}</span>`).join('');health.setAttribute('aria-label',`${p.hp} de ${p.maxHp} de vida`);}
- $('weapon-name').textContent=gun.name;$('weapon-name').title=gun.name;$('evolution-meter').max=target?target-previous:1;$('evolution-meter').value=target?record.kills+(record.bonus||0)-previous:1;$('evolution-label').textContent=target?`Nivel ${record.level} · ${record.kills}${record.bonus?' +'+record.bonus:''}/${target} bajas`:'Nivel 4 · Forma final';
+ $('weapon-name').textContent=gun.name;$('weapon-name').title=gun.name;$('evolution-meter').max=target?target-previous:1;$('evolution-meter').value=target?record.kills+(record.bonus||0)-previous:1;$('evolution-label').textContent=target?`Nivel ${record.level} · ${record.kills}${record.bonus?' +'+record.bonus:''}/${target} bajas`:`Nivel ${record.level} · Forma final`;
  const next=w.weaponSlots.find(id=>id!==gun.id);$('alternate-weapon').textContent=next?(touch?'Cambiar':keyName(prefs.bindings.swap))+': '+weapons[next].name:'Sin otra arma';$('swap-button').disabled=!next;$('swap-button').title=next?'Cambiar a '+weapons[next].name:'No tienes otra arma';$('swap-button').setAttribute('aria-label',$('swap-button').title);
  $('ability-label').textContent=w.abilityTime>0?'Habilidad activa':w.abilityCharge>=D.graze.maximum?'Habilidad lista':'Habilidad · roza balas';$('ability-meter').classList.toggle('ready',w.abilityCharge>=D.graze.maximum);
  if(weaponKey!==gun.id+record.level+gun.skin){weaponKey=gun.id+record.level+gun.skin;const ctx=$('current-weapon-icon').getContext('2d');ctx.clearRect(0,0,16,16);ctx.drawImage(makeWeaponSprite(gun),0,0);}

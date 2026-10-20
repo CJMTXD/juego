@@ -309,3 +309,16 @@ división sin recursión y proyectiles suprimidos a menos de 60 px. Rangos D–S
 muere entre salas 5–8: es una estrategia limitada, no prueba de balance humano.
 El comprobador anterior, que permanecía inmóvil, ahora navega alrededor de pilares.
 Campañas favorables completas y prueba de navegador pasan. Resto de bloques pendiente.
+
+## Ampliación — A4–A7 implementados
+Rival opcional en rama adicional del mundo 2; usa retrato/arma de la última partida,
+retiene hasta tres recuerdos como resistencia acotada (+3 PV por pieza), sin copiar
+sinergias potencialmente infinitas. 60+18/mundo PV, máximo160, daño1, aviso1s.
+Cuatro velas (C reasignable/botón) con ranura+cola3, cada tres salas y tienda3 fichas.
+Cuatro familiares, máximo2, tienda/juicio6 fichas; dos catálogos nuevos en urnas.
+Las urnas conservan precios, garantías y probabilidades por rareza; colección38.
+Fusión en ramas de mundos3/5: ocho parejas, sacrificio explícito, tres formas40/100;
+catálogo separado de las diez armas normales. Historial del rival guardado en
+meta.journey versión1 dentro del v3. No altera ni borra compras previas.
+76 pruebas pasan, navegador sin errores, campo estable en doce variantes. Bot sin
+bloqueos; límites de piscinas conservados. Reto/maestría/presentación aún pendientes.

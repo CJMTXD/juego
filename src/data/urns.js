@@ -1,3 +1,4 @@
+import {familiars} from './expansion.js';
 import {memoryItems} from './memories.js';
 import {weapons} from './weapons.js';
 import {worlds} from './worlds.js';
@@ -8,6 +9,7 @@ export const urnBalance={version:1,refund:{common:1,rare:3,epic:6},animationSeco
 const weaponMyths={needle:'inferno',scatter:'river',burst:'olympus',ricochet:'river',homing:'threads',beam:'dawn',orbit:'olympus',area:'river',charge:'olympus',boomerang:'threads'};
 const characterMyths={remender:'inferno',hollow:'river',courier:'threads',weaver:'threads',witness:'dawn'};
 export const urnRewards=[
+ ...familiars.slice(2).map(f=>({id:'familiar_'+f.id,kind:'familiar',value:f.id,name:f.name,myth:f.myth==='nordic'?'threads':f.myth,rarity:'rare',text:f.text+' Desbloquea su oferta en tiendas y juicios; no lo recibes al empezar.'})),
  ...memoryItems.filter(u=>u.source==='urn').map(u=>({id:'item_'+u.id,kind:'item',value:u.id,name:u.name,myth:u.myth,rarity:u.rarity,text:u.text,weapon:u.weapon})),
  ...Object.values(characters).map(c=>({id:'skin_'+c.id,kind:'skin',value:c.id,name:'Memoria pálida · '+c.name,myth:characterMyths[c.id],rarity:'common',text:'Desbloquea el aspecto Memoria pálida; solo cambia la ropa. No desbloquea el personaje ni cambia estadísticas.'})),
  ...Object.values(weapons).map((g,i)=>({id:'weapon_skin_'+g.id,kind:'weapon_skin',value:g.id,weapon:g.id,name:'Marfil del ciclo · '+g.name,myth:weaponMyths[g.id],rarity:i<5?'rare':'epic',text:'Aspecto opcional de marfil para esta arma. No cambia disparos, daño ni estadísticas y no desbloquea el arma.'})),

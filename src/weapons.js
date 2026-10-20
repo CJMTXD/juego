@@ -3,7 +3,7 @@ import {memoryProjectile,memoryShotFactor} from './memories.js';
 import {memoryBalance as M} from './data/memories.js';
 import {relicBalance as R} from './data/relics.js';
 import {evolutionEffects as E} from './data/evolutions.js';
-import {weapons} from './data/weapons.js';
+import {arsenal as weapons} from './data/fusions.js';
 import {emit} from './projectiles.js';
 import {balance as B} from './data/balance.js';
 export function equipWeapon(world,id){
@@ -67,7 +67,7 @@ export function updateWeapon(world,input,dt,preferences){
 export function weaponSynergy(world){const ids=world.weaponSlots;if(ids.includes('scatter')&&ids.includes('burst'))return 'Voz + Sal: dispersión -20%';if(ids.includes('ricochet')&&ids.includes('orbit'))return 'Regreso + Astrolabio: un rebote extra (máx. 3)';if(ids.includes('beam')&&ids.includes('needle'))return 'Luz + Aguja: una penetración extra';if(ids.includes('area')&&ids.includes('charge'))return 'Tinta + Sol: +10% de daño';return '';}
 
 export function rollWeapon(world,boss=false){
- const available=Object.values(weapons).filter(g=>!world.weaponSlots.includes(g.id)&&world.allowedWeapons.includes(g.id)&&(!boss||g.source.includes('jefe')));
+ const available=Object.values(weapons).filter(g=>!g.fusion&&!world.weaponSlots.includes(g.id)&&world.allowedWeapons.includes(g.id)&&(!boss||g.source.includes('jefe')));
  const groups=['common','rare','epic'].filter(r=>available.some(g=>g.rarity===r));if(!groups.length)return null;
  const weights=boss?B.progression.bossWeights:B.progression.weights;
  let roll=world.random()*groups.reduce((n,r)=>n+weights[r],0),rarity=groups[groups.length-1];

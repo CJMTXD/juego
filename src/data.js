@@ -3,7 +3,7 @@ import {newItems} from './data/relics.js';
 import { balance as B } from './data/balance.js';
 export const settings = Object.freeze({ width:640, height:360, wall:20, playerSpeed:B.player.speed, playerSize:32, hitRadius:B.player.hitRadius, bulletSpeed:B.projectiles.speed, fireInterval:B.projectiles.interval, bulletCapacity:B.projectiles.allyCapacity, enemyCapacity:B.projectiles.enemyCapacity, step:1/120 });
 export const colors = Object.freeze({ outline:'#17151C', shadow:'#27232D', floor:'#38343F', stone:'#514B56', lightStone:'#716976', dust:'#948995', earth:'#44352F', earthLight:'#665044', bone:'#D3C3A1', white:'#EEE1BF', skin:'#A97663', cloth:'#49394F', clothLight:'#70556E', green:'#66705A', cyanDark:'#3F7F92', cyan:'#A2E1E8', red:'#FF385D', orange:'#FF922E', yellow:'#FFE34B' });
-export const defaults = Object.freeze({ up:'KeyW', down:'KeyS', left:'KeyA', right:'KeyD', dash:'Space',swap:'KeyQ',special:'KeyE' });
+export const defaults = Object.freeze({ up:'KeyW', down:'KeyS', left:'KeyA', right:'KeyD', dash:'Space',swap:'KeyQ',special:'KeyE',candle:'KeyC' });
 // Ángulos internos en radianes; velocidades en píxeles/segundo.
 export const patterns = Object.freeze({
   ring:{count:12, speed:90, interval:2.6, warning:0.65, spread:Math.PI*2},
