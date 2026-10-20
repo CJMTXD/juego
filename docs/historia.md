@@ -182,3 +182,4 @@ personal prestada no equivale a comprar su aparición como botín. Los fragmento
 aspectos, habilidades e historias conservan sus datos; no se añade lore ni poderes.
 
 Presentación — campo estable: la corrección de tamaño no añade contenido narrativo.
+El mapa vuelve a acompañar el ascenso; no revela secretos inaccesibles por defecto.

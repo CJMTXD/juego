@@ -238,3 +238,9 @@ La arena usa filas reservadas para HUD, sala, jefe, avisos y ayudas. Ocultar tex
 no redistribuye el espacio del campo; solo viewport/orientación lo cambian.
 Prueba field-stability: inicio/5/130 s, aviso, jefe y mapa, cuatro tamaños con ratón
 y táctil, rotación y altura variable. Lógica previa y PWA pasan. Contenido pendiente.
+
+## Recuerdos nuevos — fase 2 implementada
+Minimapa permanente con iconos compartidos, conexiones visibles, sala actual,
+visitadas y contador /8. Usa el margen si caben 156 px; en vertical ocupa el espacio
+reservado junto al HUD y en horizontal compacto la barra superior. Nunca invade el
+rectángulo del canvas ni mueve sus filas. Un toque abre el mapa pausado con leyenda.

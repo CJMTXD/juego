@@ -1,3 +1,4 @@
+import {minimapMarkup,positionMinimap} from './ui/minimap.js';
 import {weaponLibrary} from './ui/catalog.js';
 import {buildForms} from './evolution.js';
 import {createTouch} from './ui/touch.js';
@@ -119,7 +120,7 @@ function updateHud(){
  updateGameHud(world,save.preferences,keyName,input.touchActive||false);
  const challengeButton=$('repeat-challenge');if(challengeButton)challengeButton.hidden=!(mode==='playing'&&world.status==='playing'&&room.kind==='challenge'&&room.cleared&&room.rewardTaken);
  const mapKey=`${mode}:${world.status}:${world.roomId}:${world.rooms.filter(r=>r.visited).map(r=>r.id).join(',')}:${world.grazes>=D.rooms.secretGraze}:${world.combos.length}`;
- if(mapKey===lastMap)return;lastMap=mapKey;
+ if(mapKey===lastMap)return;lastMap=mapKey;$('minimap').innerHTML=minimapMarkup(world);positionMinimap();
  const map=$('map');map.replaceChildren();
  for(let y=0;y<5;y++)for(let x=0;x<5;x++){
   const r=world.rooms.find(r=>r.x===x&&r.y===y),button=document.createElement('button');button.type='button';
@@ -130,6 +131,7 @@ function updateHud(){
  }
 }
 $('map').addEventListener('click',e=>{const button=e.target.closest('[data-room]');if(button&&!button.disabled&&travel(world,Number(button.dataset.room))){audio.play('reward');if(mode==='map')setMode('playing');input.clear();canvas.focus({preventScroll:true});updateHud();}});
+$('minimap').addEventListener('click',()=>{audio.unlock();setMode('map');updateHud();});
 $('map-button').addEventListener('click',()=>{audio.unlock();setMode('map');updateHud();});$('items-button').addEventListener('click',()=>{audio.unlock();setMode('items');updateHud();});$('swap-button').addEventListener('click',()=>{input.swap=true;canvas.focus({preventScroll:true});});
 $('fullscreen-button').addEventListener('click',()=>platform.fullscreen());
 $('menu-button').addEventListener('click',()=>{audio.unlock();togglePause();});
@@ -197,7 +199,7 @@ window.addEventListener('keydown',e=>{
 },true);
 function autoPause(){if(mode==='playing'&&world.status==='playing')setMode('paused');input.clear();}
 window.addEventListener('pagehide',autoPause);window.addEventListener('blur',autoPause);screen.orientation?.addEventListener('change',autoPause);window.addEventListener('orientationchange',autoPause);let landscape=matchMedia('(orientation: landscape)').matches;window.addEventListener('resize',()=>{const next=matchMedia('(orientation: landscape)').matches;if(next!==landscape){landscape=next;autoPause();}});document.addEventListener('visibilitychange',()=>{if(document.hidden)autoPause();});
-function resize(){const r=$('stage').getBoundingClientRect();if(!r.width||!r.height)return;const scale=Math.min(r.width/settings.width,r.height/settings.height);canvas.style.width=`${Math.floor(settings.width*scale)}px`;canvas.style.height=`${Math.floor(settings.height*scale)}px`;}
+function resize(){const r=$('stage').getBoundingClientRect();if(!r.width||!r.height)return;const scale=Math.min(r.width/settings.width,r.height/settings.height);canvas.style.width=`${Math.floor(settings.width*scale)}px`;canvas.style.height=`${Math.floor(settings.height*scale)}px`;positionMinimap();}
 new ResizeObserver(resize).observe($('stage'));window.addEventListener('resize',resize);resize();
 window.addEventListener('keydown',e=>{if(e.code==='F3'){e.preventDefault();debug=!debug;updateHud();}});
 if(debugTools)window.gameDiagnostics=()=>({mode,status:world.status,room:world.roomId,world:world.worldIndex,character:world.character.id,health:world.player.hp,weapon:currentWeapon(world).id,time:world.time,damage:world.damageDealt,fps,touch:touch.diagnostics(),platform:platform.diagnostics(),audio:audio.diagnostics()});

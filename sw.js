@@ -1,5 +1,5 @@
 // Subir CACHE al publicar cambios: una versión completa, sin activar durante el combate.
-const CACHE='el-umbral-memories-1';
+const CACHE='el-umbral-memories-2';
 const FILES=[
  "./",
  "index.html",
@@ -39,6 +39,7 @@ const FILES=[
  "src/ui/config.js",
  "src/ui/catalog.js",
  "src/ui/hud.js",
+ "src/ui/minimap.js",
  "src/ui/icons.js",
  "src/ui/mobile-settings.js",
  "src/ui/platform.js",
