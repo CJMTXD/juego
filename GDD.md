@@ -231,3 +231,10 @@ tamaños documentadas en docs/pruebas-ui.md. Se conservan idénticos al respaldo
 Las estadísticas de daño calculadas se redondean a tres decimales solo al mostrarlas.
 La semilla escrita se valida incluso al comenzar desde el resumen; nunca se guarda
 una partida en curso. Pendiente: prueba humana de comodidad en dispositivos reales.
+
+## Recuerdos nuevos — fase 1 implementada
+Reproducido: 844×390 pasaba de 468×263 a 397×223 al mostrar el jefe.
+La arena usa filas reservadas para HUD, sala, jefe, avisos y ayudas. Ocultar textos
+no redistribuye el espacio del campo; solo viewport/orientación lo cambian.
+Prueba field-stability: inicio/5/130 s, aviso, jefe y mapa, cuatro tamaños con ratón
+y táctil, rotación y altura variable. Lógica previa y PWA pasan. Contenido pendiente.

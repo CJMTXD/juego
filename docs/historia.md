@@ -180,3 +180,5 @@ secundarias en cuatro tamaños sin errores de consola ni desbordes horizontales.
 Ilar sigue vendiendo las mismas posibilidades. El Santuario explica que el arma
 personal prestada no equivale a comprar su aparición como botín. Los fragmentos,
 aspectos, habilidades e historias conservan sus datos; no se añade lore ni poderes.
+
+Presentación — campo estable: la corrección de tamaño no añade contenido narrativo.
