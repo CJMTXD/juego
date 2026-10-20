@@ -1,3 +1,6 @@
+import {recordProgression} from './progression.js';
+import {noteSpent} from './journey.js';
+import {expansion as A} from './data/expansion.js';
 import {rememberJourney} from './journey.js';
 import {memoryBalance as M} from './data/memories.js';
 import {depth as D,difficulties,pacts,achievements} from './data/depth.js';
@@ -26,30 +29,30 @@ export function purchase(save,category,id){const m=save.meta;let target=null;
  if(!target&&!['tree','reroll'].includes(category))return false;
  const key=category==='bestiary'?'entry:'+id:id;if(target?.includes(key))return false;
  const cost=price(save,category,id);if(!Number.isFinite(cost)||save.progress.echoes<cost)return false;
- save.progress.echoes-=cost;
+ save.progress.echoes-=cost;noteSpent(save,cost);
  if(category==='tree')m.tree[id]++;
  else if(category==='reroll')m.rerolls++;
  else target.push(key);
  if(category==='lore'&&!m.fragments.includes(id))m.fragments.push(id);
  return true;
 }
-export function prepareProfile(w,save){w.previousEcho=save.meta.journey.lastEcho;w.familiarUnlocks=[...save.meta.journey.familiars];w.startWorld=w.worldIndex;w.metaTree={...save.meta.tree};w.knownFragments=[...save.meta.fragments];w.skin=save.preferences.skin==='ascendant'&&save.meta.skins.includes(w.character.id+':ascendant')?'ascendant':save.preferences.skin==='memory'&&save.meta.skins.includes(w.character.id)?'memory':'base';for(const [id,forms] of Object.entries(w.weaponForms))for(const f of forms)f.skin=save.meta.urns.equippedWeapons.includes(id)?'votive':'base';w.dailyKey='';w.bossesDefeated=[];w.roomCoins=0;}
+export function prepareProfile(w,save){w.personalComplete=save.meta.journey.personal[w.character.id]===3;w.previousEcho=save.meta.journey.lastEcho;w.familiarUnlocks=[...save.meta.journey.familiars];w.startWorld=w.worldIndex;w.metaTree={...save.meta.tree};w.knownFragments=[...save.meta.fragments];w.skin=save.preferences.skin==='testimony'&&w.personalComplete?'testimony':save.preferences.skin==='ascendant'&&save.meta.skins.includes(w.character.id+':ascendant')?'ascendant':save.preferences.skin==='memory'&&save.meta.skins.includes(w.character.id)?'memory':'base';for(const [id,forms] of Object.entries(w.weaponForms))for(const f of forms)f.skin=save.meta.journey.weaponSkins.includes(id)?'mastery':save.meta.urns.equippedWeapons.includes(id)?'votive':'base';w.dailyKey='';w.bossesDefeated=[];w.roomCoins=0;}
 export function discover(w,kind,id){const field={enemy:'discoveredEnemies',boss:'discoveredBosses'}[kind];if(field&&!w[field].includes(id)){w[field].push(id);w.discoveryRevision++;}}
 export function syncDiscoveries(w,save){if(w.savedDiscoveryRevision===w.discoveryRevision)return false;w.savedDiscoveryRevision=w.discoveryRevision;let changed=false;if(!w.cheated)for(const id in w.weaponProgress){const p=w.weaponProgress[id];if(p.shots>0&&p.level>(save.meta.weaponForms[id]||0)){save.meta.weaponForms[id]=p.level;changed=true;}}for(const [target,source] of [['fragments',w.knownFragments],['recipes',w.discoveredRecipes],['seenItems',w.discoveredItems],['seenEnemies',w.discoveredEnemies],['seenBosses',w.discoveredBosses]])for(const id of source)if(!save.meta[target].includes(id)){save.meta[target].push(id);changed=true;}return changed;}
 export function resultBreakdown(w){const difficulty=difficulties[w.difficultyIndex||0],pactBonus=(w.pactIds||[]).reduce((n,id)=>n+(pacts.find(p=>p.id===id)?.echoes||0),0),won=w.status==='won';
- const kills=Math.floor(w.kills/D.economy.killEvery),bosses=(w.bossesDefeated?.length||0)*D.economy.boss,worlds=(w.bossesDefeated?.length||0)*D.economy.world,victory=won?D.economy.win:0,memories=Math.min(M.bossEchoes,w.memoryEchoes||0),rival=w.rivalEchoes||0,base=kills+bosses+worlds+victory+memories+rival;
+ const kills=Math.floor(w.kills/D.economy.killEvery),bosses=(w.bossesDefeated?.length||0)*D.economy.boss,worlds=(w.bossesDefeated?.length||0)*D.economy.world,victory=won?D.economy.win:0,memories=Math.min(M.bossEchoes,w.memoryEchoes||0),rival=w.rivalEchoes||0,spiral=(w.spiralDepth||0)*A.spiral.echoes,base=kills+bosses+worlds+victory+memories+rival+spiral;
  const difficultyBonus=Math.floor(base*(difficulty.echoes-1)),pact=Math.floor(base*pactBonus),before=base+difficultyBonus+pact,death=won?0:Math.ceil(before*(1-D.economy.deathFactor));
  let total=Math.max(0,before-death);if(!won&&(w.kills>0||w.grazes>0))total=Math.max(D.economy.minDeath,total);if(w.cheated)total=0;
- return {kills,bosses,worlds,victory,memories,rival,difficulty:difficultyBonus,pacts:pact,death,total};
+ return {kills,bosses,worlds,victory,memories,rival,spiral,difficulty:difficultyBonus,pacts:pact,death,total};
 }
 export function settleRun(w,save){if(w.settled||!['dead','won'].includes(w.status))return false;w.settled=true;w.result=resultBreakdown(w);w.earned=w.result.total;
- w.trueEnding=w.status==='won'&&w.startWorld===0&&(w.difficultyIndex||0)>=2&&(w.knownFragments?.length||0)>=3&&w.secretVisits>0;
+ w.trueEnding=!w.spiral&&w.status==='won'&&w.startWorld===0&&(w.difficultyIndex||0)>=2&&(w.knownFragments?.length||0)>=3&&w.secretVisits>0;
  let used=w.character.weapon,shots=-1;for(const [id,record] of Object.entries(w.weaponProgress))if(record.shots>shots){used=id;shots=record.shots;}w.mostUsed=used;
  if(w.cheated)return true;
- rememberJourney(w,save);const m=save.meta;if(w.dailyKey&&m.dailyWins.includes(w.dailyKey)){w.earned=0;w.result.total=0;w.dailyRepeated=true;}
+ rememberJourney(w,save);const m=save.meta;if(w.weeklyKey?m.journey.weeklyWins.includes(w.weeklyKey):w.dailyKey&&m.dailyWins.includes(w.dailyKey)){w.earned=0;w.result.total=0;w.dailyRepeated=true;}
  save.progress.echoes=Math.min(D.economy.maxCurrency,save.progress.echoes+w.earned);save.progress.totalEchoes=Math.min(D.economy.maxCurrency,save.progress.totalEchoes+w.earned);
  m.totalKills=Math.min(1000000,m.totalKills+w.kills);m.totalGraze=Math.min(1000000,m.totalGraze+w.grazes);m.totalDamage=Math.min(1000000,m.totalDamage+Math.floor(w.damageDealt));
- if(w.status==='won'){save.progress.wins++;if(w.startWorld===0){m.difficulty=Math.max(m.difficulty,Math.min(4,(w.difficultyIndex||0)+1));const mark=w.character.id+':'+(w.difficultyIndex||0);if(!m.marks.includes(mark))m.marks.push(mark);}if(w.startWorld===0&&(w.difficultyIndex||0)>=2&&!m.skins.includes(w.character.id+':ascendant'))m.skins.push(w.character.id+':ascendant');if(w.dailyKey&&!m.dailyWins.includes(w.dailyKey))m.dailyWins.push(w.dailyKey);}else m.deaths++;
+ if(w.status==='won'&&!w.spiral){save.progress.wins++;if(w.startWorld===0&&!w.assisted){m.difficulty=Math.max(m.difficulty,Math.min(4,(w.difficultyIndex||0)+1));const mark=w.character.id+':'+(w.difficultyIndex||0);if(!m.marks.includes(mark))m.marks.push(mark);}if(!w.assisted&&w.startWorld===0&&(w.difficultyIndex||0)>=2&&!m.skins.includes(w.character.id+':ascendant'))m.skins.push(w.character.id+':ascendant');if(w.dailyKey&&!w.weeklyKey&&!m.dailyWins.includes(w.dailyKey))m.dailyWins.push(w.dailyKey);}else m.deaths++;
  const achieved={first:w.bossesDefeated.length>0,ascend:w.status==='won'&&w.startWorld===0,grazer:m.totalGraze>=100,alchemist:m.recipes.length>=3,evolved:Object.values(w.weaponProgress).some(p=>p.level===4),daily:!!w.dailyKey&&w.status==='won',true:w.trueEnding};for(const a of achievements)if(achieved[a.id]&&!m.achievements.includes(a.id))m.achievements.push(a.id);
- m.history.push({seed:w.seed,kills:w.kills,world:w.worldIndex+1,echoes:w.earned,seconds:Math.floor(w.time),won:w.status==='won',difficulty:w.difficultyIndex||0,character:w.character.id,daily:w.dailyKey});if(m.history.length>D.economy.history)m.history.shift();return true;
+ recordProgression(w,save);m.history.push({assisted:!!w.assisted,weekly:w.weeklyKey||'',spiral:w.spiralDepth||0,seed:w.seed,kills:w.kills,world:w.worldIndex+1,echoes:w.earned,seconds:Math.floor(w.time),won:w.status==='won',difficulty:w.difficultyIndex||0,character:w.character.id,daily:w.dailyKey});if(m.history.length>D.economy.history)m.history.shift();return true;
 }

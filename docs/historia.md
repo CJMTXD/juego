@@ -225,3 +225,10 @@ Vencerla libera sus recuerdos. Las velas contienen intervalos del ciclo; al cons
 vuelven al fondo. Junco, Brasa, Hilo y Ojo acompañan el ascenso como almas guía.
 El Altar de las dos memorias enlaza armas compatibles: la nueva forma recuerda la
 renuncia, no aumenta indefinidamente el número de armas que se pueden llevar.
+
+## Confirmado — las memorias que vuelven
+Las tres etapas personales llevan a un testimonio breve de cada alma. La maestría
+conserva su voz, no vuelve invencible al portador. La Espiral explora vueltas del
+mismo ciclo reparado: no inventa regiones posteriores al cielo. Cada semana el río
+reúne una memoria común con una deuda conocida. El rango de Ilar honra ecos devueltos
+al ciclo y viajes terminados; sus marcos y títulos no añaden daño.

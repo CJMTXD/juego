@@ -67,3 +67,8 @@ campo estable en doce variantes. El rival interpreta tres recuerdos como +3 PV
 por pieza dentro del tope160; no reproduce todas las sinergias del jugador. Las ramas
 extra no sustituyen tiendas/juicios previos y solo aparecen donde cabe conexión válida.
 Los dos familiares básicos siempre pueden ofrecerse; dos adicionales se abren en urnas.
+
+Verificación B:79 pruebas y recorridos existentes. Espiral comienza una partida
+nueva desbloqueada por victoria; cada seis mundos añade presión hasta los topes.
+Reto semanal reutiliza el bloqueo de preparación de la diaria y lleva identidad
+semanal propia para el cobro. Familias/árbol/urnas no se transfieren al perfil neutral.

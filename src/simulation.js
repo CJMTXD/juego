@@ -1,3 +1,4 @@
+import {initFeats,weeklyRoom} from './progression.js';
 import {initAdventure,configureAdventureRooms,updateAdventure,adventureReward,configureRival,rivalAttack,rivalReward} from './adventure.js';
 import {expansion as A} from './data/expansion.js';
 import {initRoomContent,loadRoomContent,blocked,resolveBody,hitScenery,assignMarks,eliteHit,eliteDeath,updateDanger,completeRoomRank} from './rooms-content.js';
@@ -29,7 +30,7 @@ export function createWorld(seed=Date.now()>>>0, unlocks=0, characterId='remende
  const character=Object.hasOwn(characters,characterId)?characters[characterId]:characters.remender;
  const world={checkpointBoost:startWorld>0,zone,worldIndex:Math.max(0,Math.min(worlds.length-1,startWorld)),pendingWorld:0,zoneCleared:0,roomTime:0,hazardClock:0,hazardPhase:0,environmentSlow:1,mirrorPositions:[200,440],hazardPositions:[[210,120],[430,240]],mark:{active:false,x:0,y:0,radius:38,timer:0},character,shield:character.kind==='shield',seed,random:seededRandom(seed^0x12345678),unlocks,rooms,roomId:0,player:{x:320,y:180,radius:character.radius,angle:0,hp:character.health,maxHp:character.health,invulnerable:0,dashTime:0,dashCooldown:0,dx:1,dy:0},
   allies:createBulletPool(s.bulletCapacity),hostiles:createBulletPool(s.enemyCapacity),enemies:Array.from({length:B.campaign.enemyPool},(_,id)=>({id,active:false,type:'keeper',x:0,y:0,radius:12,hp:0,maxHp:0,timer:0,warning:false,destX:0,destY:0,pattern:'ring',angle:0,offset:0,phase:0,flash:0,behavior:'stay',speed:0,charge:0,targetX:0,targetY:0})),inventory:{},weaponSlots:[character.weapon],weaponIndex:0,cooldowns:Object.fromEntries(Object.keys(weapons).map(id=>[id,0])),weaponOffer:null,burstLeft:0,burstTimer:0,charge:0,stats:{speed:character.speed,damage:character.damage*(1+startWorld*B.campaign.checkpointDamage),interval:B.projectiles.interval,bulletSpeed:B.projectiles.speed,pierce:0,side:0},
-  hitStop:0,effectsEnabled:true,particles:Array.from({length:B.campaign.particlePool},()=>({active:false,x:0,y:0,vx:0,vy:0,life:0})),damageBuckets:new Float64Array(B.campaign.metricsWindow),damageSecond:0,damageDealt:0,status:'playing',time:0,kills:0,cleared:0,wave:0,spawnTimer:0,fireTimer:0,enemyId:0,options:[],events:[],shake:0,settled:false,exitLock:0.5,bossPhase:0};initEvolution(world);initRelics(world);initRules(world);initExtras(world);initRoomContent(world);initAdventure(world);return world;
+  hitStop:0,effectsEnabled:true,particles:Array.from({length:B.campaign.particlePool},()=>({active:false,x:0,y:0,vx:0,vy:0,life:0})),damageBuckets:new Float64Array(B.campaign.metricsWindow),damageSecond:0,damageDealt:0,status:'playing',time:0,kills:0,cleared:0,wave:0,spawnTimer:0,fireTimer:0,enemyId:0,options:[],events:[],shake:0,settled:false,exitLock:0.5,bossPhase:0};initEvolution(world);initRelics(world);initRules(world);initExtras(world);initRoomContent(world);initAdventure(world);initFeats(world);return world;
 }
 export function recalculate(world) {
  const i=world.inventory,character=world.character;
@@ -78,7 +79,7 @@ export function travel(world,id){
  if(room.x>old.x)p.x=48;if(room.x<old.x)p.x=592;if(room.y>old.y)p.y=48;if(room.y<old.y)p.y=312;
  p.invulnerable=B.progression.entryGrace;
  if(!room.visited&&room.kind==='rest'){heal(world,B.progression.restHeal);world.events.push('heal');}
- loadRoomContent(world);room.visited=true;enterSideRoom(world,room);if(room.kind==='shop'&&!room.used){const oldStatus=world.status;offerUpgrades(world);world.shopOffer=world.options[0];world.status=oldStatus;}
+ loadRoomContent(world);weeklyRoom(world);room.visited=true;enterSideRoom(world,room);if(room.kind==='shop'&&!room.used){const oldStatus=world.status;offerUpgrades(world);world.shopOffer=world.options[0];world.status=oldStatus;}
  return true;
 }
 function spawnWave(world){
@@ -97,15 +98,15 @@ function spawnWave(world){
  world.events.push('spawn');
 }
 export function advanceWorld(world){
- if(world.status!=='transition'||world.worldIndex+1>=worlds.length)return false;
- world.worldIndex++;world.zone=worlds[world.worldIndex];world.rooms=generateMap((world.seed+world.worldIndex*7919)>>>0);for(const r of world.rooms)if(world.zone.rooms?.[r.id])r.name=world.zone.rooms[r.id];configureSideRooms(world);configureAdventureRooms(world);world.roomId=0;world.zoneCleared=0;world.wave=0;world.spawnTimer=1.4;world.bossPhase=0;world.exitLock=0.7;world.roomTime=0;
+ if(world.status!=='transition'||world.worldIndex+1>=worlds.length&&!world.spiral)return false;if(world.spiral&&world.worldIndex+1>=worlds.length)world.worldIndex=-1;
+ world.worldIndex++;if(world.spiral){const loops=Math.floor(world.spiralDepth/6);world.rules={...world.rules,health:1+Math.min(A.spiral.maxHealth,loops*A.spiral.healthStep),speed:1+Math.min(A.spiral.maxSpeed,loops*A.spiral.speedStep),extraPhases:Math.min(2,loops)};}world.zone=worlds[world.worldIndex];world.rooms=generateMap((world.seed+world.worldIndex*7919)>>>0);for(const r of world.rooms)if(world.zone.rooms?.[r.id])r.name=world.zone.rooms[r.id];configureSideRooms(world);configureAdventureRooms(world);world.roomId=0;world.zoneCleared=0;world.wave=0;world.spawnTimer=1.4;world.bossPhase=0;world.exitLock=0.7;world.roomTime=0;
  clearBullets(world);for(const e of world.enemies)e.active=false;
  world.player.x=320;world.player.y=180;heal(world,2+(world.inventory.dawn?1:0));world.player.invulnerable=1.5;
  resetHazard(world);loadRoomContent(world);world.status='playing';world.events.push('reward');return true;
 }
 export function damagePlayer(world,damage=1){
  const p=world.player;if(p.invulnerable>0||world.status!=='playing')return false;
- if(world.candleShield){world.candleShield=false;p.invulnerable=B.player.invulnerability;world.events.push('heal');return true;}if(world.shield){world.shield=false;p.invulnerable=B.player.invulnerability;world.events.push('heal');return true;}
+ if(world.candleShield){world.feats.blocked++;world.candleShield=false;p.invulnerable=B.player.invulnerability;world.events.push('heal');return true;}if(world.shield){world.feats.blocked++;world.shield=false;p.invulnerable=B.player.invulnerability;world.events.push('heal');return true;}
  if(world.rooms[world.roomId].kind==='boss')world.bossDamage+=damage;
  world.roomDamage+=damage;for(const e of world.enemies)if(e.active&&(e.marks&32))e.hp=Math.min(e.maxHp,e.hp+e.maxHp*A.elite.leechHeal);p.hp=Math.max(0,p.hp-damage);p.invulnerable=B.player.invulnerability+(world.inventory.veil?B.upgrades.veil:0);world.shake=0.15;world.events.push('hurt');
  if(!p.hp){world.status='dead';clearBullets(world);world.events.push('death');}return true;
@@ -167,7 +168,7 @@ function killEnemy(world,e,weaponId=null){
  e.active=false;world.kills++;if(world.kills%X.rooms.killCoinEvery===0)world.roomCoins+=1+(world.inventory.scale?X.rooms.scaleBonus:0);relicKill(world);memoryKill(world);world.events.push('kill');if(e.miniboss)grantMemory(world,'miniboss',recalculate);
  if(world.effectsEnabled){world.hitStop=X.effects.hitStop;let count=0;for(const p of world.particles){if(!p.active){p.active=true;p.kind='spark';p.x=e.x;p.y=e.y;p.vx=Math.cos(count*2.4)*55;p.vy=Math.sin(count*2.4)*55;p.life=0.25;if(++count===4)break;}}}
  if(!world.enemies.some(item=>item.active))world.spawnTimer=B.encounters.waveDelay;
- if(e.type==='boss'){completeRoomRank(world);memoryBoss(world);Object.assign(world.defeat,{x:e.x,y:e.y,timer:X.effects.defeatSeconds});world.bossesDefeated.push(world.worldIndex);if(world.bossDamage===0&&!world.bossFeats.includes(world.worldIndex))world.bossFeats.push(world.worldIndex);world.superOffers=eligibleSupers(world);world.status=world.worldIndex===worlds.length-1?'won':'transition';world.pendingWorld=world.worldIndex+1;world.bossWeapon=rollWeapon(world,true);world.rooms[world.roomId].cleared=true;world.cleared++;world.zoneCleared++;clearBullets(world);world.events.push('win');}
+ if(e.type==='boss'){if(world.roomDashes===0)world.feats.bossNoDash++;if(world.roomAbilities===0)world.feats.bossNoAbility++;if(world.spiral)world.spiralDepth++;completeRoomRank(world);memoryBoss(world);Object.assign(world.defeat,{x:e.x,y:e.y,timer:X.effects.defeatSeconds});world.bossesDefeated.push(world.worldIndex);if(world.bossDamage===0&&!world.bossFeats.includes(world.worldIndex))world.bossFeats.push(world.worldIndex);world.superOffers=eligibleSupers(world);world.status=world.worldIndex===worlds.length-1&&!world.spiral?'won':'transition';world.pendingWorld=world.worldIndex+1;world.bossWeapon=rollWeapon(world,true);world.rooms[world.roomId].cleared=true;world.cleared++;world.zoneCleared++;clearBullets(world);world.events.push('win');}
 }
 function moveBullets(world,bullets,dt,allied){
  for(const b of bullets){
@@ -205,7 +206,7 @@ export function updateWorld(world,input,dt,preferences){
  p.invulnerable=Math.max(0,p.invulnerable-dt);p.dashCooldown=Math.max(0,p.dashCooldown-dt);world.exitLock=Math.max(0,world.exitLock-dt);world.shake=Math.max(0,world.shake-dt);
  let dx=Number(input.keys.has(bindings.right))-Number(input.keys.has(bindings.left)),dy=Number(input.keys.has(bindings.down))-Number(input.keys.has(bindings.up));
  const length=Math.hypot(dx,dy);if(length){world.tutorial.moved+=world.stats.speed*dt;dx/=length;dy/=length;p.dx=dx;p.dy=dy;}
- const oldX=p.x,oldY=p.y;if(input.dash&&p.dashCooldown<=0){world.roomDashes++;p.dashTime=B.player.dashDuration;p.dashCooldown=Math.max(D.caps.minDash,(world.character.kind==='dash'?B.characters.dashRecharge:B.player.dashCooldown)-(world.itemBonuses.dash||0)-(world.inventory.ash?R.ashRecharge:0)-(world.inventory.rune?R.runeRecharge:0));if(memoryTrail(world)){world.trail.x=p.x;world.trail.y=p.y;world.trail.timer=memoryTrailDuration(world);}if(world.superItem==='loom'){p.x=clamp(p.x+p.dx*R.teleport,36,604);p.y=clamp(p.y+p.dy*R.teleport,36,324);p.dashTime=0;p.dashCooldown=R.loomRecharge;}p.dashRecharge=p.dashCooldown;p.invulnerable=Math.max(p.invulnerable,Math.min(M.dashInvulnerabilityMax,B.player.dashInvulnerability+(world.memoryBonuses?.dashInvulnerability||0)));world.tutorial.dashed=true;world.events.push('dash');}input.dash=false;
+ const oldX=p.x,oldY=p.y;if(input.dash&&p.dashCooldown<=0){world.roomDashes++;world.feats.dashes++;p.dashTime=B.player.dashDuration;p.dashCooldown=Math.max(D.caps.minDash,(world.character.kind==='dash'?B.characters.dashRecharge:B.player.dashCooldown)-(world.itemBonuses.dash||0)-(world.inventory.ash?R.ashRecharge:0)-(world.inventory.rune?R.runeRecharge:0));if(memoryTrail(world)){world.trail.x=p.x;world.trail.y=p.y;world.trail.timer=memoryTrailDuration(world);}if(world.superItem==='loom'){p.x=clamp(p.x+p.dx*R.teleport,36,604);p.y=clamp(p.y+p.dy*R.teleport,36,324);p.dashTime=0;p.dashCooldown=R.loomRecharge;}p.dashRecharge=p.dashCooldown;p.invulnerable=Math.max(p.invulnerable,Math.min(M.dashInvulnerabilityMax,B.player.dashInvulnerability+(world.memoryBonuses?.dashInvulnerability||0)));world.tutorial.dashed=true;world.events.push('dash');}input.dash=false;
  if(p.dashTime>0){dx=p.dx;dy=p.dy;p.dashTime-=dt;}
  updateHazard(world,dt,damagePlayer);if(world.status!=='playing')return;
  const speed=world.stats.speed*(world.abilityTime>0&&world.character.id==='courier'?X.ability.speed:1)*(world.environmentSlow||1)*(p.dashTime>0?B.player.dashMultiplier:1);

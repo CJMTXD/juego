@@ -322,3 +322,15 @@ catálogo separado de las diez armas normales. Historial del rival guardado en
 meta.journey versión1 dentro del v3. No altera ni borra compras previas.
 76 pruebas pasan, navegador sin errores, campo estable en doce variantes. Bot sin
 bloqueos; límites de piscinas conservados. Reto/maestría/presentación aún pendientes.
+
+## Ampliación — bloque B implementado
+Maestría por bajas reales (100/500/1500), aspecto Voz del ciclo desde100 y texto de
+historia; victorias por personaje. Tres objetivos personales secuenciales, máximo
+uno por partida terminada, epílogo/aspecto Testimonio y +2% de carga por roce.
+Rango cosmético de perfil por ecos gastados y partidas normales completadas.
+Semanal: lunes UTC, semilla compartida, tres mutadores curados, cobro de victoria
+único, sin árbol/urnas. Espiral desbloqueada tras victoria, inicio nuevo desde el
+fondo, vuelta de seis mundos; multiplicadores de vida/velocidad acotados y retirada
+voluntaria en Pausa. No se sigue cobrando una victoria normal por cada vuelta.
+79 pruebas pasan, campañas y navegador ampliado completos. Nuevas opciones en
+Más modos y urnas en navegación; título revisado para no desbordar móvil.
