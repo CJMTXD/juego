@@ -162,3 +162,9 @@ Ayuda de preparación: marca local independiente de presentación; no reutiliza 
 oculta las ayudas de combate. Se consulta en Opciones → Revisar ayuda de preparación.
 Los selectores CSS añadidos están limitados a catálogo/preparación; estilos anteriores
 conservados. No hay una segunda zona desplazable ni paneles modales anidados.
+
+Glosario adicional: **Comprable** significa que hay saldo y aún no se adquirió;
+**Te faltan N ecos** permite leer, pero deshabilita la confirmación; **Adquirida**
+impide pagar de nuevo; **Elegido** señala la selección de esta preparación;
+**No ofrecida esta vez** es un arma desbloqueada fuera de las tres opciones actuales.
+Los textos calculados de daño se redondean a tres decimales, sin redondear simulación.

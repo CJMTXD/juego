@@ -1,5 +1,5 @@
 // Subir CACHE al publicar cambios: una versión completa, sin activar durante el combate.
-const CACHE='el-umbral-clarity-2';
+const CACHE='el-umbral-clarity-3';
 const FILES=[
  "./",
  "index.html",

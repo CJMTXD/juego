@@ -223,3 +223,11 @@ de arma lee la tecla asignada y muestra el botón en dispositivos táctiles.
 No se modificaron HUD, textos/ayudas de combate, controles, simulación ni datos.
 Pendiente: comodidad en teléfonos físicos; el rediseño general de fases 6–8 sigue
 fuera de esta tarea. No se sube a GitHub: se respeta la regla específica sin push.
+
+## Cierre de claridad — implementado y comprobado
+51 pruebas de lógica, ocho recorridos de navegador y PWA pasan. 56 capturas en cuatro
+tamaños documentadas en docs/pruebas-ui.md. Se conservan idénticos al respaldo los
+27 archivos de combate/datos/guardado, el HUD, el bucle de juego y el CSS anterior.
+Las estadísticas de daño calculadas se redondean a tres decimales solo al mostrarlas.
+La semilla escrita se valida incluso al comenzar desde el resumen; nunca se guarda
+una partida en curso. Pendiente: prueba humana de comodidad en dispositivos reales.

@@ -77,3 +77,32 @@ recarga, revisión en Opciones y regreso del Santuario sin renovar ofertas ni pe
 arma, mejora o semilla escrita. Capturas en `docs/capturas/claridad/`, cuatro tamaños.
 Se adaptan los recorridos antiguos a confirmación de compra y Opciones avanzadas;
 se conservan sus comprobaciones de migración, diaria, seis mundos y seis jefes.
+
+## Cierre de verificación de claridad
+- Pasan las 51 pruebas de lógica y los ocho recorridos de navegador: browser,
+  depth-browser, ui-layout, ui-flow, ui-screens, mobile-browser, clarity-browser y
+  preparation-browser. Sin errores de consola registrados.
+- Pruebas nuevas adicionales de navegador: elegir otra alma con Enter o toque,
+  arma personal correcta, volver a elegir el alma actual sin perder el arma,
+  tecla reasignada R, texto adaptado al modo táctil y semilla inválida después de
+  volver al resumen. Una compra solo descuenta una vez.
+- Sintaxis de 51 archivos comprobada y HTTP 200 en portada/módulos/service worker.
+  check-pwa comprueba los 46 recursos; CACHE el-umbral-clarity-3.
+- Comparación con respaldo b6e4a8e: 27 archivos protegidos idénticos, incluidos
+  controles, HUD, simulación, renderizado, datos y guardado. También idénticos el
+  cuerpo de updateHud, el bucle frame y las pausas automáticas de main.js.
+  El CSS previo se conserva completo; solo se añaden selectores de estos menús.
+- [Índice de las 56 capturas](capturas/claridad/README.md): cinco pestañas y detalles,
+  evoluciones, preparación y ambas cuadrículas, en los cuatro tamaños pedidos.
+  Se revisaron capturas móviles, de tableta y escritorio; no hay corte horizontal
+  de texto ni scroll del documento. Las listas largas se desplazan dentro del menú.
+- La emulación no sustituye una prueba física de Windows/Android/iPhone. No se
+  ejecutó iniciar.bat nativamente; el servidor existente responde correctamente.
+
+Comandos adicionales en PowerShell, con el servidor ya arrancado:
+
+```powershell
+node --test tests/game.test.mjs tests/depth.test.mjs tests/ui.test.mjs tests/clarity.test.mjs
+node tests/clarity-browser.cjs
+node tests/preparation-browser.cjs
+```

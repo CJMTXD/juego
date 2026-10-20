@@ -131,3 +131,7 @@ el mundo y la semilla. La ayuda se consulta en Opciones.
 
 Esta entrega se guarda con commits locales, sin push por la instrucción específica.
 Windows: abre `iniciar.bat`. No requiere nuevas dependencias para jugar.
+
+Verificación de esta entrega: 51 pruebas de lógica, ocho recorridos de navegador y
+PWA correctos. [Capturas de los menús](docs/capturas/claridad/README.md) y resultados
+en [docs/pruebas-ui.md](docs/pruebas-ui.md). El combate y el guardado se conservan.
